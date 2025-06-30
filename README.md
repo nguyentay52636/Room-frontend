@@ -19,8 +19,8 @@ Một ứng dụng web hiện đại được xây dựng với React, TypeScrip
 
 1. **Clone repository**:
 ```bash
-git clone <repository-url>
-cd Room-frontend
+git clone https://github.com/nguyentay52636/Room-frontend.git
+cd Room-NewLive
 ```
 
 2. **Cài đặt dependencies**:
