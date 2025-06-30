@@ -1,6 +1,6 @@
 
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { useLanguage } from "../language-provider"
 import CategoriesHeader from "./components/CategoriesHeader"
@@ -11,6 +11,17 @@ import DesktopNavigate from "./components/DesktopNavigate"
 
 export function Header() {
   const { language, setLanguage, t } = useLanguage()
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
   const navigation = [
     { name: t("nav.home"), to: "/" },
     { name: t("nav.search"), to: "/search" },
@@ -20,7 +31,10 @@ export function Header() {
     { name: t("nav.admin"), to: "/admin" },
   ]
   return (
-    <header className="sticky flex justify-center top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 theme-transition">
+    <header
+      className={`fixed flex justify-center  border-b top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "bg-white backdrop-blur-lg shadow-lg border-b border-gray-200/50" : "bg-transparent"
+        }`}
+    >
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <HeaderLogo />
