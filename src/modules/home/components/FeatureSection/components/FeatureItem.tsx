@@ -3,7 +3,7 @@ import React from 'react'
 export default function FeatureItem({ feature, index }: { feature: any, index: number }) {
     return (
         <>
-            <div key={index} className="group hover:scale-105 transition-all duration-300">
+            <div key={index} className="group hover:scale-105 transition-all duration-300 cursor-pointer">
                 <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full">
                     <div
                         className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300`}

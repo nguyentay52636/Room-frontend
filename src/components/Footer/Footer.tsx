@@ -78,7 +78,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-blue-400" />
-                <span className="text-gray-400">info@renthome.vn</span>
+                <span className="text-gray-400">phuongtay52636@gmail.com</span>
               </div>
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-blue-400 mt-1" />
@@ -96,7 +96,7 @@ export default function Footer() {
         </div>
         <Separator className="my-8 bg-primary-foreground/10" />
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <p className="text-sm opacity-90">© 2024 NewLive. Tất cả quyền được bảo lưu.</p>
+          <p className="text-sm opacity-90">© 2025 NewLive. Tất cả quyền được bảo lưu.</p>
           <div className="flex space-x-6 text-sm">
             <Link to="#" className="opacity-90 hover:opacity-100 transition-opacity">
               Điều khoản sử dụng
