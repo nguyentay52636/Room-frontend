@@ -207,8 +207,7 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                             className="absolute inset-0 grid lg:grid-cols-2"
                             style={{ zIndex: 2 }}
                         >
-                            {mode === "login" ? (
-                                <>
+                            {mode === "login" ? (                                <>
                                     {/* Left Side - Login Form */}
                                     <div className="flex flex-col justify-center p-8 lg:p-16 bg-white relative overflow-hidden">
                                         {/* Decorative Elements */}

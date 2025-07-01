@@ -41,13 +41,15 @@ function App() {
   ]);
   return (
     <SkeletonLoading loadingTime={2000} loadingText="Đang tải ứng dụng...">
-      <LanguageProvider>
-        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <LanguageProvider>
           <>
             <RouterProvider router={router} />
           </>
-        </ThemeProvider>
-      </LanguageProvider>
+        </LanguageProvider>
+      </ThemeProvider>
+  
     </SkeletonLoading>
   );
 }

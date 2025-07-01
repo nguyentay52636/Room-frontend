@@ -213,7 +213,7 @@ export default function HeroCarousel() {
     }
 
     return (
-        <section ref={containerRef} className="relative h-screen overflow-hidden -mt-16 lg:-mt-20">
+        <section ref={containerRef} className="relative h-screen overflow-hidden -mt-16 lg:-mt-0">
             {/* Animated Background */}
             <div className="absolute inset-0">
                 {slides.map((slide, index) => (
