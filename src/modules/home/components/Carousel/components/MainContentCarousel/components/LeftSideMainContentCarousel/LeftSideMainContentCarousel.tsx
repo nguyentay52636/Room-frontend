@@ -82,8 +82,8 @@ export default function LeftSideMainContentCarousel({ currentSlideData, isTransi
             <div className="space-y-4">
               {/* Location Input */}
               <div className="space-y-2">
-                <label className="text-white font-medium text-sm">Địa điểm</label>
-                <div className="relative">
+                <label className="text-white font-medium text-sm my-2!">Địa điểm</label>
+                <div className="relative my-2">
                   <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <Input
                     placeholder="Nhập địa điểm bạn muốn tìm"
@@ -157,7 +157,7 @@ export default function LeftSideMainContentCarousel({ currentSlideData, isTransi
                 size="lg"
                 className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-4 rounded-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-lg mt-6"
               >
-                <Search className="w-5 h-5 mr-2" />
+                <Search className="w-5 h-5 mr-2 cursor-pointer" />
                 Tìm kiếm
               </Button>
             </div>
@@ -170,14 +170,14 @@ export default function LeftSideMainContentCarousel({ currentSlideData, isTransi
           >
             <Button
               size="lg"
-              className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              className="bg-teal-600 hover:bg-teal-700 cursor-pointer text-white px-8 py-3 rounded-lg font-semibold my-4 transition-all duration-300 hover:scale-105 hover:shadow-lg"
             >
               🔍 Tìm phòng ngay
             </Button>
             <Button
               variant="outline"
               size="lg"
-              className="border-white/30 text-white hover:bg-white/10 px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105 bg-transparent"
+              className="border-white/30 text-white cursor-pointer hover:bg-white/10 px-8 py-3 rounded-lg my-4 font-semibold transition-all duration-300 hover:scale-105 bg-transparent"
             >
               Tìm hiểu thêm
             </Button>

@@ -64,14 +64,14 @@ export default function ButtonSwitchHeader() {
                     className="rounded-full px-6 transition-all duration-300 hover:bg-primary/10 hover:text-primary hover:scale-105 border border-primary/20 theme-transition"
                     asChild
                 >
-                    <Link to="/login">{t("nav.login")}</Link>
+                    <Link to="/auth/login">Đăng nhập</Link>
                 </Button>
                 <Button
                     size="sm"
                     className="rounded-full px-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-white border-0 theme-transition"
                     asChild
                 >
-                    <Link to="/register">{t("nav.register")}</Link>
+                    <Link to="/auth/register">Đăng ký</Link>
                 </Button>
             </div>
         </>

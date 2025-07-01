@@ -4,6 +4,8 @@ import { MainLayout } from '@/components/layouts';
 import HomePage from '@/modules/home/pages/HomePage';
 import { ThemeProvider } from './components/theme-provider';
 import { LanguageProvider } from './components/language-provider';
+import Login from './modules/auth/components/Login/Login';
+import Register from './modules/auth/components/Register/Register';
 
 function App() {
   const router = createBrowserRouter([
@@ -19,6 +21,19 @@ function App() {
         {
           path: 'about',
           element: <h1>About</h1>,
+        },
+        {
+          path: 'auth',
+          children: [
+            {
+              path: 'login',
+              element: <Login />,
+            },
+            {
+              path: 'register',
+              element: <Register />,
+            },
+          ],
         },
       ],
     },

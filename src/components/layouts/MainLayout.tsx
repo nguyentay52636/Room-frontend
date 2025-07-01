@@ -7,7 +7,6 @@ import { Header } from '../Header/Header';
 export default function MainLayout({ children }: PropsWithChildren) {
   return (
     <div>
-
       <Header />
       {children || <Outlet />}
       <Footer />
