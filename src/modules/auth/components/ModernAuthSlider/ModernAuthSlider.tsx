@@ -254,49 +254,14 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                                     />
                                 </div>
                                 {/* Right Side - Welcome Panel with Rental Service Info */}
-                                <div className="relative bg-gradient-to-br from-blue-500 via-teal-500 to-cyan-500 flex flex-col justify-center items-center p-8 lg:p-16 text-white overflow-hidden">
-                                    {/* Decorative Background */}
-                                    <div className="absolute inset-0 opacity-20">
-                                        <div className="absolute top-20 right-20 w-32 h-32 border-4 border-white rounded-full animate-pulse" />
-                                        <div className="absolute bottom-32 left-20 w-24 h-24 bg-white rounded-lg rotate-45 animate-float" />
-                                        <div className="absolute top-1/2 right-10 w-20 h-20 bg-white rounded-full animate-bounce" />
-
-                                        {/* Real Estate Icons */}
-                                        <div className="absolute top-1/4 right-1/4 w-16 h-16 bg-orange-400 rounded-full flex items-center justify-center animate-pulse">
-                                            <Home className="w-8 h-8 text-white" />
-                                        </div>
-
-                                        <div className="absolute bottom-1/3 right-1/4 w-14 h-14 bg-pink-400 rounded-full flex items-center justify-center animate-float animation-delay-1000">
-                                            <MapPin className="w-7 h-7 text-white" />
-                                        </div>
-
-                                        <div className="absolute top-1/3 left-1/4 w-12 h-12 bg-green-400 rounded-full flex items-center justify-center animate-bounce animation-delay-500">
-                                            <Star className="w-6 h-6 text-white" />
-                                        </div>
-
-                                        {/* Dots Pattern */}
-                                        <div className="absolute top-10 left-10 grid grid-cols-4 gap-2">
-                                            {[...Array(16)].map((_, i) => (
-                                                <div
-                                                    key={i}
-                                                    className="w-2 h-2 bg-white rounded-full opacity-60 animate-pulse"
-                                                    style={{ animationDelay: `${i * 100}ms` }}
-                                                />
-                                            ))}
-                                        </div>
-
-                                        {/* Wave Pattern */}
-                                        <div className="absolute bottom-0 left-0 w-full h-20">
-                                            <svg viewBox="0 0 400 100" className="w-full h-full">
-                                                <path
-                                                    d="M0,50 Q100,20 200,50 T400,50 L400,100 L0,100 Z"
-                                                    fill="rgba(255,255,255,0.1)"
-                                                    className="animate-pulse"
-                                                />
-                                            </svg>
-                                        </div>
-                                    </div>
-
+                                <div
+                                    className="relative flex flex-col justify-center items-center p-8 lg:p-16 text-white overflow-hidden"
+                                    style={{
+                                        backgroundImage: "url('https://smartland.vn/wp-content/uploads/2021/10/bat-dong-san-ven-song-sai-gon-01-e1620704384316.jpg')",
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center",
+                                    }}
+                                >
                                     <WelcomePanel
                                         mode={mode}
                                         isTransitioning={isTransitioning}
@@ -351,47 +316,14 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                                 className="absolute inset-0 grid lg:grid-cols-2"
                             >
                                 {/* Left Side - Welcome Back Panel with Service Info */}
-                                <div className="relative bg-gradient-to-br from-teal-500 via-cyan-500 to-blue-500 flex flex-col justify-center items-center p-8 lg:p-16 text-white overflow-hidden">
-                                    {/* Decorative Background */}
-                                    <div className="absolute inset-0 opacity-20">
-                                        <div className="absolute top-20 left-20 w-32 h-32 border-4 border-white rounded-full animate-pulse" />
-                                        <div className="absolute bottom-32 right-20 w-24 h-24 bg-white rounded-lg rotate-45 animate-float" />
-                                        <div className="absolute top-1/2 left-10 w-20 h-20 bg-white rounded-full animate-bounce" />
-
-                                        {/* Real Estate Icons */}
-                                        <div className="absolute top-1/4 left-1/4 w-16 h-16 bg-orange-400 rounded-full flex items-center justify-center animate-pulse">
-                                            <Users className="w-8 h-8 text-white" />
-                                        </div>
-
-                                        <div className="absolute bottom-1/3 left-1/4 w-14 h-14 bg-pink-400 rounded-full flex items-center justify-center animate-float animation-delay-1000">
-                                            <Star className="w-7 h-7 text-white" />
-                                        </div>
-
-                                        {/* Arrow */}
-                                        <div className="absolute top-1/4 right-1/4 w-12 h-12 animate-pulse">
-                                            <ArrowLeft className="w-full h-full text-orange-400" strokeWidth={3} />
-                                        </div>
-
-                                        {/* Document */}
-                                        <div className="absolute bottom-1/3 right-1/4 w-16 h-20 bg-white rounded-lg relative animate-float animation-delay-500">
-                                            <div className="absolute top-2 left-2 right-2 h-1 bg-red-400 rounded" />
-                                            <div className="absolute top-4 left-2 right-2 h-1 bg-red-400 rounded" />
-                                            <div className="absolute top-6 left-2 right-2 h-1 bg-red-400 rounded" />
-                                        </div>
-
-                                        {/* Geometric Shapes */}
-                                        <div className="absolute top-10 right-10 grid grid-cols-3 gap-1">
-                                            {[...Array(9)].map((_, i) => (
-                                                <div
-                                                    key={i}
-                                                    className={`w-3 h-3 ${i === 1 || i === 3 || i === 4 || i === 5 || i === 7 ? "bg-white" : "bg-transparent"
-                                                        } rounded-sm opacity-60 animate-pulse`}
-                                                    style={{ animationDelay: `${i * 150}ms` }}
-                                                />
-                                            ))}
-                                        </div>
-                                    </div>
-
+                                <div
+                                    className="relative flex flex-col justify-center items-center p-8 lg:p-16 text-white overflow-hidden"
+                                    style={{
+                                        backgroundImage: "url('https://smartland.vn/wp-content/uploads/2021/10/bat-dong-san-ven-song-sai-gon-01-e1620704384316.jpg')",
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center",
+                                    }}
+                                >
                                     <WelcomePanel
                                         mode={mode}
                                         isTransitioning={isTransitioning}
