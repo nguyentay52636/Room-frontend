@@ -1,12 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import {
-    Eye,
-    EyeOff,
-    ArrowLeft,
-    AlertCircle,
-    Chrome,
-    Github,
     X,
     Home,
     MapPin,
@@ -15,10 +9,7 @@ import {
     Shield,
     Clock,
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
 import { motion, AnimatePresence } from "framer-motion"
 import { LoginForm } from "./components/LoginForm"
 import { RegisterForm } from "./components/RegisterForm"
@@ -322,6 +313,8 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                                         backgroundImage: "url('https://smartland.vn/wp-content/uploads/2021/10/bat-dong-san-ven-song-sai-gon-01-e1620704384316.jpg')",
                                         backgroundSize: "cover",
                                         backgroundPosition: "center",
+                                        backgroundRepeat: "no-repeat",
+
                                     }}
                                 >
                                     <WelcomePanel
