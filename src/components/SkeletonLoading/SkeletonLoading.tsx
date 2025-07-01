@@ -1,48 +1,55 @@
 import { useState, useEffect } from 'react';
 import {
-    MagnifyingGlass,
-    RotatingSquare,
-    RotatingTriangles,
-    Triangle,
-    Vortex,
-    Rings,
-    Grid,
-} from 'react-loader-spinner';
+    ClipLoader,
+    BeatLoader,
+    BounceLoader,
+    CircleLoader,
+    ClimbingBoxLoader,
+    ClockLoader,
+    DotLoader,
+    FadeLoader,
+    GridLoader,
+    HashLoader,
+    MoonLoader,
+    PacmanLoader,
+    PropagateLoader,
+    PulseLoader,
+    RingLoader,
+    RiseLoader,
+    RotateLoader,
+    ScaleLoader,
+    SyncLoader,
+    BarLoader,
+} from 'react-spinners';
 
 const config = {
-    visible: true,
-    height: '200',
-    width: '200',
+    size: 50,
     color: '#ec4899',
-    wrapperStyle: {},
-    wrapperClass: '',
+    loading: true,
+    speedMultiplier: 1,
 };
 
 const loaders = [
-    <Triangle {...config} ariaLabel="triangle-loading" />,
-    <RotatingSquare {...config} ariaLabel="rotating-square-loading" />,
-    <MagnifyingGlass
-        {...config}
-        ariaLabel="magnifying-glass-loading"
-        wrapperClass="magnifying-glass-wrapper"
-        glassColor="#f3e8ff"
-    />,
-    <RotatingTriangles {...config} ariaLabel="rotating-triangles-loading" />,
-    <Vortex
-        {...config}
-        ariaLabel="vortex-loading"
-        colors={['#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444']}
-    />,
-    <Rings
-        {...config}
-        ariaLabel="rings-loading"
-        color="#8b5cf6"
-    />,
-    <Grid
-        {...config}
-        ariaLabel="grid-loading"
-        color="#3b82f6" // Blue variation
-    />,
+    <ClipLoader {...config} />,
+    <BeatLoader {...config} />,
+    <BounceLoader {...config} />,
+    <CircleLoader {...config} />,
+    <ClimbingBoxLoader {...config} />,
+    <ClockLoader {...config} />,
+    <DotLoader {...config} />,
+    <FadeLoader {...config} />,
+    <GridLoader {...config} />,
+    <HashLoader {...config} />,
+    <MoonLoader {...config} />,
+    <PacmanLoader {...config} />,
+    <PropagateLoader {...config} />,
+    <PulseLoader {...config} />,
+    <RingLoader {...config} />,
+    <RiseLoader {...config} />,
+    <RotateLoader {...config} />,
+    <ScaleLoader {...config} />,
+    <SyncLoader {...config} />,
+    <BarLoader {...config} />,
 ];
 
 // Props interface
@@ -76,7 +83,9 @@ export default function SkeletonLoading({ loadingTime, loadingText, children }: 
 
     return (
         <div className="fixed w-screen h-screen flex flex-col items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 z-[9999]">
-            {currentLoaderIndex !== null && loaders[currentLoaderIndex]}
+            <div className="flex items-center justify-center">
+                {currentLoaderIndex !== null && loaders[currentLoaderIndex]}
+            </div>
             <div className="mt-8 text-center">
                 <p className="text-lg font-medium text-gray-600 dark:text-gray-300 animate-pulse">
                     {loadingText}
