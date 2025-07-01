@@ -1,9 +1,8 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Chrome, Github, AlertCircle, Eye, EyeOff } from "lucide-react"
-import { motion } from "framer-motion"
+
 import React from "react"
 import { FormMotion } from "./Animation/FormMotion"
 
@@ -139,7 +138,7 @@ export function RegisterForm({
                         placeholder="Nhập tên đăng nhập"
                         value={formData.username}
                         onChange={e => onInputChange("username", e.target.value)}
-                        className={`h- border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 ${errors.username ? "border-red-400" : ""}`}
+                        className={` border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 ${errors.username ? "border-red-400" : ""}`}
                     />
                     {errors.username && (
                         <div className="flex items-center gap-2 text-red-500 text-sm animate-fadeIn">
@@ -166,7 +165,7 @@ export function RegisterForm({
                             placeholder="Nhập mật khẩu"
                             value={formData.password}
                             onChange={e => onInputChange("password", e.target.value)}
-                            className={`h-10 border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 pr-10 ${errors.password ? "border-red-400" : ""}`}
+                            className={` border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 pr-10 ${errors.password ? "border-red-400" : ""}`}
                         />
                         <button
                             type="button"
@@ -201,7 +200,7 @@ export function RegisterForm({
                             placeholder="Xác nhận mật khẩu"
                             value={formData.confirmPassword}
                             onChange={e => onInputChange("confirmPassword", e.target.value)}
-                            className={`h-10 border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 pr-10 ${errors.confirmPassword ? "border-red-400" : ""}`}
+                            className={` border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 pr-10 ${errors.confirmPassword ? "border-red-400" : ""}`}
                         />
                         <button
                             type="button"
@@ -235,7 +234,7 @@ export function RegisterForm({
                         placeholder="Nhập số điện thoại"
                         value={formData.phone}
                         onChange={e => onInputChange("phone", e.target.value)}
-                        className={`h-10 border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 ${errors.phone ? "border-red-400" : ""}`}
+                        className={` border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 ${errors.phone ? "border-red-400" : ""}`}
                     />
                     {errors.phone && (
                         <div className="flex items-center gap-2 text-red-500 text-sm animate-fadeIn">
@@ -254,7 +253,7 @@ export function RegisterForm({
                     <Button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full h-10 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 hover:shadow-lg"
+                        className="w-full cursor-pointer bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 hover:shadow-lg"
                     >
                         {isLoading ? (
                             <div className="flex items-center gap-2">
@@ -276,21 +275,13 @@ export function RegisterForm({
                     <Button
                         type="button"
                         variant="outline"
-                        className="w-full h- border-2 border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:shadow-md"
+                        className="w-full cursor-pointer border-2 border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:shadow-md"
                         onClick={() => onSocialLogin("google")}
                     >
                         <Chrome className="w-5 h-5 mr-2 text-red-500" />
                         Đăng ký bằng Google
                     </Button>
-                    <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full h-12 border-2 border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:shadow-md"
-                        onClick={() => onSocialLogin("github")}
-                    >
-                        <Github className="w-5 h-5 mr-2 text-gray-700" />
-                        Đăng ký bằng Github
-                    </Button>
+
                 </FormMotion>
             </form>
         </FormMotion>

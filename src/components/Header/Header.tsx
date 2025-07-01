@@ -38,6 +38,7 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <HeaderLogo />
+        
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
           <DesktopNavigate navigation={navigation} />

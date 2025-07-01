@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { Chrome, Github, AlertCircle, Eye, EyeOff } from "lucide-react"
+import { Chrome, Github, AlertCircle, Eye, EyeOff, Facebook } from "lucide-react"
 import { FormMotion } from "./Animation/FormMotion"
 import React from "react"
 
@@ -117,7 +117,7 @@ export function LoginForm({
                     <Button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full h-12 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 hover:shadow-lg"
+                        className="w-full cursor-pointer h-12 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 hover:shadow-lg"
                     >
                         {isLoading ? (
                             <div className="flex items-center gap-2">
@@ -138,20 +138,20 @@ export function LoginForm({
                     <Button
                         type="button"
                         variant="outline"
-                        className="w-full h-12 border-2 border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:shadow-md"
+                        className="w-full cursor-pointer h-12 border-2 border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:shadow-md"
                         onClick={() => onSocialLogin("google")}
                     >
                         <Chrome className="w-5 h-5 mr-2 text-red-500" />
-                        ĐĂNG NHẬP BẰNG GOOGLE
+                        Đăng nhập bằng google
                     </Button>
                     <Button
                         type="button"
                         variant="outline"
-                        className="w-full h-12 border-2 border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:shadow-md"
+                        className="w-full cursor-pointer h-12 border-2 border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:shadow-md"
                         onClick={() => onSocialLogin("github")}
                     >
-                        <Github className="w-5 h-5 mr-2 text-gray-700" />
-                        ĐĂNG NHẬP BẰNG GITHUB
+                        <Facebook className="w-5 h-5 mr-2 text-blue-500" />
+                        Đăng nhập bằng facebook
                     </Button>
                 </FormMotion>
             </form>

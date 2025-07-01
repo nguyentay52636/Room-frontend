@@ -6,6 +6,7 @@ import { ThemeProvider } from './components/theme-provider';
 import { LanguageProvider } from './components/language-provider';
 import Login from './modules/auth/components/Login/Login';
 import Register from './modules/auth/components/Register/Register';
+import SkeletonLoading from './components/SkeletonLoading/SkeletonLoading';
 
 function App() {
   const router = createBrowserRouter([
@@ -39,13 +40,15 @@ function App() {
     },
   ]);
   return (
-    <LanguageProvider>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <>
-          <RouterProvider router={router} />
-        </>
-      </ThemeProvider>
-    </LanguageProvider>
+    <SkeletonLoading loadingTime={2000} loadingText="Đang tải ứng dụng...">
+      <LanguageProvider>
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <>
+            <RouterProvider router={router} />
+          </>
+        </ThemeProvider>
+      </LanguageProvider>
+    </SkeletonLoading>
   );
 }
 

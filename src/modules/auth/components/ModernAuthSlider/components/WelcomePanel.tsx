@@ -16,7 +16,10 @@ export function WelcomePanel({ mode, isTransitioning, onSwitchMode, children }: 
             {children}
             <Button
                 onClick={onSwitchMode}
-                className="bg-white/30 cursor-pointer hover:bg-white/30 backdrop-blur-sm border-2 border-white/30 hover:border-white/50 text-white font-semibold px-8 py-3 rounded-full transition-all duration-500 hover:scale-105 hover:shadow-lg"
+                className="bg-white/30 cursor-pointer backdrop-blur-sm border-2 border-white/30 text-white font-semibold px-8 py-3 rounded-full 
+                transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
+                hover:bg-white/80 hover:text-teal-600 hover:shadow-2xl hover:scale-110 hover:border-white/80 
+                focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 focus:ring-offset-white/40"
             >
                 {mode === "login" ? "ĐĂNG KÝ NGAY" : "ĐĂNG NHẬP"}
             </Button>
