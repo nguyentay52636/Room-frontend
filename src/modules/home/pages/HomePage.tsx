@@ -7,12 +7,14 @@ import BackToTop from '@/components/BackToTop/BackToTop';
 import Services from '../components/Services/Services';
 import HeroCarousel from '../components/Carousel/HeroCarousel';
 import { ChatWidget } from '@/components/BubbleChat/ChatWidget';
+import Products from '../components/Products/Products';
 export default function HomePage() {
 
 
   return (
     <motion.div>
       <HeroCarousel />
+      <Products />
       <StatsSection />
       <FeatureSections />
       <Services />
