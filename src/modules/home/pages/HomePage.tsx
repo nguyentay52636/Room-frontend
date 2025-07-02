@@ -8,18 +8,20 @@ import Services from '../components/Services/Services';
 import HeroCarousel from '../components/Carousel/HeroCarousel';
 import { ChatWidget } from '@/components/BubbleChat/ChatWidget';
 import Products from '../components/Products/Products';
+import ProductDetails from '../components/Products/components/ProductDetails/ProductDetails';
 export default function HomePage() {
 
 
   return (
     <motion.div>
-      <HeroCarousel />
+      {/* <HeroCarousel />
       <Products />
       <StatsSection />
       <FeatureSections />
       <Services />
       <BackToTop />
-      <ChatWidget />
+      <ChatWidget /> */}
+      <ProductDetails params={{ id: '1' }} />
     </motion.div>
   );
 }

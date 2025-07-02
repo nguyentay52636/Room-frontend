@@ -253,7 +253,7 @@ export function RegisterForm({
                     <Button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full cursor-pointer bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 hover:shadow-lg"
+                        className="w-full cursor-pointer   bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 text-white font-semibold rounded-lg transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 hover:shadow-lg"
                     >
                         {isLoading ? (
                             <div className="flex items-center gap-2">
