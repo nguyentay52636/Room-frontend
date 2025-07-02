@@ -5,7 +5,7 @@ export default function HeaderLogo() {
     return (
         <>
             <Link to="/" className="flex items-center space-x-3 animate-fade-in">
-                <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center theme-transition">
+                <div className="w-10 h-10 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 text-white  rounded-lg flex items-center justify-center theme-transition">
                     <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
                     </svg>

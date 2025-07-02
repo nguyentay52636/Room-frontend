@@ -68,7 +68,8 @@ export default function ButtonSwitchHeader() {
                 </Button>
                 <Button
                     size="sm"
-                    className="rounded-full px-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-white border-0 theme-transition"
+                    className="rounded-full px-6  bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 text-white  transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-white border-0 theme-transition"
+
                     asChild
                 >
                     <Link to="/auth/register">Đăng ký</Link>

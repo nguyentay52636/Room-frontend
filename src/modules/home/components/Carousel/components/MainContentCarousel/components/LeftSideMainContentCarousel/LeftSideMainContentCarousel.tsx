@@ -155,7 +155,7 @@ export default function LeftSideMainContentCarousel({ currentSlideData, isTransi
               <Button
                 onClick={handleSearch}
                 size="lg"
-                className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-4 rounded-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-lg mt-6"
+                className="w-full bg-teal-600 hover:bg-teal-700 cursor-pointer text-white font-semibold py-4 rounded-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-lg mt-6"
               >
                 <Search className="w-5 h-5 mr-2 cursor-pointer" />
                 Tìm kiếm
@@ -177,7 +177,7 @@ export default function LeftSideMainContentCarousel({ currentSlideData, isTransi
             <Button
               variant="outline"
               size="lg"
-              className="border-white/30 text-white cursor-pointer hover:bg-white/10 px-8 py-3 rounded-lg my-4 font-semibold transition-all duration-300 hover:scale-105 bg-transparent"
+              className="border-white/30 hover:text-white text-white cursor-pointer hover:bg-white/10 px-8 py-3 rounded-lg my-4 font-semibold transition-all duration-300 hover:scale-105 bg-transparent"
             >
               Tìm hiểu thêm
             </Button>
