@@ -1,3 +1,18 @@
+import {
+    Wifi,
+    Wind,
+    Car,
+    Shield,
+    Droplets,
+    Zap,
+    TreePine,
+    ShoppingCart,
+    GraduationCap,
+    Building,
+    Bus,
+    Plane
+} from './icons'
+
 export const properties = {
     "1": {
         id: 1,
@@ -68,3 +83,23 @@ export const properties = {
         availableFrom: "01/02/2024",
     },
 }
+
+export const getAmenities = (property: any) => [
+    { icon: Wifi, name: "Wifi miễn phí", available: true },
+    { icon: Wind, name: "Điều hòa", available: property.category !== "Phòng trọ" },
+    { icon: Car, name: "Chỗ đậu xe", available: property.parking > 0 },
+    { icon: Shield, name: "Bảo vệ 24/7", available: property.category === "Căn hộ cao cấp" },
+    { icon: Droplets, name: "Hồ bơi", available: property.category === "Căn hộ cao cấp" },
+    { icon: Zap, name: "Phòng gym", available: property.category === "Căn hộ cao cấp" },
+    { icon: TreePine, name: "Công viên", available: property.category !== "Phòng trọ" },
+    { icon: ShoppingCart, name: "Trung tâm thương mại", available: true },
+]
+
+export const nearbyPlaces = [
+    { icon: ShoppingCart, name: "Landmark 81", distance: "500m", type: "Trung tâm thương mại" },
+    { icon: GraduationCap, name: "Trường RMIT", distance: "1.2km", type: "Trường học" },
+    { icon: Building, name: "Bitexco Tower", distance: "2.5km", type: "Văn phòng" },
+    { icon: Bus, name: "Bến xe Miền Đông", distance: "3km", type: "Giao thông" },
+    { icon: Plane, name: "Sân bay Tân Sơn Nhất", distance: "8km", type: "Sân bay" },
+]
+

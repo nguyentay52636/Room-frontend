@@ -14,14 +14,14 @@ export default function HomePage() {
 
   return (
     <motion.div>
-      {/* <HeroCarousel />
+      <HeroCarousel />
       <Products />
       <StatsSection />
       <FeatureSections />
       <Services />
       <BackToTop />
-      <ChatWidget /> */}
-      <ProductDetails params={{ id: '1' }} />
+      <ChatWidget />
+      {/* <ProductDetails params={{ id: '1' }} /> */}
     </motion.div>
   );
 }
