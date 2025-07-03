@@ -7,6 +7,9 @@ import { LanguageProvider } from './components/language-provider';
 import Login from './modules/auth/components/Login/Login';
 import Register from './modules/auth/components/Register/Register';
 import SkeletonLoading from './components/SkeletonLoading/SkeletonLoading';
+import ProductDetails from './modules/home/components/Products/components/ProductDetails/ProductDetails';
+import News from './modules/home/components/News/News';
+import PostNew from './modules/home/post/PostNew';
 
 function App() {
   const router = createBrowserRouter([
@@ -36,6 +39,18 @@ function App() {
             },
           ],
         },
+        {
+          path: 'products',
+          element: <ProductDetails params={{ id: '1' }} />,
+        },
+        {
+          path: 'news',
+          element: <News />
+        },
+        {
+          path: 'create-post-news',
+          element: <PostNew />
+        }
       ],
     },
   ]);
@@ -49,7 +64,7 @@ function App() {
           </>
         </LanguageProvider>
       </ThemeProvider>
-  
+
     </SkeletonLoading>
   );
 }

@@ -18,7 +18,7 @@ export default function LeftSideMainContentCarousel({ currentSlideData, isTransi
 
   return (
     <>
-      <div className="text-white space-y-8">
+      <div className="text-white space-y-8 ">
         <div
           className={`transform transition-all duration-800 ease-out ${!isTransitioning ? "translate-x-0 opacity-100" : "-translate-x-8 opacity-0"
             }`}

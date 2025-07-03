@@ -1,4 +1,4 @@
-import { Globe } from 'lucide-react'
+import { Globe, Plus } from 'lucide-react'
 import { DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu'
@@ -14,6 +14,17 @@ export default function ButtonSwitchHeader() {
     const { language, setLanguage, t } = useLanguage()
     return (
         <>
+            <Link to="/create-post-news">
+                <Button
+                    size="sm"
+
+                    className="hidden cursor-pointer mx-4 sm:flex items-center gap-2 transition-all duration-300 hover:scale-105 bg-orange-600 hover:bg-orange-700 text-white"
+                >
+                    <Plus className="w-4 h-4" />
+                    <span className="hidden lg:inline">Đăng tin</span>
+                </Button>
+            </Link>
+
             <Button
                 variant="ghost"
                 size="sm"
