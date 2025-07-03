@@ -10,6 +10,8 @@ import SkeletonLoading from './components/SkeletonLoading/SkeletonLoading';
 import ProductDetails from './modules/home/components/Products/components/ProductDetails/ProductDetails';
 import News from './modules/home/components/News/News';
 import PostNew from './modules/home/post/PostNew';
+import AdminPages from './modules/admin/pages/AdminPages';
+import ManagerCustomers from './modules/admin/components/Customer/ManagerCustomers';
 
 function App() {
   const router = createBrowserRouter([
@@ -21,10 +23,6 @@ function App() {
         {
           index: true,
           element: <HomePage />,
-        },
-        {
-          path: 'about',
-          element: <h1>About</h1>,
         },
         {
           path: 'auth',
@@ -50,9 +48,20 @@ function App() {
         {
           path: 'create-post-news',
           element: <PostNew />
-        }
+        },
+
       ],
     },
+    {
+      path: 'admin',
+      element: <AdminPages />,
+      children: [
+        {
+          path: 'customers',
+          element: <ManagerCustomers />
+        }
+      ]
+    }
   ]);
   return (
     <SkeletonLoading loadingTime={2000} loadingText="Đang tải ứng dụng...">

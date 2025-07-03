@@ -11,7 +11,7 @@ export default function HeaderLogo() {
                     </svg>
                 </div>
                 <div>
-                    <h1 className="text-xl font-bold text-primary theme-transition">NewLife</h1>
+                    <h1 className="text-xl font-bold text-primary theme-transition">NewLive</h1>
                     <p className="text-xs text-muted-foreground -mt-1 theme-transition">Cho thuê căn hộ</p>
                 </div>
             </Link>

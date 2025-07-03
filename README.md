@@ -100,6 +100,3 @@ Files build sẽ được tạo trong thư mục `dist/`.
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Tạo Pull Request
 
-## 📄 License
-
-Dự án này được phân phối dưới MIT License.

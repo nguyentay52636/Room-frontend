@@ -10,7 +10,7 @@ import HeaderLogo from "./components/HeaderLogo"
 import DesktopNavigate from "./components/DesktopNavigate"
 
 export function Header() {
-  const { t } = useLanguage()
+  const { t, } = useLanguage()
   const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
