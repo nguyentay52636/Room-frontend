@@ -12,6 +12,7 @@ import News from './modules/home/components/News/News';
 import PostNew from './modules/home/post/PostNew';
 import AdminPages from './modules/admin/pages/AdminPages';
 import ManagerCustomers from './modules/admin/components/Customer/ManagerCustomers';
+import DashBoard from './modules/admin/components/Dashboard/DashBoard';
 
 function App() {
   const router = createBrowserRouter([
@@ -59,6 +60,10 @@ function App() {
         {
           path: 'customers',
           element: <ManagerCustomers />
+        },
+        {
+          path: 'dashboard',
+          element: <DashBoard />
         }
       ]
     }
