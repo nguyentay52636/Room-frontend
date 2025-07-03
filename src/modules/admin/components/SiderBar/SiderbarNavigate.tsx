@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { AppSidebar } from '@/modules/admin/components/SiderBar/components/app-sidebar';
+import { AppSidebar } from '@/modules/admin/components/SiderBar/components/AppSider/app-sidebar';
 
 
 export default function Siderbar({ children }: { children: React.ReactNode }) {
