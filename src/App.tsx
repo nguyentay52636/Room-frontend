@@ -12,7 +12,11 @@ import News from './modules/home/components/News/News';
 import PostNew from './modules/home/post/PostNew';
 import AdminPages from './modules/admin/pages/AdminPages';
 import ManagerCustomers from './modules/admin/components/Customer/ManagerCustomers';
-import DashBoard from './modules/admin/components/Dashboard/DashBoard';
+import DashBoard from './modules/admin/components/Dashboard/ManagerDashBoard';
+import Revenue from './modules/admin/components/Revenue/ManagerRevenue';
+import ManagerRealEstate from './modules/admin/components/RealEstate/ManagerRealEstate';
+import ManagerEmployee from './modules/admin/components/Employee/ManagerEmployee';
+import ManagerAccount from './modules/admin/components/Account/ManagerAccount';
 
 function App() {
   const router = createBrowserRouter([
@@ -58,13 +62,32 @@ function App() {
       element: <AdminPages />,
       children: [
         {
+          path: 'account',
+          element: <ManagerAccount />
+        },
+        {
           path: 'customers',
           element: <ManagerCustomers />
         },
         {
+          path: 'employee',
+          element: <ManagerEmployee />
+        },
+        {
           path: 'dashboard',
           element: <DashBoard />
-        }
+
+        },
+        {
+          path: 'revenue',
+          element: <Revenue />
+        },
+        {
+          path: 'realestate',
+          element: <ManagerRealEstate />
+        },
+
+
       ]
     }
   ]);

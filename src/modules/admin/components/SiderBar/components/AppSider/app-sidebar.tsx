@@ -53,10 +53,10 @@ export function AppSidebar() {
       badge: null,
     },
     {
-      name: "Quản lý Nhà trọ",
+      name: "Quản lý căn hộ",
       href: "/admin/properties",
       icon: Building2,
-      current: pathname.pathname === "/admin/properties",
+      current: pathname.pathname === "/admin/realestate",
       badge: "12",
     },
     {
