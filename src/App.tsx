@@ -17,13 +17,19 @@ import Revenue from './modules/admin/components/Revenue/ManagerRevenue';
 import ManagerRealEstate from './modules/admin/components/RealEstate/ManagerRealEstate';
 import ManagerEmployee from './modules/admin/components/Employee/ManagerEmployee';
 import ManagerAccount from './modules/admin/components/Account/ManagerAccount';
+import NotFound from './components/NotFound404/NotFound';
 
 function App() {
   const router = createBrowserRouter([
     // Main layout
     {
+      path: '*',
+      element: <NotFound />,
+    },
+    {
       path: '/',
       element: <MainLayout />,
+
       children: [
         {
           index: true,

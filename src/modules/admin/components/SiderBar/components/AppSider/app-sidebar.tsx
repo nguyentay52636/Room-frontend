@@ -81,10 +81,24 @@ export function AppSidebar() {
       badge: "3",
     },
     {
-      name: "Nhân viên",
-      href: "/admin/staff",
+      name: "Khách hàng",
+      href: "/admin/customers",
       icon: Users,
-      current: pathname.pathname === "/admin/staff",
+      current: pathname.pathname === "/admin/customers",
+      badge: null,
+    },
+    {
+      name: "Nhân viên",
+      href: "/admin/employee",
+      icon: Users,
+      current: pathname.pathname === "/admin/employee",
+      badge: null,
+    },
+    {
+      name: "Tài khoản",
+      href: "/admin/account",
+      icon: Users,
+      current: pathname.pathname === "/admin/account",
       badge: null,
     },
     {
