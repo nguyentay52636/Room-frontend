@@ -54,7 +54,7 @@ export function AppSidebar() {
     },
     {
       name: "Quản lý căn hộ",
-      href: "/admin/properties",
+      href: "/admin/realestate",
       icon: Building2,
       current: pathname.pathname === "/admin/realestate",
       badge: "12",
