@@ -43,7 +43,7 @@ export default function ManagerHome() {
                 <HeaderHomeManager currentTime={currentTime} timeRange={timeRange} setTimeRange={setTimeRange} handleRefresh={handleRefresh} notifications={notifications} isLoading={isLoading} />
 
                 <div className="flex flex-1 flex-col gap-6 p-6 bg-gray-50/50 dark:bg-gray-900/50">
-                    <EnhancedWellcomeManagerHome />
+                    <EnhancedWellcomeManagerHome currentTime={currentTime} />
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {stats.map((stat, index) => (
                             <EnhancedStatsItem key={index} stat={stat} index={index} />

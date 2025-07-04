@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input'
 import { Activity, Search } from 'lucide-react'
 import React from 'react'
 
-export default function EnhancedWellcomeManagerHome() {
+export default function EnhancedWellcomeManagerHome({ currentTime }: { currentTime: Date }) {
   return (
     <div className="mb-2">
       <div className="flex items-center justify-between">
