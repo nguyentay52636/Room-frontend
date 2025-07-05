@@ -32,10 +32,14 @@ export function Header() {
   ]
   return (
     <header
-      className={`fixed flex justify-center bg-white  border-b top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "bg-white backdrop-blur-lg shadow-lg border-b border-gray-200/50" : "bg-transparent"
-        }`}
+      className={`fixed  bg-white  flex justify-center border-b top-0 left-0 right-0 z-50 transition-all duration-500
+    ${isScrolled
+          ? "bg-white dark:bg-gray-900 backdrop-blur-lg shadow-lg border-b border-gray-200/50 dark:border-gray-700"
+          : "bg-transparent dark:bg-gray-900/80"
+        }`
+      }
     >
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-16 items-center justify-between text-gray-900 dark:text-gray-100">
         {/* Logo */}
         <HeaderLogo />
         {/* Desktop Navigation */}
