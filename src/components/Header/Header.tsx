@@ -40,20 +40,13 @@ export function Header() {
       }
     >
       <div className="container flex h-16 items-center justify-between text-gray-900 dark:text-gray-100">
-        {/* Logo */}
         <HeaderLogo />
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
           <DesktopNavigate navigation={navigation} />
-          {/* Categories Dropdown */}
           <CategoriesHeader />
-
         </nav>
-
-        {/* Right Side Actions */}
         <div className="flex items-center space-x-2">
           <ButtonSwitchHeader />
-          {/* Mobile Menu */}
           <MobileMenuHeader />
         </div>
       </div>
