@@ -27,7 +27,7 @@ export default function UserProfileAppSider({ isCollapsed, isMobile, setIsProfil
                                     <Button variant="ghost" size="icon" className="w-full h-10">
                                         <Avatar className="h-6 w-6">
                                             <AvatarImage src="/placeholder.svg?height=32&width=32" />
-                                            <AvatarFallback className="bg-emerald-600 text-white text-xs">AD</AvatarFallback>
+                                            <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground text-xs">AD</AvatarFallback>
                                         </Avatar>
                                     </Button>
                                 </DropdownMenuTrigger>
@@ -35,7 +35,7 @@ export default function UserProfileAppSider({ isCollapsed, isMobile, setIsProfil
                                     <DropdownMenuLabel>
                                         <div className="flex flex-col space-y-1">
                                             <p className="text-sm font-medium">Quản trị viên</p>
-                                            <p className="text-xs text-gray-500">admin@newlife.vn</p>
+                                            <p className="text-xs text-muted-foreground">admin@newlife.vn</p>
                                         </div>
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
@@ -52,14 +52,14 @@ export default function UserProfileAppSider({ isCollapsed, isMobile, setIsProfil
                                         <span>Cài đặt</span>
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem className="text-red-600">
+                                    <DropdownMenuItem className="text-destructive">
                                         <LogOut className="mr-2 h-4 w-4" />
                                         <span>Đăng xuất</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </TooltipTrigger>
-                        <TooltipContent side="right" className="bg-gray-900 text-white">
+                        <TooltipContent side="right" className="bg-popover text-popover-foreground border">
                             <div>
                                 <p className="font-medium">Quản trị viên</p>
                                 <p className="text-xs opacity-75">admin@newlife.vn</p>
@@ -73,22 +73,22 @@ export default function UserProfileAppSider({ isCollapsed, isMobile, setIsProfil
                         <Button variant="ghost" className="w-full justify-start gap-3 px-3 py-2 h-auto">
                             <Avatar className="h-8 w-8">
                                 <AvatarImage src="/placeholder.svg?height=32&width=32" />
-                                <AvatarFallback className="bg-emerald-600 text-white">AD</AvatarFallback>
+                                <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground">AD</AvatarFallback>
                             </Avatar>
                             {!isCollapsed && (
                                 <div className="flex-1 text-left">
-                                    <p className="text-sm font-medium text-gray-900">Quản trị viên</p>
-                                    <p className="text-xs text-gray-500">admin@newlife.vn</p>
+                                    <p className="text-sm font-medium text-sidebar-foreground">Quản trị viên</p>
+                                    <p className="text-xs text-sidebar-foreground/70">admin@newlife.vn</p>
                                 </div>
                             )}
-                            {!isCollapsed && <ChevronRight className="h-4 w-4 text-gray-400" />}
+                            {!isCollapsed && <ChevronRight className="h-4 w-4 text-muted-foreground" />}
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent side="right" align="end" className="w-56">
                         <DropdownMenuLabel>
                             <div className="flex flex-col space-y-1">
                                 <p className="text-sm font-medium">Quản trị viên</p>
-                                <p className="text-xs text-gray-500">admin@newlife.vn</p>
+                                <p className="text-xs text-muted-foreground">admin@newlife.vn</p>
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
@@ -105,7 +105,7 @@ export default function UserProfileAppSider({ isCollapsed, isMobile, setIsProfil
                             <span>Cài đặt</span>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem className="text-destructive">
                             <LogOut className="mr-2 h-4 w-4" />
                             <span>Đăng xuất</span>
                         </DropdownMenuItem>

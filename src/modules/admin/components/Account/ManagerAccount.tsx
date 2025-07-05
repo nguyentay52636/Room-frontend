@@ -2,44 +2,25 @@
 
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+
 import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
 import { DialogAddManagerAccounts } from "./components/DialogAddManagerAccounts"
 import {
-    Search,
-    Plus,
-    Filter,
-    MoreHorizontal,
-    Edit,
-    Trash2,
+
     Shield,
     ShieldCheck,
     User,
     Users,
     Crown,
-    Settings,
-    Eye,
-    Mail,
-    Phone,
-    Calendar,
+ 
     Activity,
 } from "lucide-react"
 import HeaderManagerAccount from "./components/HeaderManagerAccount";
 import StatsCardManagerAccount from "./components/StatsCardManagerAccount"
 import FilterSearchManagerAccount from "./components/FilterSearchManagerAccount"
 import TableManagerAccount from "./components/TableManagerAccount"
+import { accounts } from "./Data/AccountsData"
 export default function ManagerAccount() {
     const [searchTerm, setSearchTerm] = useState("")
     const [statusFilter, setStatusFilter] = useState("all")
@@ -48,143 +29,7 @@ export default function ManagerAccount() {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [dialogMode, setDialogMode] = useState<"view" | "edit" | "create">("view")
 
-    const accounts = [
-        {
-            id: 1,
-            name: "Nguyễn Văn Admin",
-            email: "admin@newlife.com",
-            phone: "0901234567",
-            role: "admin",
-            status: "active",
-            avatar: "/placeholder.svg?height=40&width=40",
-            lastLogin: "2024-01-15 10:30",
-            createdAt: "2023-01-01",
-            properties: 0,
-            loginCount: 245,
-            department: "Quản trị",
-            notes: "Quản trị viên hệ thống chính",
-        },
-        {
-            id: 1,
-            name: "Nguyễn Văn Admin",
-            email: "admin@newlife.com",
-            phone: "0901234567",
-            role: "admin",
-            status: "active",
-            avatar: "/placeholder.svg?height=40&width=40",
-            lastLogin: "2024-01-15 10:30",
-            createdAt: "2023-01-01",
-            properties: 0,
-            loginCount: 245,
-            department: "Quản trị",
-            notes: "Quản trị viên hệ thống chính",
-        },
-        {
-            id: 1,
-            name: "Nguyễn Văn Admin",
-            email: "admin@newlife.com",
-            phone: "0901234567",
-            role: "admin",
-            status: "active",
-            avatar: "/placeholder.svg?height=40&width=40",
-            lastLogin: "2024-01-15 10:30",
-            createdAt: "2023-01-01",
-            properties: 0,
-            loginCount: 245,
-            department: "Quản trị",
-            notes: "Quản trị viên hệ thống chính",
-        },
-        {
-            id: 2,
-            name: "Trần Thị Manager",
-            email: "manager@newlife.com",
-            phone: "0902345678",
-            role: "manager",
-            status: "active",
-            avatar: "/placeholder.svg?height=40&width=40",
-            lastLogin: "2024-01-15 09:15",
-            createdAt: "2023-02-15",
-            properties: 25,
-            loginCount: 189,
-            department: "Kinh doanh",
-            notes: "Quản lý kinh doanh",
-        },
-        {
-            id: 3,
-            name: "Lê Văn Staff",
-            email: "staff@newlife.com",
-            phone: "0903456789",
-            role: "staff",
-            status: "active",
-            avatar: "/placeholder.svg?height=40&width=40",
-            lastLogin: "2024-01-14 16:45",
-            createdAt: "2023-03-10",
-            properties: 12,
-            loginCount: 156,
-            department: "Hỗ trợ",
-            notes: "Nhân viên hỗ trợ khách hàng",
-        },
-        {
-            id: 4,
-            name: "Phạm Thị Owner",
-            email: "owner1@email.com",
-            phone: "0904567890",
-            role: "owner",
-            status: "active",
-            avatar: "/placeholder.svg?height=40&width=40",
-            lastLogin: "2024-01-15 08:20",
-            createdAt: "2023-04-05",
-            properties: 8,
-            loginCount: 89,
-            department: "Chủ nhà",
-            notes: "Chủ sở hữu bất động sản",
-        },
-        {
-            id: 5,
-            name: "Hoàng Văn Customer",
-            email: "customer1@email.com",
-            phone: "0905678901",
-            role: "customer",
-            status: "active",
-            avatar: "/placeholder.svg?height=40&width=40",
-            lastLogin: "2024-01-15 07:30",
-            createdAt: "2023-05-20",
-            properties: 0,
-            loginCount: 34,
-            department: "Khách hàng",
-            notes: "Khách hàng thường xuyên",
-        },
-        {
-            id: 6,
-            name: "Võ Thị Inactive",
-            email: "inactive@email.com",
-            phone: "0906789012",
-            role: "customer",
-            status: "inactive",
-            avatar: "/placeholder.svg?height=40&width=40",
-            lastLogin: "2023-12-01 15:20",
-            createdAt: "2023-06-15",
-            properties: 0,
-            loginCount: 12,
-            department: "Khách hàng",
-            notes: "Tài khoản không hoạt động",
-        },
-        {
-            id: 7,
-            name: "Đặng Văn Suspended",
-            email: "suspended@email.com",
-            phone: "0907890123",
-            role: "owner",
-            status: "suspended",
-            avatar: "/placeholder.svg?height=40&width=40",
-            lastLogin: "2024-01-10 12:00",
-            createdAt: "2023-07-01",
-            properties: 3,
-            loginCount: 67,
-            department: "Chủ nhà",
-            notes: "Tài khoản bị tạm khóa do vi phạm",
-        },
-    ]
+
 
     const filteredAccounts = accounts.filter((account) => {
         const matchesSearch =

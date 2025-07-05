@@ -27,7 +27,6 @@ export function AppSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(false)
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false)
   const pathname = useLocation()
 
@@ -123,7 +122,7 @@ export function AppSidebar() {
       {isMobile && (
         <Button
           onClick={() => setIsMobileOpen(!isMobileOpen)}
-          className="fixed top-4 left-4 z-50 bg-white text-gray-900 hover:bg-gray-100 shadow-lg"
+          className="fixed top-4 left-4 z-50 bg-background text-foreground hover:bg-accent shadow-lg border"
           size="icon"
         >
           {isMobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -136,7 +135,7 @@ export function AppSidebar() {
           ${isMobile ? "fixed" : "relative"} 
           ${isMobile && !isMobileOpen ? "-translate-x-full" : "translate-x-0"}
           ${isCollapsed && !isMobile ? "w-16" : "w-64"}
-          h-screen bg-white border-r border-gray-200 flex flex-col transition-all duration-300 z-50
+          h-screen bg-sidebar border-r border-sidebar-border flex flex-col transition-all duration-300 z-50 theme-transition
         `}
       >
         {/* Header */}
@@ -147,7 +146,7 @@ export function AppSidebar() {
           <div className="px-4 py-2">
             <Link
               to="/"
-              className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-2 text-sm text-sidebar-foreground hover:text-sidebar-primary hover:bg-sidebar-accent rounded-lg transition-colors"
             >
               <Home className="h-4 w-4" />
               <span>Quay lại trang chủ</span>
@@ -163,7 +162,7 @@ export function AppSidebar() {
         </nav>
 
         {/* Bottom Section */}
-        <div className="p-4 border-t border-gray-200 space-y-2">
+        <div className="p-4 border-t border-sidebar-border space-y-2">
           <ToggerThemeAppSider isCollapsed={isCollapsed} isMobile={isMobile} />
           <UserProfileAppSider isCollapsed={isCollapsed} isMobile={isMobile} setIsProfileDialogOpen={setIsProfileDialogOpen} />
         </div>
