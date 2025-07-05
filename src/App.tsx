@@ -98,6 +98,10 @@ function App() {
           path: 'realestate',
           element: <ManagerRealEstate />
         },
+        {
+          path: 'accounts',
+          element: <ManagerAccount />
+        }
 
 
       ]
