@@ -11,7 +11,7 @@ export default function HeaderAppSider({ isCollapsed, setIsCollapsed, isMobile }
                 </div>
                 {!isCollapsed && (
                     <div>
-                        <h1 className="font-bold text-gray-900">NewLife Admin</h1>
+                        <h1 className="font-bold text-gray-900">NewLive</h1>
                         <p className="text-xs text-gray-500">Cho thuê căn hộ</p>
                     </div>
                 )}

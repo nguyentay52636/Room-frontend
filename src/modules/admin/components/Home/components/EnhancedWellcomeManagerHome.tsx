@@ -12,10 +12,10 @@ export default function EnhancedWellcomeManagerHome({ currentTime }: { currentTi
           </div>
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
-              Xin chào, Admin
+              Xin chào, Tay Nguyen
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Chào mừng đến với bảng điều khiển quản trị NewLife • {currentTime.toLocaleDateString("vi-VN")}
+              Chào mừng đến với bảng điều khiển quản trị NewLive • {currentTime.toLocaleDateString("vi-VN")}
             </p>
           </div>
         </div>

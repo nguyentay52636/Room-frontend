@@ -260,8 +260,8 @@ export function DialogAddManagerRealEstate({ open, onOpenChange, property, mode 
     }
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-6xl max-h-[95vh] overflow-hidden p-0 gap-0 bg-white dark:bg-gray-900">
+        <Dialog open={open} onOpenChange={onOpenChange} >
+            <DialogContent className=" overflow-hidden p-0 gap-0 bg-white dark:bg-gray-900 sm:max-w-6xl sm:max-h-[95vh]! ">
                 {/* Header */}
                 <DialogHeader className="px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
                     <div className="flex items-center justify-between">

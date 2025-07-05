@@ -16,7 +16,7 @@ export default function Footer() {
                   </svg>
                 </div>
                 <div className="">
-                  <h1 className="text-lg font-bold text-primary-foreground">NewLife</h1>
+                  <h1 className="text-lg font-bold text-primary-foreground">NewLive</h1>
                   <p className="text-xs text-primary-foreground/80 -mt-1">Cho thuê căn hộ</p>
                 </div>
               </div>
