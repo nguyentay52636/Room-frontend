@@ -5,6 +5,7 @@ import { CardContent } from '@/components/ui/card'
 export default function StatsCardManagerAccount({ stat, index }: { stat: any, index: number }) {
     return (
         <>
+
             <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
                     <div className="flex items-center justify-between">

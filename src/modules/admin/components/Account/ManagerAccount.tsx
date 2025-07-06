@@ -13,7 +13,7 @@ import {
     User,
     Users,
     Crown,
- 
+
     Activity,
 } from "lucide-react"
 import HeaderManagerAccount from "./components/HeaderManagerAccount";
@@ -145,10 +145,10 @@ export default function ManagerAccount() {
             <HeaderManagerAccount handleAddAccount={handleAddAccount} />
 
             <div className="flex flex-1 flex-col gap-6 p-6 bg-gray-50/50 dark:bg-gray-900/50">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 cursor-pointer md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {stats.map((stat, index) => (
                         <StatsCardManagerAccount stat={stat} index={index} />
-                    ))}
+                    ))} 
                 </div>
                 <Card>
                     <CardHeader>

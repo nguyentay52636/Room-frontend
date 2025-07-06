@@ -4,7 +4,7 @@ import { ChevronRight } from 'lucide-react'
 
 export default function HeaderAppSider({ isCollapsed, setIsCollapsed, isMobile }: { isCollapsed: any, setIsCollapsed: any, isMobile: any }) {
     return (
-        <div className="p-4 border-b border-sidebar-border">
+         <div className="p-4 border-b border-sidebar-border">
             <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded bg-sidebar-primary flex items-center justify-center">
                     <span className="text-sidebar-primary-foreground font-bold text-sm">NL</span>
