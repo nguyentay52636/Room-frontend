@@ -2,7 +2,6 @@
 import { useState } from "react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
 import {
@@ -17,6 +16,7 @@ import StatsCardManagerCustomers from "./components/StatsCardManagerCustomers"
 import TableManagerCustomers from "./components/TableManagerCustomers"
 import FilterSearchManagerCustomer from "./components/FilterSearchManagerCustomer"
 import PaginationManagerCustomer from "./components/PaginationManagerCustomer"
+import HeaderManagerCustomers from "./components/HeaderManagerCustomers"
 
 export default function ManagerCustomersContent() {
     const [searchTerm, setSearchTerm] = useState("")
@@ -127,23 +127,9 @@ export default function ManagerCustomersContent() {
 
     return (
         <>
-            <header className="sticky top-0 z-40 bg-gradient-to-r from-slate-50 to-gray-50 dark:from-slate-900 dark:to-gray-900 border-b border-gray-200 dark:border-gray-800 backdrop-blur-sm">
-                <div className="flex h-16 items-center gap-2 px-4">
-
-                    <div className="ml-auto">
-                        <Button
-                            onClick={handleAddCustomer}
-                            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
-                        >
-                            <Plus className="h-4 w-4 mr-2" />
-                            Thêm khách hàng
-                        </Button>
-                    </div>
-                </div>
-            </header>
+            <HeaderManagerCustomers />
 
             <div className="flex flex-1 flex-col gap-6 p-6 bg-gray-50/50 dark:bg-gray-900/50">
-                {/* Stats Cards */}
                 <StatsCardManagerCustomers stats={stats} />
                 <Card>
                     <CardHeader>
@@ -154,7 +140,6 @@ export default function ManagerCustomersContent() {
 
                         {/* Customers Table - Scrollable */}
                         <TableManagerCustomers filteredCustomers={filteredCustomers} getTypeBadge={getTypeBadge} getStatusBadge={getStatusBadge} formatCurrency={formatCurrency} handleViewCustomer={handleViewCustomer} handleEditCustomer={handleEditCustomer} />
-
                         {filteredCustomers.length === 0 && (
                             <div className="text-center py-8">
                                 <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />

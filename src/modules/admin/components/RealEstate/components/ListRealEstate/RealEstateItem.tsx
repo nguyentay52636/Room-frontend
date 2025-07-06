@@ -7,7 +7,7 @@ export default function RealEstateItem({ property, getStatusBadge, getTypeLabel,
     return (
         <div
             key={property.id}
-            className="group flex items-center space-x-4 p-6 border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 bg-white dark:bg-gray-800"
+            className="group cursor-pointer flex items-center space-x-4 p-6 border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 bg-white dark:bg-gray-800"
         >
             <div className="relative overflow-hidden rounded-lg flex-shrink-0">
                 <img

@@ -115,7 +115,7 @@ export function AppSidebar() {
     <>
       {/* Mobile Overlay */}
       {isMobile && isMobileOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" onClick={() => setIsMobileOpen(false)} />
+        <div className="fixed inset-0 bg-blue-600 bg-opacity-50 z-40 md:hidden" onClick={() => setIsMobileOpen(false)} />
       )}
 
       {/* Mobile Toggle Button */}

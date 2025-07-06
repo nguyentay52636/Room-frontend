@@ -291,14 +291,7 @@ export function DialogAddManagerRealEstate({ open, onOpenChange, property, mode 
                                     </div>
                                 </div>
                             )}
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => onOpenChange(false)}
-                                className="h-8 w-8 p-0 hover:bg-gray-200 dark:hover:bg-gray-700"
-                            >
-                                <X className="h-4 w-4" />
-                            </Button>
+
                         </div>
                     </div>
                 </DialogHeader>
@@ -857,7 +850,7 @@ export function DialogAddManagerRealEstate({ open, onOpenChange, property, mode 
                                                         className="h-4 w-4 p-0 ml-2 hover:bg-red-100 dark:hover:bg-red-900/20"
                                                         onClick={() => removeAmenity(amenity)}
                                                     >
-                                                        <X className="h-3 w-3 text-red-500" />
+
                                                     </Button>
                                                 )}
                                             </Badge>
