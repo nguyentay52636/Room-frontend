@@ -19,6 +19,7 @@ import ManagerAccount from './modules/admin/components/Account/ManagerAccount';
 import NotFound from './components/NotFound404/NotFound';
 import ManagerHome from './modules/admin/components/Home/ManagerHome';
 import ManagerEmployee from './modules/admin/components/Employee/ManagerEmployee';
+import ChatManager from './modules/admin/components/Chat/ChatManager';
 
 function App() {
   const router = createBrowserRouter([
@@ -101,6 +102,10 @@ function App() {
         {
           path: 'accounts',
           element: <ManagerAccount />
+        },
+        {
+          path: 'chat',
+          element: <ChatManager />
         }
 
 

@@ -67,9 +67,9 @@ export function AppSidebar() {
     },
     {
       name: "Quản lý Chat",
-      href: "/admin/messages",
+      href: "/admin/chat",
       icon: MessageSquare,
-      current: pathname.pathname === "/admin/messages",
+      current: pathname.pathname === "/admin/chat",
       badge: "6",
     },
     {
