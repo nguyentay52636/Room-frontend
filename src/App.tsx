@@ -20,7 +20,7 @@ import NotFound from './components/NotFound404/NotFound';
 import ManagerHome from './modules/admin/components/Home/ManagerHome';
 import ManagerEmployee from './modules/admin/components/Employee/ManagerEmployee';
 import ChatManager from './modules/admin/components/Chat/ChatManager';
-
+import ReviewsManager from './modules/admin/components/Reviews/ReviewsManager';
 function App() {
   const router = createBrowserRouter([
     // Main layout
@@ -106,6 +106,10 @@ function App() {
         {
           path: 'chat',
           element: <ChatManager />
+        },
+        {
+          path: 'reviews',
+          element: <ReviewsManager />
         }
 
 
