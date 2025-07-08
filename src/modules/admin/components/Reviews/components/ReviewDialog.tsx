@@ -42,7 +42,7 @@ import {
     Waves,
     TreePine,
 } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { Review } from "@/lib/apis/types"
 
 interface ReviewDialogProps {
@@ -55,6 +55,10 @@ export function ReviewDialog({ review, open, onOpenChange }: ReviewDialogProps) 
     const [replyText, setReplyText] = useState("")
     const [isReplying, setIsReplying] = useState(false)
     const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
+    useEffect(() => {
+        setCurrentImageIndex(0)
+    }, [review])
 
     if (!review) return null
 
@@ -87,15 +91,15 @@ export function ReviewDialog({ review, open, onOpenChange }: ReviewDialogProps) 
     }
 
     const nextImage = () => {
-        if (review.batDongSanId?.hinhAnh && review.batDongSanId.hinhAnh.length > 0) {
-            setCurrentImageIndex((prev) => (prev + 1) % review.batDongSanId!.hinhAnh.length)
+        if (review.batDongSanId?.gallery && review.batDongSanId.gallery.length > 0) {
+            setCurrentImageIndex((prev) => (prev + 1) % review.batDongSanId!.gallery.length)
         }
     }
 
     const prevImage = () => {
-        if (review.batDongSanId?.hinhAnh && review.batDongSanId.hinhAnh.length > 0) {
+        if (review.batDongSanId?.gallery && review.batDongSanId.gallery.length > 0) {
             setCurrentImageIndex(
-                (prev) => (prev - 1 + review.batDongSanId!.hinhAnh.length) % review.batDongSanId!.hinhAnh.length,
+                (prev) => (prev - 1 + review.batDongSanId!.gallery.length) % review.batDongSanId!.gallery.length,
             )
         }
     }
@@ -245,15 +249,15 @@ export function ReviewDialog({ review, open, onOpenChange }: ReviewDialogProps) 
                                 </CardHeader>
                                 <CardContent className="space-y-6 relative z-10">
                                     {/* Hình ảnh bất động sản */}
-                                    {review.batDongSanId.hinhAnh && review.batDongSanId.hinhAnh.length > 0 && (
+                                    {review.batDongSanId.gallery && review.batDongSanId.gallery.length > 0 && (
                                         <div className="space-y-4">
                                             <div className="relative overflow-hidden rounded-2xl">
                                                 <img
-                                                    src={review.batDongSanId.hinhAnh[currentImageIndex] || "/placeholder.svg"}
+                                                    src={review.batDongSanId.gallery?.[currentImageIndex] || "/placeholder.svg"}
                                                     alt={`${review.batDongSanId.tieuDe} - Hình ${currentImageIndex + 1}`}
                                                     className="w-full h-80 object-cover transition-transform duration-300 hover:scale-105"
                                                 />
-                                                {review.batDongSanId.hinhAnh.length > 1 && (
+                                                {review.batDongSanId.gallery.length > 1 && (
                                                     <>
                                                         <Button
                                                             variant="ghost"
@@ -272,7 +276,7 @@ export function ReviewDialog({ review, open, onOpenChange }: ReviewDialogProps) 
                                                             <ChevronRight className="h-4 w-4" />
                                                         </Button>
                                                         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                                                            {review.batDongSanId.hinhAnh.map((_, index) => (
+                                                            {review.batDongSanId.gallery.map((_, index) => (
                                                                 <button
                                                                     key={index}
                                                                     className={`w-3 h-3 rounded-full transition-all duration-200 ${index === currentImageIndex ? "bg-white scale-110" : "bg-white/50"
@@ -286,9 +290,9 @@ export function ReviewDialog({ review, open, onOpenChange }: ReviewDialogProps) 
                                             </div>
 
                                             {/* Thumbnail Strip */}
-                                            {review.batDongSanId.hinhAnh.length > 1 && (
+                                            {review.batDongSanId.gallery.length > 1 && (
                                                 <div className="flex space-x-3 overflow-x-auto pb-2">
-                                                    {review.batDongSanId.hinhAnh.map((image, index) => (
+                                                    {review.batDongSanId.gallery.map((image, index) => (
                                                         <button
                                                             key={index}
                                                             className={`flex-shrink-0 w-24 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 ${index === currentImageIndex

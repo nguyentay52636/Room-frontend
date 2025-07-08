@@ -39,7 +39,7 @@ export interface BatDongSan {
   dienTich: number
   soPhongNgu: number
   soPhongTam: number
-  hinhAnh: string[]
+  gallery: string[]
   createdAt: string
   updatedAt: string
 }

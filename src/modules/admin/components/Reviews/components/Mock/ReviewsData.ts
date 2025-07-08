@@ -93,7 +93,7 @@ import { MessageSquare, ThumbsUp, Star, Heart } from "lucide-react";
             dienTich: 85,
             soPhongNgu: 2,
             soPhongTam: 2,
-            hinhAnh: [
+            gallery: [
                 "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
                 "https://images.unsplash.com/photo-1560448075-bb485b067938?w=800&h=600&fit=crop",
                 "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop",
@@ -147,7 +147,7 @@ import { MessageSquare, ThumbsUp, Star, Heart } from "lucide-react";
             dienTich: 85,
             soPhongNgu: 2,
             soPhongTam: 2,
-            hinhAnh: [
+            gallery: [
                 "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
                 "https://images.unsplash.com/photo-1560448075-bb485b067938?w=800&h=600&fit=crop",
                 "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop",
@@ -254,7 +254,7 @@ import { MessageSquare, ThumbsUp, Star, Heart } from "lucide-react";
             dienTich: 70,
             soPhongNgu: 2,
             soPhongTam: 2,
-            hinhAnh: [
+            gallery: [
                 "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
                 "https://images.unsplash.com/photo-1560448075-bb485b067938?w=800&h=600&fit=crop",
             ],
@@ -306,7 +306,7 @@ import { MessageSquare, ThumbsUp, Star, Heart } from "lucide-react";
             dienTich: 120,
             soPhongNgu: 3,
             soPhongTam: 3,
-            hinhAnh: [
+            gallery: [
                 "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop",
                 "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop",
                 "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",

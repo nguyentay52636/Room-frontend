@@ -22,11 +22,11 @@ export default function CardsItemReviewsManager({ getRatingBadgeColor, getStarCo
               <div className="relative">
                 <Avatar className="h-14 w-14 ring-3 ring-blue-200 shadow-lg group-hover:ring-blue-300 transition-all duration-300">
                   <AvatarImage
-                    src={review.nguoiDungId.anhDaiDien || "/placeholder.svg"}
-                    alt={review.nguoiDungId.ten}
+                    src={review.nguoiDungId?.anhDaiDien || "/placeholder.svg"}
+                    alt={review.nguoiDungId?.ten || "User"}
                   />
                   <AvatarFallback className="bg-gradient-to-br from-blue-400 to-blue-600 text-white font-bold text-lg">
-                    {review.nguoiDungId.ten.charAt(0)}
+                    {review.nguoiDungId?.ten?.charAt(0) || "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="absolute -bottom-1 -right-1 h-6 w-6 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full flex items-center justify-center shadow-lg">
@@ -35,7 +35,7 @@ export default function CardsItemReviewsManager({ getRatingBadgeColor, getStarCo
               </div>
               <div className="flex-1">
                 <h4 className="font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 text-lg">
-                  {review.nguoiDungId.ten}
+                  {review.nguoiDungId?.ten || "Unknown User"}
                   <Badge className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 border-blue-200 text-xs font-semibold">
                     <Award className="h-3 w-3 mr-1" />
                     VIP
