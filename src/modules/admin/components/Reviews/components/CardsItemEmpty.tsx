@@ -7,7 +7,7 @@ export default function CardsItemEmpty({ setSearchTerm, setRatingFilter, setCate
         <>
             <Card className="shadow-xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-0">
                 <CardContent className="flex flex-col items-center justify-center py-16">
-                    <div className="text-8xl mb-6 animate-bounce">🔍</div>
+                    <div className="text-8xl mb-6 ">🔍</div>
                     <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
                         Không tìm thấy đánh giá nào
                     </h3>

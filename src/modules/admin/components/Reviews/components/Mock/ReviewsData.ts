@@ -201,7 +201,7 @@ import { MessageSquare, ThumbsUp, Star, Heart } from "lucide-react";
             dienTich: 250,
             soPhongNgu: 4,
             soPhongTam: 3,
-            hinhAnh: [
+            gallery: [
                 "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop",
                 "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop",
                 "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop",

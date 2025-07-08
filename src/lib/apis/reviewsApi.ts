@@ -1,9 +1,9 @@
-import { IAPIResponseWrapper } from "./authApi"
+import { IAPIResponseWrapperArray } from "./responseApi"
 import baseApi from "./baseApi"
 import { Review } from "./types"
 export const getAllReviews = async ()=> { 
 try { 
-    const {data}= await baseApi.get<IAPIResponseWrapper<Review[]>>(`/review`)
+    const {data}= await baseApi.get<IAPIResponseWrapperArray<Review[]>>(`/review`)
 return data;
 }catch (error :any) { 
     throw new Error(error.message)
@@ -11,7 +11,7 @@ return data;
 }
 export const getReviewById = async (id: string)=> {  
     try { 
-        const {data}= await baseApi.get<IAPIResponseWrapper<Review>>(`/review/${id}`)
+            const {data}= await baseApi.get<IAPIResponseWrapperArray<Review>>(`/review/${id}`)
         return data;
     }catch (error :any) { 
         throw new Error(error.message)
@@ -25,7 +25,7 @@ export const getReviewById = async (id: string)=> {
         binhLuan
     }
     try { 
-        const {data}= await baseApi.post<IAPIResponseWrapper<Review>>("/review", newReview)
+        const {data}= await baseApi.post<IAPIResponseWrapperArray<Review>>("/review", newReview)
             return data;
     }catch (error :any) { 
         throw new Error(error.message)
@@ -39,7 +39,7 @@ export const getReviewById = async (id: string)=> {
         binhLuan
     }
     try { 
-        const {data}= await baseApi.put<IAPIResponseWrapper<Review>>(`/review/${id}`, updateReview)
+        const {data}= await baseApi.put<IAPIResponseWrapperArray<Review>>(`/review/${id}`, updateReview)
         return data;
     }catch (error :any) { 
         throw new Error(error.message)
@@ -47,7 +47,7 @@ export const getReviewById = async (id: string)=> {
 }
 export const deleteReview = async (id:string)=> {
     try { 
-        const {data}= await baseApi.delete<IAPIResponseWrapper<Review>>(`/review/${id}`)
+        const {data}= await baseApi.delete<IAPIResponseWrapperArray<Review>>(`/review/${id}`)
         return data;
     }catch (error :any) { 
         throw new Error(error.message)
@@ -56,7 +56,7 @@ export const deleteReview = async (id:string)=> {
 // lay dnah gia theo BDS 
 export const  getReviewByPropertyId = async (propertyId:string)=> { 
 try   { 
-    const {data}= await baseApi.get<IAPIResponseWrapper<Review[]>>(`/reviews/property/${propertyId}`)
+    const {data}= await baseApi.get<IAPIResponseWrapperArray<Review[]>>(`/reviews/property/${propertyId}`)
     return data;
 }catch(error : any) { 
     throw new Error(error.message)
@@ -64,7 +64,7 @@ try   {
  } 
  export const getReviewByUserId = async (userId:string)=> { 
     try { 
-        const {data}= await baseApi.get<IAPIResponseWrapper<Review[]>>(`/reviews/user/${userId}`)
+        const {data}= await baseApi.get<IAPIResponseWrapperArray<Review[]>>(`/reviews/user/${userId}`)
         return data;
     }catch(error : any) { 
         throw new Error(error.message)

@@ -21,6 +21,7 @@ import ManagerHome from './modules/admin/components/Home/ManagerHome';
 import ManagerEmployee from './modules/admin/components/Employee/ManagerEmployee';
 import ChatManager from './modules/admin/components/Chat/ChatManager';
 import ReviewsManager from './modules/admin/components/Reviews/ReviewsManager';
+import TestProperties from './modules/admin/components/RealEstate/TestProperties';
 function App() {
   const router = createBrowserRouter([
     // Main layout
@@ -110,6 +111,10 @@ function App() {
         {
           path: 'reviews',
           element: <ReviewsManager />
+        },
+        {
+          path: 'test',
+          element: <TestProperties />
         }
 
 

@@ -34,14 +34,26 @@ export interface BatDongSan {
   _id: string
   tieuDe: string
   moTa: string
-  diaChi: string
+  loaiBds: string
   gia: number
+  diaChi: string
+  tinhThanh: string
+  quanHuyen: string
   dienTich: number
-  soPhongNgu: number
-  soPhongTam: number
+  anhDaiDien: string
   gallery: string[]
-  createdAt: string
-  updatedAt: string
+  phongNgu: number
+  phongTam: number
+  choDauXe: number
+  trangThai: string
+  nguoiDungId: string | User
+  badge: string
+  subtitle: string
+  features: features[]
+  colorGradient?: string
+  createdAt?: string
+  updatedAt?: string
+  __v?: number
 }
 
 export interface Review {
@@ -55,3 +67,9 @@ export interface Review {
   __v: number
 }
 
+export interface features { 
+  _id: string
+  icon: string
+  text: string
+  color: string
+}
