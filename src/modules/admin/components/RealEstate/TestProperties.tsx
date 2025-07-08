@@ -1,5 +1,5 @@
 import { getAllProperties } from '@/lib/apis/propertiesApi';
-import { BatDongSan } from '@/lib/apis/types';
+import { BatDongSan, features } from '@/lib/apis/types';
 import React, { useEffect, useState } from 'react'
 
 export default function TestProperties() {

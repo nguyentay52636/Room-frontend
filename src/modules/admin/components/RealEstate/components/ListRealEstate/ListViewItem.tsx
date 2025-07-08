@@ -8,13 +8,13 @@ export default function ListViewItem({ paginatedProperties, getStatusBadge, getT
     <div className="space-y-4">
       {paginatedProperties.map((property: any) => (
         <div
-          key={property.id}
+          key={property._id}
           className="group flex items-center space-x-4 p-6 border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 bg-white dark:bg-gray-800"
         >
           <div className="relative overflow-hidden rounded-lg flex-shrink-0">
             <img
-              src={property.image || "/placeholder.svg"}
-              alt={property.title}
+              src={property.anhDaiDien}
+              alt={property.tieuDe}
               className="w-32 h-24 object-cover group-hover:scale-105 transition-transform duration-300"
             />
             <div className="absolute top-2 left-2">{getStatusBadge(property.status)}</div>
@@ -23,37 +23,37 @@ export default function ListViewItem({ paginatedProperties, getStatusBadge, getT
             <div className="flex items-start justify-between">
               <div className="space-y-2 flex-1">
                 <h3 className="font-semibold text-xl text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  {property.title}
+                  {property.tieuDe}
                 </h3>
                 <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                   <MapPin className="h-4 w-4 mr-1" />
-                  {property.location}
+                  {property.diaChi}
                 </div>
                 <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
-                  {property.description}
+                  {property.moTa}
                 </p>
                 <div className="flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
                   <div className="flex items-center">
                     <Bed className="h-4 w-4 mr-1" />
-                    {property.beds} phòng ngủ
+                    {property.phongNgu} phòng ngủ
                   </div>
                   <div className="flex items-center">
                     <Bath className="h-4 w-4 mr-1" />
-                    {property.baths} phòng tắm
+                    {property.phongTam} phòng tắm
                   </div>
                   <div className="flex items-center">
                     <Square className="h-4 w-4 mr-1" />
-                    {property.area}m²
+                    {property.dienTich}m²
                   </div>
                   <div className="flex items-center">
                     <Star className="h-4 w-4 mr-1 text-yellow-500" />
-                    {property.rating}
+                    {property.soSao}
                   </div>
                 </div>
                 <div className="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
                   <div className="flex items-center">
                     <User className="h-3 w-3 mr-1" />
-                    Chủ: {property.owner}
+                    {/* Chủ: {property.nguoiDungId?.ten || "Không rõ"} */}
                   </div>
                   <div className="flex items-center">
                     <Calendar className="h-3 w-3 mr-1" />

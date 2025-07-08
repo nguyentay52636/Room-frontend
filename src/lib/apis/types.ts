@@ -46,13 +46,14 @@ export interface BatDongSan {
   phongTam: number
   choDauXe: number
   trangThai: string
-  nguoiDungId: string | User
+  nguoiDungId: User
   badge: string
   subtitle: string
   features: features[]
   colorGradient?: string
   createdAt?: string
   updatedAt?: string
+  views?: number | 1
   __v?: number
 }
 

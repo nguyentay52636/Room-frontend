@@ -1,5 +1,5 @@
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { Badge } from "@/components/ui/badge"
 
@@ -12,12 +12,14 @@ import {
 
 } from "lucide-react"
 import { DialogAddManagerRealEstate } from "./components/Dialog/DialogAddManagerRealEstate"
-import PaginationRealEstate from "./components/PaginationRealEstate"
+
 import { properties } from "./components/Data/RealEstate"
 import HeaderManagerRealEstate from "./components/HeaderManagerRealEstate"
 import StatsCard from "./components/StatsCard"
 import SearchFilterManagerRealEstate from "./components/SearchFilterManagerRealEstate"
 import ListViewRealEstate from "./components/ListRealEstate/ListViewRealEstate"
+import { BatDongSan } from "@/lib/apis/types"
+import { getAllProperties } from "@/lib/apis/propertiesApi"
 
 
 
@@ -39,27 +41,35 @@ export default function ManagerRealEstate() {
     const [rowsPerPage, setRowsPerPage] = useState(12)
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
     const [sortBy, setSortBy] = useState("newest")
+    const [batDongSans, setBatDongSans] = useState<BatDongSan[]>([])
 
-    // Sample properties data
+    useEffect(() => {
+        const fetchBatDongSans = async () => {
+            const batDongSans = await getAllProperties();
+
+            setBatDongSans(batDongSans);
+        }
+        fetchBatDongSans();
+    }, [])
 
 
     const getStatusBadge = (status: string) => {
         switch (status) {
-            case "available":
+            case "dang_hoat_dong":
                 return (
                     <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white border-0 shadow-sm">Có sẵn</Badge>
                 )
-            case "rented":
+            case "da_thue":
                 return (
                     <Badge className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-sm">Đã thuê</Badge>
                 )
-            case "pending":
+            case "cho_duyet":
                 return (
                     <Badge className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white border-0 shadow-sm">
                         Chờ duyệt
                     </Badge>
                 )
-            case "maintenance":
+            case "bao_tri":
                 return <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white border-0 shadow-sm">Bảo trì</Badge>
             default:
                 return <Badge variant="secondary">{status}</Badge>
@@ -68,17 +78,17 @@ export default function ManagerRealEstate() {
 
     const getTypeLabel = (type: string) => {
         switch (type) {
-            case "apartment":
+            case "can_ho":
                 return "Căn hộ"
-            case "house":
+            case "nha_rieng":
                 return "Nhà riêng"
-            case "condo":
+            case "chung_cu":
                 return "Chung cư"
-            case "villa":
+            case "biet_thu":
                 return "Biệt thự"
             case "studio":
                 return "Studio"
-            case "townhouse":
+            case "nha_pho":
                 return "Nhà phố"
             default:
                 return type
@@ -110,20 +120,20 @@ export default function ManagerRealEstate() {
         }
     }
 
-    const filteredProperties = properties.filter((property) => {
+    const filteredProperties = batDongSans.filter((property) => {
         const matchesSearch =
-            property.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            property.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            property.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            property.district.toLowerCase().includes(searchQuery.toLowerCase())
+            property.tieuDe.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            property.diaChi.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            // property.nguoiDungId.ten.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            property.quanHuyen.toLowerCase().includes(searchQuery.toLowerCase())
 
-        const matchesType = filterType === "all" || property.type === filterType
-        const matchesStatus = filterStatus === "all" || property.status === filterStatus
-        const matchesLocation = filterLocation === "all" || property.district === filterLocation
-        const matchesBeds = filterBeds === "all" || property.beds.toString() === filterBeds
-        const matchesBaths = filterBaths === "all" || property.baths.toString() === filterBaths
-        const matchesPrice = property.price >= priceRange[0] && property.price <= priceRange[1]
-        const matchesArea = property.area >= areaRange[0] && property.area <= areaRange[1]
+        const matchesType = filterType === "all" || property.loaiBds === filterType
+        const matchesStatus = filterStatus === "all" || property.trangThai === filterStatus
+        const matchesLocation = filterLocation === "all" || property.quanHuyen === filterLocation
+        const matchesBeds = filterBeds === "all" || property.phongNgu.toString() === filterBeds
+        const matchesBaths = filterBaths === "all" || property.phongTam.toString() === filterBaths
+        const matchesPrice = property.gia >= priceRange[0] && property.gia <= priceRange[1]
+        const matchesArea = property.dienTich >= areaRange[0] && property.dienTich <= areaRange[1]
 
         return (
             matchesSearch &&
@@ -140,20 +150,26 @@ export default function ManagerRealEstate() {
     // Sort properties
     const sortedProperties = [...filteredProperties].sort((a, b) => {
         switch (sortBy) {
-            case "newest":
-                return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-            case "oldest":
-                return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            case "newest": {
+                const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                return dateB - dateA;
+            }
+            case "oldest": {
+                const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                return dateA - dateB;
+            }
             case "price-high":
-                return b.price - a.price
+                return b.gia - a.gia
             case "price-low":
-                return a.price - b.price
+                return a.gia - b.gia
             case "area-large":
-                return b.area - a.area
+                return b.dienTich - a.dienTich
             case "area-small":
-                return a.area - b.area
+                return a.dienTich - b.dienTich
             case "rating":
-                return b.rating - a.rating
+                return (b.overlay?.rating ?? 0) - (a.overlay?.rating ?? 0)
             default:
                 return 0
         }
@@ -183,13 +199,13 @@ export default function ManagerRealEstate() {
     }
 
     // Get unique districts for filter
-    const uniqueDistricts = [...new Set(properties.map((p) => p.district))]
+    const uniqueDistricts = [...new Set(batDongSans.map((p) => p.quanHuyen))]
 
     // Stats data for mapping
     const statsData = [
         {
             title: "Tổng BĐS",
-            value: properties.length,
+            value: batDongSans.length,
             subtitle: "+12% tháng này",
             icon: <Building className="h-8 w-8" />,
             iconBgColor: "bg-blue-50 dark:bg-blue-900/30",
@@ -198,8 +214,8 @@ export default function ManagerRealEstate() {
         },
         {
             title: "Có sẵn",
-            value: properties.filter((p) => p.status === "available").length,
-            subtitle: `${Math.round((properties.filter((p) => p.status === "available").length / properties.length) * 100)}% tổng số`,
+            value: batDongSans.filter((p) => p.trangThai === "dang_hoat_dong").length,
+            subtitle: `${Math.round((batDongSans.filter((p) => p.trangThai === "dang_hoat_dong").length / batDongSans.length) * 100)}% tổng số`,
             icon: <Home className="h-8 w-8" />,
             iconBgColor: "bg-green-50 dark:bg-green-900/30",
             iconColor: "text-green-600 dark:text-green-400",
@@ -207,8 +223,8 @@ export default function ManagerRealEstate() {
         },
         {
             title: "Đã thuê",
-            value: properties.filter((p) => p.status === "rented").length,
-            subtitle: `${Math.round((properties.filter((p) => p.status === "rented").length / properties.length) * 100)}% tổng số`,
+            value: batDongSans.filter((p) => p.trangThai === "da_thue").length,
+            subtitle: `${Math.round((batDongSans.filter((p) => p.trangThai === "da_thue").length / batDongSans.length) * 100)}% tổng số`,
             icon: <Users className="h-8 w-8" />,
             iconBgColor: "bg-blue-50 dark:bg-blue-900/30",
             iconColor: "text-blue-600 dark:text-blue-400",
@@ -216,7 +232,7 @@ export default function ManagerRealEstate() {
         },
         {
             title: "Giá trung bình",
-            value: `${Math.round(properties.reduce((sum, p) => sum + p.price, 0) / properties.length / 1000000)}M`,
+            value: `${Math.round(batDongSans.reduce((sum, p) => sum + p.gia, 0) / batDongSans.length / 1000000)}M`,
             subtitle: "VND/tháng",
             icon: <DollarSign className="h-8 w-8" />,
             iconBgColor: "bg-purple-50 dark:bg-purple-900/30",

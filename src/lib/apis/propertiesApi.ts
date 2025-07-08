@@ -7,14 +7,16 @@ export const getAllProperties = async () => {
     try {
         const { data } = await baseApi.get(`/property`);
         // data: { message: string, properties: BatDongSan[] }
+        console.log(data);
         return data.properties || [];
     } catch (error: any) {
         throw new Error(error.response?.data?.message || "Unknown error");
     }
 };
+
 export const getPropertyById = async (id: string) => {
     try {
-        const {data}= await baseApi.get<IAPIResponseWrapperArray <BatDongSan>>(`/property/${id}`)
+        const { data } = await baseApi.get<IAPIResponseWrapperArray<BatDongSan>>(`/property/${id}`)
         return data;
     } catch (error: any) {
         throw new Error(error.response.data.message)

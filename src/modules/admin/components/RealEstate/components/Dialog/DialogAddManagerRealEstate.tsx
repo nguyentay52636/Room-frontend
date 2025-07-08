@@ -81,8 +81,8 @@ const initialFormData: FormData = {
     city: "TP.HCM",
     price: "",
     currency: "VND",
-    type: "apartment",
-    status: "available",
+    type: "can_ho",
+    status: "dang_hoat_dong",
     beds: "1",
     baths: "1",
     area: "",
@@ -110,28 +110,28 @@ export function DialogAddManagerRealEstate({ open, onOpenChange, property, mode 
     useEffect(() => {
         if (property) {
             setFormData({
-                title: property.title || "",
-                location: property.location || "",
-                district: property.district || "",
-                city: property.city || "TP.HCM",
-                price: property.price?.toString() || "",
-                currency: property.currency || "VND",
-                type: property.type || "apartment",
-                status: property.status || "available",
-                beds: property.beds?.toString() || "1",
-                baths: property.baths?.toString() || "1",
-                area: property.area?.toString() || "",
-                description: property.description || "",
-                owner: property.owner || "",
-                ownerPhone: property.ownerPhone || "",
-                ownerEmail: property.ownerEmail || "",
-                amenities: property.amenities || [],
-                images: property.images || [property.image || ""],
-                yearBuilt: property.yearBuilt?.toString() || new Date().getFullYear().toString(),
-                floor: property.floor?.toString() || "1",
-                totalFloors: property.totalFloors?.toString() || "1",
-                furnished: property.furnished || false,
-                petAllowed: property.petAllowed || false,
+                title: property.tieuDe || "",
+                location: property.diaChi || "",
+                district: property.quanHuyen || "",
+                city: property.tinhThanh || "TP.HCM",
+                price: property.gia?.toString() || "",
+                currency: "VND",
+                type: property.loaiBds || "can_ho",
+                status: property.trangThai || "dang_hoat_dong",
+                beds: property.phongNgu?.toString() || "1",
+                baths: property.phongTam?.toString() || "1",
+                area: property.dienTich?.toString() || "",
+                description: property.moTa || "",
+                owner: property.nguoiDungId || "",
+                ownerPhone: "",
+                ownerEmail: "",
+                amenities: property.overlay?.amenities || [],
+                images: property.gallery || [property.anhDaiDien || ""],
+                yearBuilt: new Date().getFullYear().toString(),
+                floor: property.thongTinChiTiet?.tang?.toString() || "1",
+                totalFloors: "1",
+                furnished: property.thongTinChiTiet?.noiThat === "Đầy đủ" || false,
+                petAllowed: false,
             })
             setErrors({})
             setCurrentImageIndex(0)
@@ -222,7 +222,7 @@ export function DialogAddManagerRealEstate({ open, onOpenChange, property, mode 
             case "edit":
                 return "Cập nhật thông tin bất động sản"
             case "view":
-                return `ID: #${property?.id || "N/A"} • Tạo: ${property?.createdAt ? new Date(property.createdAt).toLocaleDateString("vi-VN") : "N/A"} • Cập nhật: ${property?.updatedAt ? new Date(property.updatedAt).toLocaleDateString("vi-VN") : "N/A"}`
+                return `ID: #${property?._id || "N/A"} • Tạo: ${property?.createdAt ? new Date(property.createdAt).toLocaleDateString("vi-VN") : "N/A"} • Cập nhật: ${property?.updatedAt ? new Date(property.updatedAt).toLocaleDateString("vi-VN") : "N/A"}`
             default:
                 return ""
         }
@@ -230,21 +230,21 @@ export function DialogAddManagerRealEstate({ open, onOpenChange, property, mode 
 
     const getStatusBadge = (status: string) => {
         switch (status) {
-            case "available":
+            case "dang_hoat_dong":
                 return (
                     <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white border-0 shadow-sm">Có sẵn</Badge>
                 )
-            case "rented":
+            case "da_thue":
                 return (
                     <Badge className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-sm">Đã thuê</Badge>
                 )
-            case "pending":
+            case "cho_duyet":
                 return (
                     <Badge className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white border-0 shadow-sm">
                         Chờ duyệt
                     </Badge>
                 )
-            case "maintenance":
+            case "bao_tri":
                 return <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white border-0 shadow-sm">Bảo trì</Badge>
             default:
                 return <Badge variant="secondary">{status}</Badge>
@@ -283,11 +283,11 @@ export function DialogAddManagerRealEstate({ open, onOpenChange, property, mode 
                                 <div className="flex items-center space-x-2">
                                     <div className="flex items-center space-x-1 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-1 rounded-full">
                                         <Star className="h-3 w-3 text-yellow-500" />
-                                        <span className="text-sm font-medium text-yellow-600 dark:text-yellow-400">{property.rating}</span>
+                                        <span className="text-sm font-medium text-yellow-600 dark:text-yellow-400">{property.overlay?.rating || 0}</span>
                                     </div>
                                     <div className="flex items-center space-x-1 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded-full">
                                         <Eye className="h-3 w-3 text-blue-500" />
-                                        <span className="text-sm font-medium text-blue-600 dark:text-blue-400">{property.views}</span>
+                                        <span className="text-sm font-medium text-blue-600 dark:text-blue-400">{property.overlay?.reviews || 0}</span>
                                     </div>
                                 </div>
                             )}
@@ -541,12 +541,12 @@ export function DialogAddManagerRealEstate({ open, onOpenChange, property, mode 
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="apartment">Căn hộ</SelectItem>
-                                                    <SelectItem value="house">Nhà riêng</SelectItem>
-                                                    <SelectItem value="condo">Chung cư</SelectItem>
-                                                    <SelectItem value="villa">Biệt thự</SelectItem>
+                                                    <SelectItem value="can_ho">Căn hộ</SelectItem>
+                                                    <SelectItem value="nha_rieng">Nhà riêng</SelectItem>
+                                                    <SelectItem value="chung_cu">Chung cư</SelectItem>
+                                                    <SelectItem value="biet_thu">Biệt thự</SelectItem>
                                                     <SelectItem value="studio">Studio</SelectItem>
-                                                    <SelectItem value="townhouse">Nhà phố</SelectItem>
+                                                    <SelectItem value="nha_pho">Nhà phố</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
@@ -562,10 +562,10 @@ export function DialogAddManagerRealEstate({ open, onOpenChange, property, mode 
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="available">Có sẵn</SelectItem>
-                                                    <SelectItem value="rented">Đã thuê</SelectItem>
-                                                    <SelectItem value="pending">Chờ duyệt</SelectItem>
-                                                    <SelectItem value="maintenance">Bảo trì</SelectItem>
+                                                    <SelectItem value="dang_hoat_dong">Có sẵn</SelectItem>
+                                                    <SelectItem value="da_thue">Đã thuê</SelectItem>
+                                                    <SelectItem value="cho_duyet">Chờ duyệt</SelectItem>
+                                                    <SelectItem value="bao_tri">Bảo trì</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
