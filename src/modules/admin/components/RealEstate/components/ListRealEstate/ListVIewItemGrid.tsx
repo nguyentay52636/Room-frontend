@@ -1,7 +1,4 @@
-import React from 'react'
 import { Bed, Badge, Edit, Eye, MapPin, Star, Bath, User, Trash2, Calendar, Square, MoreHorizontal } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import ActionItem from './ActionItem'
 
 export default function ListVIewItemGrid({ property, getStatusBadge, getTypeLabel, handleViewProperty, handleEditProperty, handleDeleteProperty }: any) {
@@ -67,7 +64,7 @@ export default function ListVIewItemGrid({ property, getStatusBadge, getTypeLabe
                 <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
                     <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
                         <User className="h-3 w-3 mr-1" />
-                        call api NguoiDung
+                        {property.nguoiDungId.ten}
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
                         <Eye className="h-3 w-3 mr-1" />

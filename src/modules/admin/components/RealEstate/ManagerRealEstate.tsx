@@ -11,7 +11,7 @@ import {
     Users,
 
 } from "lucide-react"
-import { DialogAddManagerRealEstate } from "./components/Dialog/DialogAddManagerRealEstate"
+import { DialogAddManagerRealEstate } from "./components/Dialog/DialogAddManagerRealEstate/DialogAddManagerRealEstate"
 
 import { properties } from "./components/Data/RealEstate"
 import HeaderManagerRealEstate from "./components/HeaderManagerRealEstate"
