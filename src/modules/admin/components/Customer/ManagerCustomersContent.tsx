@@ -49,9 +49,9 @@ export default function ManagerCustomersContent() {
 
     const filteredCustomers = customers.filter((customer) => {
         const matchesSearch =
-            customer.nguoiDungId.ten.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            customer.nguoiDungId.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            customer.nguoiDungId.soDienThoai.includes(searchTerm) ||
+            (typeof customer.nguoiDungId === 'object' && customer.nguoiDungId?.ten?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (typeof customer.nguoiDungId === 'object' && customer.nguoiDungId?.email?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (typeof customer.nguoiDungId === 'object' && customer.nguoiDungId?.soDienThoai?.includes(searchTerm)) ||
             customer.diaChi.toLowerCase().includes(searchTerm.toLowerCase())
 
         const matchesStatus = statusFilter === "all" || customer.loai === statusFilter

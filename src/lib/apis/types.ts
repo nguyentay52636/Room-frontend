@@ -76,7 +76,7 @@ text: string
   color: string
 }
 export interface Customer { 
-  nguoiDungId:  User
+  nguoiDungId?:  User | string
   diaChi: string
   loai: string
   tongChiTieu: number
