@@ -1,5 +1,5 @@
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -11,32 +11,51 @@ import {
     UserCheck,
     Star,
 } from "lucide-react"
-import { customers } from "./components/Data/DataCustomer"
+
 import StatsCardManagerCustomers from "./components/StatsCardManagerCustomers"
 import TableManagerCustomers from "./components/TableManagerCustomers"
 import FilterSearchManagerCustomer from "./components/FilterSearchManagerCustomer"
 import PaginationManagerCustomer from "./components/PaginationManagerCustomer"
 import HeaderManagerCustomers from "./components/HeaderManagerCustomers"
-
+import { getCustomers } from "@/lib/apis/customerApi"
+import { Customer } from "@/lib/apis/types"
+import { CustomerViewDialog } from "./components/Dialog/CustomerViewDialog"
+import { EditCustomerForm } from "./components/Dialog/EditCustomer/EditCustomerForm"
+import { AddCustomerDialog } from "./components/Dialog/AddCustomer/AddCustomerDialog"
 export default function ManagerCustomersContent() {
     const [searchTerm, setSearchTerm] = useState("")
     const [statusFilter, setStatusFilter] = useState("all")
     const [typeFilter, setTypeFilter] = useState("all")
     const [selectedCustomer, setSelectedCustomer] = useState(null)
-    const [isDialogOpen, setIsDialogOpen] = useState(false)
-    const [dialogMode, setDialogMode] = useState<"view" | "edit" | "create">("view")
+    const [customers, setCustomers] = useState<Customer[]>([])
 
+    // Dialog states
+    const [isViewDialogOpen, setIsViewDialogOpen] = useState(false)
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 
+    useEffect(() => {
+        const fetchCustomers = async () => {
+            try {
+                const response = await getCustomers();
+                setCustomers(response.data);
+                console.log(response.data)
+            } catch (error: any) {
+                throw new Error(error.message)
+            }
+        }
+        fetchCustomers()
+    }, [])
 
     const filteredCustomers = customers.filter((customer) => {
         const matchesSearch =
-            customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            customer.phone.includes(searchTerm) ||
-            customer.address.toLowerCase().includes(searchTerm.toLowerCase())
+            customer.nguoiDungId.ten.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            customer.nguoiDungId.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            customer.nguoiDungId.soDienThoai.includes(searchTerm) ||
+            customer.diaChi.toLowerCase().includes(searchTerm.toLowerCase())
 
-        const matchesStatus = statusFilter === "all" || customer.status === statusFilter
-        const matchesType = typeFilter === "all" || customer.type === typeFilter
+        const matchesStatus = statusFilter === "all" || customer.loai === statusFilter
+        const matchesType = typeFilter === "all" || customer.loai === typeFilter
 
         return matchesSearch && matchesStatus && matchesType
     })
@@ -70,21 +89,29 @@ export default function ManagerCustomersContent() {
     }
 
     const handleAddCustomer = () => {
-        setSelectedCustomer(null)
-        setDialogMode("create")
-        setIsDialogOpen(true)
+        setIsCreateDialogOpen(true)
     }
 
     const handleEditCustomer = (customer: any) => {
         setSelectedCustomer(customer)
-        setDialogMode("edit")
-        setIsDialogOpen(true)
+        setIsEditDialogOpen(true)
     }
 
     const handleViewCustomer = (customer: any) => {
         setSelectedCustomer(customer)
-        setDialogMode("view")
-        setIsDialogOpen(true)
+        setIsViewDialogOpen(true)
+    }
+
+    const handleCreateCustomer = (customerData: any) => {
+        console.log("Creating customer:", customerData)
+        // TODO: Implement API call to create customer
+        // After successful creation, refresh the customers list
+    }
+
+    const handleUpdateCustomer = (customerData: any) => {
+        console.log("Updating customer:", customerData)
+        // TODO: Implement API call to update customer
+        // After successful update, refresh the customers list
     }
 
     const formatCurrency = (amount: number) => {
@@ -104,21 +131,21 @@ export default function ManagerCustomersContent() {
         },
         {
             title: "Đang hoạt động",
-            value: customers.filter((c) => c.status === "active").length.toString(),
+            value: customers.filter((c) => c.loai === "active").length.toString(),
             icon: UserCheck,
             color: "text-green-600",
             bgColor: "bg-green-50 dark:bg-green-950",
         },
         {
             title: "Khách hàng Premium",
-            value: customers.filter((c) => c.type === "premium").length.toString(),
+            value: customers.filter((c) => c.loai === "premium").length.toString(),
             icon: Star,
             color: "text-purple-600",
             bgColor: "bg-purple-50 dark:bg-purple-950",
         },
         {
             title: "Tổng doanh thu",
-            value: formatCurrency(customers.reduce((sum, c) => sum + c.totalSpent, 0)),
+            value: formatCurrency(customers.reduce((sum, c) => sum + c.tongChiTieu, 0)),
             icon: DollarSign,
             color: "text-emerald-600",
             bgColor: "bg-emerald-50 dark:bg-emerald-950",
@@ -137,8 +164,6 @@ export default function ManagerCustomersContent() {
                     </CardHeader>
                     <CardContent>
                         <FilterSearchManagerCustomer searchTerm={searchTerm} statusFilter={statusFilter} typeFilter={typeFilter} setSearchTerm={setSearchTerm} setStatusFilter={setStatusFilter} setTypeFilter={setTypeFilter} />
-
-                        {/* Customers Table - Scrollable */}
                         <TableManagerCustomers filteredCustomers={filteredCustomers} getTypeBadge={getTypeBadge} getStatusBadge={getStatusBadge} formatCurrency={formatCurrency} handleViewCustomer={handleViewCustomer} handleEditCustomer={handleEditCustomer} />
                         {filteredCustomers.length === 0 && (
                             <div className="text-center py-8">
@@ -151,7 +176,27 @@ export default function ManagerCustomersContent() {
                 <PaginationManagerCustomer totalItems={filteredCustomers.length} />
             </div>
 
+            {/* View Dialog */}
+            <CustomerViewDialog
+                customer={selectedCustomer}
+                open={isViewDialogOpen}
+                onOpenChange={setIsViewDialogOpen}
+            />
 
+            {/* Edit Dialog */}
+            <EditCustomerForm
+                customer={selectedCustomer}
+                open={isEditDialogOpen}
+                onOpenChange={setIsEditDialogOpen}
+                onSave={handleUpdateCustomer}
+            />
+
+            {/* Create Dialog */}
+            <AddCustomerDialog
+                open={isCreateDialogOpen}
+                onOpenChange={setIsCreateDialogOpen}
+                onCreate={handleCreateCustomer}
+            />
         </>
     )
 }

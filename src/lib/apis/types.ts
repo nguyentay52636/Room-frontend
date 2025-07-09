@@ -57,6 +57,7 @@ export interface BatDongSan {
   __v?: number
 }
 
+
 export interface Review {
   _id: string
   nguoiDungId: User
@@ -71,6 +72,23 @@ export interface Review {
 export interface features { 
   _id: string
   icon: string
-  text: string
+text: string
   color: string
+}
+export interface Customer { 
+  nguoiDungId:  User
+  diaChi: string
+  loai: string
+  tongChiTieu: number
+  soBdsDangThue: number
+  soBdsYeuThich: number
+  soDanhGia: number
+  diemTrungBinh: number
+  bdsDangThueHienTai: number
+  ngayKetThucHopDong: string
+  lanHoatDongGanNhat: string
+  ghiChu: string
+  __v: number
+  createdAt?: string
+  updatedAt?: string
 }
