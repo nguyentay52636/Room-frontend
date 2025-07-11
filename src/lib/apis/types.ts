@@ -4,17 +4,17 @@
 
  }
 export interface User {
-  _id: string
+  _id?: string
   ten: string
   email: string
   tenDangNhap: string
   matKhau: string
   soDienThoai: string
-  vaiTro: string
+  vaiTro: string | role
   anhDaiDien: string
   trangThai: string
-  createdAt: string
-  updatedAt: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface Overlay {

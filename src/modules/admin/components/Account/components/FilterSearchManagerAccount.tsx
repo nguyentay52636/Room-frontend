@@ -5,14 +5,26 @@ import { Input } from '@/components/ui/input'
 import { SelectItem } from '@/components/ui/select'
 import { SelectTrigger } from '@/components/ui/select'
 import { Filter } from 'lucide-react'
-import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Search } from 'lucide-react'
 
-export default function FilterSearchManagerAccount() {
-    const [searchTerm, setSearchTerm] = useState("")
-    const [statusFilter, setStatusFilter] = useState("all")
-    const [roleFilter, setRoleFilter] = useState("all")
+interface FilterSearchManagerAccountProps {
+    searchTerm: string
+    setSearchTerm: (value: string) => void
+    statusFilter: string
+    setStatusFilter: (value: string) => void
+    roleFilter: string
+    setRoleFilter: (value: string) => void
+}
+
+export default function FilterSearchManagerAccount({
+    searchTerm,
+    setSearchTerm,
+    statusFilter,
+    setStatusFilter,
+    roleFilter,
+    setRoleFilter
+}: FilterSearchManagerAccountProps) {
     return (
         <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-1">
@@ -30,9 +42,8 @@ export default function FilterSearchManagerAccount() {
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                    <SelectItem value="active">Hoạt động</SelectItem>
-                    <SelectItem value="inactive">Không hoạt động</SelectItem>
-                    <SelectItem value="suspended">Tạm khóa</SelectItem>
+                    <SelectItem value="hoat_dong">Hoạt động</SelectItem>
+                    <SelectItem value="khoa">Tạm khóa</SelectItem>
                 </SelectContent>
             </Select>
             <Select value={roleFilter} onValueChange={setRoleFilter}>
@@ -43,9 +54,9 @@ export default function FilterSearchManagerAccount() {
                     <SelectItem value="all">Tất cả vai trò</SelectItem>
                     <SelectItem value="admin">Quản trị viên</SelectItem>
                     <SelectItem value="manager">Quản lý</SelectItem>
-                    <SelectItem value="staff">Nhân viên</SelectItem>
-                    <SelectItem value="owner">Chủ nhà</SelectItem>
-                    <SelectItem value="customer">Khách hàng</SelectItem>
+                    <SelectItem value="nhan_vien">Nhân viên</SelectItem>
+                    <SelectItem value="chu_tro">Chủ nhà</SelectItem>
+                    <SelectItem value="nguoi_thue">Người thuê</SelectItem>
                 </SelectContent>
             </Select>
             <Button variant="outline">

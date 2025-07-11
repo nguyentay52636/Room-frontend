@@ -215,6 +215,10 @@ export default function ManagerEmployeeContent() {
                             getDepartmentLabel={getDepartmentLabel}
                             getStatusBadge={getStatusBadge}
                         />
+                        <PaginationManagerEmployee
+                            totalItems={employees.length}
+
+                        />
 
                     </>
                 )}

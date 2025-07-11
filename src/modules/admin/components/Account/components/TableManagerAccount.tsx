@@ -11,63 +11,66 @@ export default function TableManagerAccount({ filteredAccounts, getRoleIcon, get
                 <Table>
                     <TableHeader className="sticky top-0 bg-white dark:bg-gray-950 z-10">
                         <TableRow>
+                            <TableHead className="min-w-[50px]">STT</TableHead>
                             <TableHead className="min-w-[250px]">Tài khoản</TableHead>
-                            <TableHead className="min-w-[150px]">Vai trò</TableHead>
+                            <TableHead className="min-w-[150px]">Email</TableHead>
+                            <TableHead className="min-w-[150px]">Tên đăng nhập</TableHead>
+                            <TableHead className="min-w-[150px]">Mật khẩu</TableHead>
+                            <TableHead className="min-w-[150px]">Số điện thoại</TableHead>
+                            <TableHead className="min-w-[100px]">Ảnh đại diện</TableHead>
+                            <TableHead className="min-w-[120px]">Vai trò</TableHead>
                             <TableHead className="min-w-[120px]">Trạng thái</TableHead>
-                            <TableHead className="min-w-[100px]">Bất động sản</TableHead>
-                            <TableHead className="min-w-[180px]">Đăng nhập cuối</TableHead>
-                            <TableHead className="min-w-[120px]">Tham gia</TableHead>
                             <TableHead className="min-w-[100px] text-right">Hành động</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filteredAccounts.map((account: any) => (
-                            <TableRow key={account.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                        {filteredAccounts.map((account: any, index: number) => (
+                            <TableRow key={account._id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                                <TableCell className="min-w-[50px]">
+                                    {index + 1}
+                                </TableCell>
                                 <TableCell className="min-w-[250px]">
                                     <div className="flex items-center space-x-3">
                                         <Avatar className="h-10 w-10">
-                                            <AvatarImage src={account.avatar || "/placeholder.svg"} alt={account.name} />
-                                            <AvatarFallback>{account.name.charAt(0)}</AvatarFallback>
+                                            <AvatarImage src={account.anhDaiDien || "/placeholder.svg"} alt={account.ten} />
+                                            <AvatarFallback>{account.ten?.charAt(0) || 'U'}</AvatarFallback>
                                         </Avatar>
                                         <div>
-                                            <p className="font-medium text-gray-900 dark:text-gray-100">{account.name}</p>
+                                            <p className="font-medium text-gray-900 dark:text-gray-100">{account.ten}</p>
                                             <div className="flex items-center space-x-2 text-sm text-gray-500">
                                                 <Mail className="h-3 w-3" />
                                                 <span>{account.email}</span>
                                             </div>
                                             <div className="flex items-center space-x-2 text-sm text-gray-500">
                                                 <Phone className="h-3 w-3" />
-                                                <span>{account.phone}</span>
+                                                <span>{account.soDienThoai}</span>
                                             </div>
                                         </div>
                                     </div>
                                 </TableCell>
+                                <TableCell className="min-w-[150px]">{account.email}</TableCell>
+                                <TableCell className="min-w-[150px]">{account.tenDangNhap}</TableCell>
                                 <TableCell className="min-w-[150px]">
-                                    <div className="flex items-center space-x-2">
-                                        {getRoleIcon(account.role)}
-                                        <span className="font-medium">{getRoleName(account.role)}</span>
-                                    </div>
-                                    <p className="text-xs text-gray-500">{account.department}</p>
+                                    <span className="text-gray-500">••••••••</span>
                                 </TableCell>
-                                <TableCell className="min-w-[120px]">{getStatusBadge(account.status)}</TableCell>
+                                <TableCell className="min-w-[150px]">{account.soDienThoai}</TableCell>
                                 <TableCell className="min-w-[100px]">
-                                    <div className="text-center">
-                                        <p className="font-medium">{account.properties}</p>
-                                        <p className="text-xs text-gray-500">bất động sản</p>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="min-w-[180px]">
-                                    <div>
-                                        <p className="text-sm">{account.lastLogin}</p>
-                                        <p className="text-xs text-gray-500">{account.loginCount} lần đăng nhập</p>
-                                    </div>
+                                    {account.anhDaiDien ? (
+                                        <Avatar className="h-8 w-8">
+                                            <AvatarImage src={account.anhDaiDien} alt={account.ten} />
+                                            <AvatarFallback>{account.ten?.charAt(0) || 'U'}</AvatarFallback>
+                                        </Avatar>
+                                    ) : (
+                                        <span className="text-gray-400">Không có</span>
+                                    )}
                                 </TableCell>
                                 <TableCell className="min-w-[120px]">
-                                    <div className="flex items-center space-x-1 text-sm">
-                                        <Calendar className="h-3 w-3 text-gray-400" />
-                                        <span>{account.createdAt}</span>
+                                    <div className="flex items-center space-x-2">
+                                        {getRoleIcon(typeof account.vaiTro === 'object' ? account.vaiTro?.ten : account.vaiTro || 'customer')}
+                                        <span className="font-medium">{getRoleName(typeof account.vaiTro === 'object' ? account.vaiTro?.ten : account.vaiTro || 'customer')}</span>
                                     </div>
                                 </TableCell>
+                                <TableCell className="min-w-[120px]">{getStatusBadge(account.trangThai)}</TableCell>
                                 <TableCell className="min-w-[100px] text-right">
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>

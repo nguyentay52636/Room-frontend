@@ -1,6 +1,6 @@
 
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { Badge } from "@/components/ui/badge"
@@ -10,7 +10,7 @@ import {
 
     Shield,
     ShieldCheck,
-    User,
+    User as UserIcon,
     Users,
     Crown,
 
@@ -22,7 +22,11 @@ import FilterSearchManagerAccount from "./components/FilterSearchManagerAccount"
 import TableManagerAccount from "./components/TableManagerAccount"
 import { accounts } from "./Data/AccountsData"
 import PaginationManagerAccounts from "./components/PaginationManagerAccounts"
-import { PaginationProvider, usePagination } from "../../context/PaginationContext"
+import { usePagination } from "../../context/PaginationContext"
+import { getUsers } from "@/lib/apis/userApi"
+import { User } from "@/lib/apis/types"
+import { IusersResponse } from "@/lib/apis/responseApi"
+
 
 export default function ManagerAccountContent() {
     const [searchTerm, setSearchTerm] = useState("")
@@ -31,17 +35,42 @@ export default function ManagerAccountContent() {
     const [selectedAccount, setSelectedAccount] = useState(null)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [dialogMode, setDialogMode] = useState<"view" | "edit" | "create">("view")
-
     const { paginationState } = usePagination();
+    const [users, setUsers] = useState<User[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
 
-    const filteredAccounts = accounts.filter((account) => {
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                setLoading(true)
+                setError(null)
+                const response = await getUsers()
+                console.log(response)
+                setUsers(response || [])
+
+            } catch (error: any) {
+                console.error("Error fetching users:", error)
+                setError(error.message || "Failed to fetch users")
+                setUsers([])
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchUsers()
+    }, [])
+
+    const filteredAccounts = (users || []).filter((account: any) => {
+        const searchLower = searchTerm.toLowerCase()
         const matchesSearch =
-            account.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            account.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            account.phone.includes(searchTerm)
+            account.ten?.toLowerCase().includes(searchLower) ||
+            account.email?.toLowerCase().includes(searchLower) ||
+            account.soDienThoai?.includes(searchTerm) ||
+            false
 
-        const matchesStatus = statusFilter === "all" || account.status === statusFilter
-        const matchesRole = roleFilter === "all" || account.role === roleFilter
+        const matchesStatus = statusFilter === "all" || account.trangThai === statusFilter
+        const vaiTroValue = typeof account.vaiTro === 'object' ? account.vaiTro?.ten : account.vaiTro
+        const matchesRole = roleFilter === "all" || vaiTroValue === roleFilter
 
         return matchesSearch && matchesStatus && matchesRole
     })
@@ -52,14 +81,14 @@ export default function ManagerAccountContent() {
                 return <Crown className="h-4 w-4 text-yellow-500" />
             case "manager":
                 return <ShieldCheck className="h-4 w-4 text-blue-500" />
-            case "staff":
+            case "nhan_vien":
                 return <Shield className="h-4 w-4 text-green-500" />
-            case "owner":
-                return <User className="h-4 w-4 text-purple-500" />
-            case "customer":
+            case "chu_tro":
+                return <UserIcon className="h-4 w-4 text-purple-500" />
+            case "nguoi_thue":
                 return <Users className="h-4 w-4 text-gray-500" />
             default:
-                return <User className="h-4 w-4" />
+                return <UserIcon className="h-4 w-4" />
         }
     }
 
@@ -69,12 +98,12 @@ export default function ManagerAccountContent() {
                 return "Quản trị viên"
             case "manager":
                 return "Quản lý"
-            case "staff":
+            case "nhan_vien":
                 return "Nhân viên"
-            case "owner":
+            case "chu_tro":
                 return "Chủ nhà"
-            case "customer":
-                return "Khách hàng"
+            case "nguoi_thue":
+                return "Người thuê"
             default:
                 return role
         }
@@ -82,12 +111,12 @@ export default function ManagerAccountContent() {
 
     const getStatusBadge = (status: string) => {
         switch (status) {
-            case "active":
+            case "hoat_dong":
                 return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Hoạt động</Badge>
+            case "khoa":
+                return <Badge className="bg-red-100 text-red-800 hover:bg-red-100">Tạm khóa</Badge>
             case "inactive":
                 return <Badge variant="secondary">Không hoạt động</Badge>
-            case "suspended":
-                return <Badge className="bg-red-100 text-red-800 hover:bg-red-100">Tạm khóa</Badge>
             default:
                 return <Badge variant="outline">{status}</Badge>
         }
@@ -114,33 +143,70 @@ export default function ManagerAccountContent() {
     const stats = [
         {
             title: "Tổng tài khoản",
-            value: accounts.length.toString(),
+            value: (users || []).length.toString(),
             icon: Users,
             color: "text-blue-600",
             bgColor: "bg-blue-50 dark:bg-blue-950",
         },
         {
             title: "Đang hoạt động",
-            value: accounts.filter((a) => a.status === "active").length.toString(),
+            value: (users || []).filter((a) => a.trangThai === "hoat_dong").length.toString(),
             icon: Activity,
             color: "text-green-600",
             bgColor: "bg-green-50 dark:bg-green-950",
         },
         {
             title: "Quản trị viên",
-            value: accounts.filter((a) => a.role === "admin").length.toString(),
+            value: (users || []).filter((a) => {
+                const vaiTroValue = typeof a.vaiTro === 'object' ? a.vaiTro?.ten : a.vaiTro
+                return vaiTroValue === "admin"
+            }).length.toString(),
             icon: Crown,
             color: "text-yellow-600",
             bgColor: "bg-yellow-50 dark:bg-yellow-950",
         },
         {
             title: "Chủ nhà",
-            value: accounts.filter((a) => a.role === "owner").length.toString(),
-            icon: User,
+            value: (users || []).filter((a) => {
+                const vaiTroValue = typeof a.vaiTro === 'object' ? a.vaiTro?.ten : a.vaiTro
+                return vaiTroValue === "chu_tro"
+            }).length.toString(),
+            icon: UserIcon,
             color: "text-purple-600",
             bgColor: "bg-purple-50 dark:bg-purple-950",
         },
     ]
+
+    if (loading) {
+        return (
+            <div className="flex flex-1 flex-col gap-6 p-6 bg-gray-50/50 dark:bg-gray-900/50">
+                <div className="flex items-center justify-center h-64">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+                        <p className="text-gray-500">Đang tải dữ liệu...</p>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="flex flex-1 flex-col gap-6 p-6 bg-gray-50/50 dark:bg-gray-900/50">
+                <div className="flex items-center justify-center h-64">
+                    <div className="text-center">
+                        <p className="text-red-500 mb-4">Lỗi: {error}</p>
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        >
+                            Thử lại
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <>
@@ -149,7 +215,7 @@ export default function ManagerAccountContent() {
             <div className="flex flex-1 flex-col gap-6 p-6 bg-gray-50/50 dark:bg-gray-900/50">
                 <div className="grid grid-cols-1 cursor-pointer md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {stats.map((stat, index) => (
-                        <StatsCardManagerAccount stat={stat} index={index} />
+                        <StatsCardManagerAccount key={index} stat={stat} index={index} />
                     ))}
                 </div>
                 <Card>
@@ -157,7 +223,14 @@ export default function ManagerAccountContent() {
                         <CardTitle>Danh sách tài khoản</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <FilterSearchManagerAccount />
+                        <FilterSearchManagerAccount
+                            searchTerm={searchTerm}
+                            setSearchTerm={setSearchTerm}
+                            statusFilter={statusFilter}
+                            setStatusFilter={setStatusFilter}
+                            roleFilter={roleFilter}
+                            setRoleFilter={setRoleFilter}
+                        />
                         <TableManagerAccount filteredAccounts={filteredAccounts} getRoleIcon={getRoleIcon} getRoleName={getRoleName} getStatusBadge={getStatusBadge} handleViewAccount={handleViewAccount} handleEditAccount={handleEditAccount} />
                         {filteredAccounts.length === 0 && (
                             <div className="text-center py-8">
