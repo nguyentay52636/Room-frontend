@@ -1,3 +1,8 @@
+ export interface role { 
+  ten : string 
+  moTa : string 
+
+ }
 export interface User {
   _id: string
   ten: string
@@ -92,3 +97,21 @@ export interface Customer {
   createdAt?: string
   updatedAt?: string
 }
+
+export interface Employee { 
+  nguoiDungId?: User | string 
+  phongBan : string 
+  chucVu : string 
+  ngayVaoLam : string 
+  ngaySinh : string 
+  gioiTinh : string 
+  soDienThoai : string 
+  email : string 
+  createdAt?: string 
+  updatedAt?: string 
+  __v?: number 
+}
+
+export interface HostHome  { 
+
+}  
