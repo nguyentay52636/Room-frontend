@@ -1,6 +1,6 @@
 
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 
 
@@ -19,13 +19,23 @@ import ManagerEmployeeHeader from "./components/ManagerEmployeeHeader"
 import ManagerEmployeeCards from "./components/ManagerEmployeeCards"
 import ManagerEmployeeTable from "./components/ManagerEmployeeTable"
 import { staff } from "./components/data/employee"
-
+import { getEmployees } from "@/lib/apis/employeeApi"
+import { Employee } from "@/lib/apis/types"
 export default function ManagerEmployeeContent() {
     const [searchQuery, setSearchQuery] = useState("")
     const [dialogOpen, setDialogOpen] = useState(false)
     const [dialogMode, setDialogMode] = useState<"add" | "edit" | "view">("add")
     const [selectedStaff, setSelectedStaff] = useState(null)
+    const [employees, setEmployees] = useState<Employee[]>([])
+    useEffect(() => {
+        const fetchEmployees = async () => {
+            const employees = await getEmployees()
+            console.log(employees)
+            setEmployees(employees.data)
 
+        }
+        fetchEmployees()
+    }, [])
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1)
     const [rowsPerPage, setRowsPerPage] = useState(10)

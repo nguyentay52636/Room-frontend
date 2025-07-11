@@ -102,11 +102,10 @@ export interface Employee {
   nguoiDungId?: User | string 
   phongBan : string 
   chucVu : string 
-  ngayVaoLam : string 
-  ngaySinh : string 
-  gioiTinh : string 
-  soDienThoai : string 
-  email : string 
+  luong : number 
+  hieuSuat : number 
+  ngayVaoLam : Date 
+  trangThai : string 
   createdAt?: string 
   updatedAt?: string 
   __v?: number 
