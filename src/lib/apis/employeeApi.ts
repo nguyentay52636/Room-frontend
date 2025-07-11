@@ -1,12 +1,11 @@
 import baseApi from "./baseApi"
-import { IAPIResponseWrapperArray } from "./responseApi"
+import { IAPIResponseWrapperArray, IEmployeeResponse } from "./responseApi"
 import { Employee } from "./types"
 
 export const getEmployees = async ()=> { 
     try {
-        const {data} = await baseApi.get<IAPIResponseWrapperArray<Employee>>("/employee")
-
-        return data 
+        const {data} = await baseApi.get<IEmployeeResponse>("/employee")
+        return { data: data.employees } 
     } catch (error:any) {
         throw new Error(error.message)
     }

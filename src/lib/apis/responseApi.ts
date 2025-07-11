@@ -4,3 +4,8 @@ export interface IAPIResponseWrapperArray<T> {
     message: string;
     data: T[];
 }
+
+export interface IEmployeeResponse {
+    message: string;
+    employees: any[];
+}

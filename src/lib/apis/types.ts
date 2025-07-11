@@ -99,7 +99,7 @@ export interface Customer {
 }
 
 export interface Employee { 
-  nguoiDungId?: User | string 
+  nguoiDungId?: User 
   phongBan : string 
   chucVu : string 
   luong : number 

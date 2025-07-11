@@ -10,7 +10,10 @@ import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
 
-export default function ManagerEmployeeTable({ filteredStaff, searchQuery, setSearchQuery, handleViewStaff, handleEditStaff, handleDeleteStaff, paginatedStaff, getPositionIcon, getPositionLabel, getDepartmentLabel, getStatusBadge }: { filteredStaff: any, searchQuery: any, setSearchQuery: any, handleViewStaff: any, handleEditStaff: any, handleDeleteStaff: any, paginatedStaff: any, getPositionIcon: any, getPositionLabel: any, getDepartmentLabel: any, getStatusBadge: any }) {
+export default function ManagerEmployeeTable({ filteredEmployees, searchQuery, setSearchQuery, handleViewStaff, handleEditStaff, handleDeleteStaff, getPositionIcon, getPositionLabel, getDepartmentLabel, getStatusBadge }: { filteredEmployees: any, searchQuery: any, setSearchQuery: any, handleViewStaff: any, handleEditStaff: any, handleDeleteStaff: any, getPositionIcon: any, getPositionLabel: any, getDepartmentLabel: any, getStatusBadge: any }) {
+    // Add null check for filteredEmployees
+    const employees = filteredEmployees || []
+
     return (
         <>
             <Card className="shadow-xl border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
@@ -24,7 +27,7 @@ export default function ManagerEmployeeTable({ filteredStaff, searchQuery, setSe
                                 <span>Danh sách nhân viên</span>
                             </CardTitle>
                             <CardDescription>
-                                Quản lý và theo dõi tất cả nhân viên ({filteredStaff.length} nhân viên)
+                                Quản lý và theo dõi tất cả nhân viên ({employees.length} nhân viên)
                             </CardDescription>
                         </div>
                         <div className="flex items-center space-x-3">
@@ -61,23 +64,23 @@ export default function ManagerEmployeeTable({ filteredStaff, searchQuery, setSe
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {paginatedStaff.map((person: any) => (
-                                        <TableRow key={person.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                    {employees.map((person: any) => (
+                                        <TableRow key={person._id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                             <TableCell>
                                                 <div className="flex items-center space-x-4">
                                                     <div className="relative">
                                                         <Avatar className="h-10 w-10 border-2 border-gray-200 dark:border-gray-700">
-                                                            <AvatarImage src={person.avatar || "/placeholder.svg"} alt={person.name} />
+                                                            <AvatarImage src={person.nguoiDungId.anhDaiDien || "/placeholder.svg"} alt={person.nguoiDungId.ten} />
                                                             <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
-                                                                {person.name.charAt(0)}
+                                                                {person.nguoiDungId.ten.charAt(0)}
                                                             </AvatarFallback>
                                                         </Avatar>
                                                         <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
                                                     </div>
                                                     <div>
-                                                        <div className="font-semibold text-gray-900 dark:text-gray-100">{person.name}</div>
+                                                        <div className="font-semibold text-gray-900 dark:text-gray-100">{person.nguoiDungId.ten}</div>
                                                         <div className="text-sm text-gray-500 dark:text-gray-400">
-                                                            ID: #{person.id.toString().padStart(3, "0")}
+                                                            ID: #{person.nguoiDungId._id.toString().padStart(3, "0")}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -86,41 +89,41 @@ export default function ManagerEmployeeTable({ filteredStaff, searchQuery, setSe
                                                 <div className="space-y-2">
                                                     <div className="flex items-center text-sm bg-gray-50 dark:bg-gray-800 rounded-lg px-3 py-1">
                                                         <Mail className="h-3 w-3 mr-2 text-blue-600" />
-                                                        <span className="truncate">{person.email}</span>
+                                                        <span className="truncate">{person.nguoiDungId.email}</span>
                                                     </div>
                                                     <div className="flex items-center text-sm bg-gray-50 dark:bg-gray-800 rounded-lg px-3 py-1">
                                                         <Phone className="h-3 w-3 mr-2 text-green-600" />
-                                                        <span>{person.phone}</span>
+                                                        <span>{person.nguoiDungId.soDienThoai}</span>
                                                     </div>
                                                 </div>
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex items-center space-x-2">
-                                                    {getPositionIcon(person.position)}
-                                                    <span className="font-medium">{getPositionLabel(person.position)}</span>
+                                                    {getPositionIcon(person.chucVu)}
+                                                    <span className="font-medium">{getPositionLabel(person.chucVu)}</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell>
                                                 <Badge variant="outline" className="border-gray-300 dark:border-gray-600">
-                                                    {getDepartmentLabel(person.department)}
+                                                    {getDepartmentLabel(person.phongBan)}
                                                 </Badge>
                                             </TableCell>
-                                            <TableCell>{getStatusBadge(person.status)}</TableCell>
+                                            <TableCell>{getStatusBadge(person.trangThai)}</TableCell>
                                             <TableCell>
                                                 <div className="flex items-center space-x-2">
                                                     <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                                                         <div
                                                             className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-300"
-                                                            style={{ width: `${person.performance}%` }}
+                                                            style={{ width: `${person.hieuSuat}%` }}
                                                         ></div>
                                                     </div>
-                                                    <span className="text-sm font-medium text-green-600">{person.performance}%</span>
+                                                    <span className="text-sm font-medium text-green-600">{person.hieuSuat}%</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex items-center space-x-1 font-semibold text-green-600">
                                                     <DollarSign className="h-4 w-4" />
-                                                    <span>{Number.parseInt(person.salary).toLocaleString("vi-VN")}</span>
+                                                    <span>{Number.parseInt(person.luong).toLocaleString("vi-VN")}</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="text-right">
@@ -147,7 +150,7 @@ export default function ManagerEmployeeTable({ filteredStaff, searchQuery, setSe
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem
                                                             className="text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-                                                            onClick={() => handleDeleteStaff(person.id)}
+                                                            onClick={() => handleDeleteStaff(person._id)}
                                                         >
                                                             <Trash2 className="h-4 w-4 mr-2" />
                                                             Xóa
