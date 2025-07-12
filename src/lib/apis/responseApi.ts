@@ -1,4 +1,4 @@
-import { User } from "./types"; 
+import { Customer, User } from "./types"; 
 export interface IAPIResponseWrapperArray<T> {
     statusCode: number;
     message: string;
@@ -15,5 +15,7 @@ export interface IEmployeeResponse {
     employees: any[];
 }
 
-
-
+export interface ICustomerResponse {
+    message: string;
+    customers: Customer[];
+}

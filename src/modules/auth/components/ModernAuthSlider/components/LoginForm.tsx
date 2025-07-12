@@ -5,6 +5,7 @@ import { Chrome, Github, AlertCircle, Eye, EyeOff, Facebook } from "lucide-react
 import { FormMotion } from "./Animation/FormMotion"
 import React from "react"
 
+
 interface LoginFormProps {
     formData: {
         username: string
@@ -154,6 +155,7 @@ export function LoginForm({
                         Đăng nhập bằng facebook
                     </Button>
                 </FormMotion>
+             
             </form>
         </FormMotion>
     )

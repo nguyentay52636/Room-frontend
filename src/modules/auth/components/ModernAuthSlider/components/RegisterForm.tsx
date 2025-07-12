@@ -5,7 +5,13 @@ import { Chrome, Github, AlertCircle, Eye, EyeOff } from "lucide-react"
 
 import React from "react"
 import { FormMotion } from "./Animation/FormMotion"
-
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 interface RegisterFormProps {
     formData: {
         email: string
@@ -243,6 +249,26 @@ export function RegisterForm({
                         </div>
                     )}
                 </FormMotion>
+                <FormMotion
+                    className="space-y-2"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 1.0 }}
+                >
+                    <Label htmlFor="group" className="text-gray-700 font-medium">
+                        Vai Trò
+                    </Label>
+                    <Select>
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Vai Trò" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="light">Khách hàng</SelectItem>
+                            <SelectItem value="dark">Chú nhà</SelectItem>
+
+                        </SelectContent>
+                    </Select>
+                </FormMotion>
 
                 <FormMotion
                     className="pt-2"
@@ -283,7 +309,7 @@ export function RegisterForm({
                     </Button>
 
                 </FormMotion>
-            </form>
-        </FormMotion>
+            </form >
+        </FormMotion >
     )
 } 

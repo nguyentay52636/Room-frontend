@@ -22,6 +22,7 @@ import { Customer } from "@/lib/apis/types"
 import { CustomerViewDialog } from "./components/Dialog/CustomerViewDialog"
 import { EditCustomerForm } from "./components/Dialog/EditCustomer/EditCustomerForm"
 import { AddCustomerDialog } from "./components/Dialog/AddCustomer/AddCustomerDialog"
+import { ICustomerResponse } from "@/lib/apis/responseApi"
 export default function ManagerCustomersContent() {
     const [searchTerm, setSearchTerm] = useState("")
     const [statusFilter, setStatusFilter] = useState("all")
@@ -38,8 +39,8 @@ export default function ManagerCustomersContent() {
         const fetchCustomers = async () => {
             try {
                 const response = await getCustomers();
-                setCustomers(response.data);
-                console.log(response.data)
+                setCustomers(response.customers);
+                console.log(response.customers)
             } catch (error: any) {
                 throw new Error(error.message)
             }

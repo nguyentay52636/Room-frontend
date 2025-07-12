@@ -28,10 +28,10 @@ export default function FilterSearchManagerCustomer({ searchTerm, statusFilter, 
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                        <SelectItem value="active">Hoạt động</SelectItem>
-                        <SelectItem value="inactive">Không hoạt động</SelectItem>
-                        <SelectItem value="pending">Chờ duyệt</SelectItem>
-                        <SelectItem value="blocked">Bị khóa</SelectItem>
+                        <SelectItem value="hoat_dong">Hoạt động</SelectItem>
+                        <SelectItem value="khong_hoat_dong">Không hoạt động</SelectItem>
+                        <SelectItem value="cho_duyet">Chờ duyệt</SelectItem>
+                        <SelectItem value="bi_khoa">Bị khóa</SelectItem>
                     </SelectContent>
                 </Select>
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
@@ -40,9 +40,9 @@ export default function FilterSearchManagerCustomer({ searchTerm, statusFilter, 
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">Tất cả loại</SelectItem>
+                        <SelectItem value="vip">VIP</SelectItem>
+                        <SelectItem value="standard">Thường</SelectItem>
                         <SelectItem value="premium">Premium</SelectItem>
-                        <SelectItem value="regular">Thường</SelectItem>
-                        <SelectItem value="new">Mới</SelectItem>
                     </SelectContent>
                 </Select>
                 <Button variant="outline">

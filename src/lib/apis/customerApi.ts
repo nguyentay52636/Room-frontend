@@ -1,11 +1,11 @@
 import baseApi from "./baseApi"
 import { Customer } from "./types"
-import { IAPIResponseWrapperArray } from "./responseApi"  
+import {  IAPIResponseWrapperArray, ICustomerResponse } from "./responseApi"  
 
 
 export const getCustomers = async () => { 
    try {
-    const {data} = await baseApi.get<IAPIResponseWrapperArray<Customer>>("/customer")
+    const {data} = await baseApi.get<ICustomerResponse>("/customer")
     return data
    } catch (error:any) {
     throw new Error(error.message)
@@ -13,7 +13,7 @@ export const getCustomers = async () => {
 } 
 export const getCustomerById = async (id:string) => {  
     try {
-        const {data} = await baseApi.get<IAPIResponseWrapperArray<Customer>>(`/customer/${id}`)
+        const {data} = await baseApi.get<ICustomerResponse>(`/customer/${id}`)
         return data;
     }catch (error : any) { 
         throw new Error(error.message)
@@ -35,7 +35,7 @@ export const createCustomer = async ({nguoiDungId, diaChi, loai, tongChiTieu, so
             lanHoatDongGanNhat,
             ghiChu  
         }
-        const {data} = await baseApi.post<IAPIResponseWrapperArray<Customer>>("/customer", newCustomer)
+        const {data} = await baseApi.post<ICustomerResponse>("/customer", newCustomer)
         return data;
     }catch (error : any) { 
         throw new Error(error.message)
@@ -57,7 +57,7 @@ export const updateCustomer = async (id:string, {nguoiDungId, diaChi, loai, tong
             lanHoatDongGanNhat,
             ghiChu
         }
-        const {data} = await baseApi.put<IAPIResponseWrapperArray<Customer>>(`/customer/${id}`, updateCustomer)
+        const {data} = await baseApi.put<ICustomerResponse>(`/customer/${id}`, updateCustomer)
         return data;
     }catch (error : any) { 
         throw new Error(error.message)
@@ -65,7 +65,7 @@ export const updateCustomer = async (id:string, {nguoiDungId, diaChi, loai, tong
 }
 export const deleteCustomer = async (id:string) => { 
     try {
-        const {data} = await baseApi.delete<IAPIResponseWrapperArray<Customer>>(`/customer/${id}`)
+        const {data} = await baseApi.delete<ICustomerResponse>(`/customer/${id}`)
         return data;
     }catch (error : any) { 
         throw new Error(error.message)

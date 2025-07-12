@@ -81,7 +81,8 @@ text: string
   color: string
 }
 export interface Customer { 
-  nguoiDungId?:  User | string
+  _id?: string
+  nguoiDungId: User
   diaChi: string
   loai: string
   tongChiTieu: number
@@ -89,13 +90,13 @@ export interface Customer {
   soBdsYeuThich: number
   soDanhGia: number
   diemTrungBinh: number
-  bdsDangThueHienTai: number
+  bdsDangThueHienTai: string
   ngayKetThucHopDong: string
   lanHoatDongGanNhat: string
-  ghiChu: string
-  __v: number
+  ghiChu?: string
   createdAt?: string
   updatedAt?: string
+  __v?: number
 }
 
 export interface Employee { 

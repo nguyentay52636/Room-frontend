@@ -1,10 +1,21 @@
 
 import { Table, TableHead, TableRow, TableHeader, TableBody, TableCell } from '@/components/ui/table'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Mail, Phone, MoreHorizontal, Calendar, Edit, Settings, Trash2, Eye } from 'lucide-react'
+import { Mail, Phone, MoreHorizontal, Calendar, Edit, Settings, Trash2, Eye, EyeOff } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+
 export default function TableManagerAccount({ filteredAccounts, getRoleIcon, getRoleName, getStatusBadge, handleViewAccount, handleEditAccount }: { filteredAccounts: any, getRoleIcon: any, getRoleName: any, getStatusBadge: any, handleViewAccount: any, handleEditAccount: any }) {
+    const [visiblePasswords, setVisiblePasswords] = useState<{ [key: string]: boolean }>({})
+
+    const togglePasswordVisibility = (accountId: string) => {
+        setVisiblePasswords(prev => ({
+            ...prev,
+            [accountId]: !prev[accountId]
+        }))
+    }
+
     return (
         <div className="rounded-md border overflow-hidden">
             <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
@@ -15,7 +26,12 @@ export default function TableManagerAccount({ filteredAccounts, getRoleIcon, get
                             <TableHead className="min-w-[250px]">Tài khoản</TableHead>
                             <TableHead className="min-w-[150px]">Email</TableHead>
                             <TableHead className="min-w-[150px]">Tên đăng nhập</TableHead>
-                            <TableHead className="min-w-[150px]">Mật khẩu</TableHead>
+                            <TableHead className="min-w-[150px]">
+                                <div className="flex items-center space-x-2">
+                                    <span>Mật khẩu</span>
+                                    <Eye className="h-4 w-4 text-gray-500" />
+                                </div>
+                            </TableHead>
                             <TableHead className="min-w-[150px]">Số điện thoại</TableHead>
                             <TableHead className="min-w-[100px]">Ảnh đại diện</TableHead>
                             <TableHead className="min-w-[120px]">Vai trò</TableHead>
@@ -51,7 +67,23 @@ export default function TableManagerAccount({ filteredAccounts, getRoleIcon, get
                                 <TableCell className="min-w-[150px]">{account.email}</TableCell>
                                 <TableCell className="min-w-[150px]">{account.tenDangNhap}</TableCell>
                                 <TableCell className="min-w-[150px]">
-                                    <span className="text-gray-500">••••••••</span>
+                                    <div className="flex items-center space-x-2">
+                                        <span className="text-gray-500">
+                                            {visiblePasswords[account._id] ? account.matKhau || '••••••••' : '••••••••'}
+                                        </span>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-6 w-6 p-0 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                            onClick={() => togglePasswordVisibility(account._id)}
+                                        >
+                                            {visiblePasswords[account._id] ? (
+                                                <EyeOff className="h-3 w-3 text-gray-500" />
+                                            ) : (
+                                                <Eye className="h-3 w-3 text-gray-500" />
+                                            )}
+                                        </Button>
+                                    </div>
                                 </TableCell>
                                 <TableCell className="min-w-[150px]">{account.soDienThoai}</TableCell>
                                 <TableCell className="min-w-[100px]">
