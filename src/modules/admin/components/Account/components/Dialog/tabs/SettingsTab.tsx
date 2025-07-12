@@ -3,6 +3,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Settings } from "lucide-react"
+import { useEffect } from "react"
+import { useState } from "react"
+import { getRoles } from "@/lib/apis/roleApi"
+import { role } from "@/lib/apis/types"
 
 interface SettingsTabProps {
     formData: any
@@ -11,6 +15,26 @@ interface SettingsTabProps {
 }
 
 export function SettingsTab({ formData, isReadOnly, onInputChange }: SettingsTabProps) {
+    const [roles, setRoles] = useState<role[]>([])
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+
+    useEffect(() => {
+        const fetchRoles = async () => {
+            setIsLoading(true)
+            try {
+                const response = await getRoles()
+
+                setRoles(response)
+            } catch (error) {
+                setError(error as string)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+        fetchRoles()
+    }, [])
+
     return (
         <Card>
             <CardHeader>
@@ -29,14 +53,12 @@ export function SettingsTab({ formData, isReadOnly, onInputChange }: SettingsTab
                             disabled={isReadOnly}
                         >
                             <SelectTrigger>
-                                <SelectValue />
+                                <SelectValue placeholder="Chọn vai trò" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="admin">Admin</SelectItem>
-                                <SelectItem value="manager">Manager</SelectItem>
-                                <SelectItem value="staff">Staff</SelectItem>
-                                <SelectItem value="owner">Owner</SelectItem>
-                                <SelectItem value="customer">Customer</SelectItem>
+                                {roles.map((role) => (
+                                    <SelectItem key={role._id} value={role._id || ""}>{role.ten}</SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                     </div>
@@ -51,10 +73,9 @@ export function SettingsTab({ formData, isReadOnly, onInputChange }: SettingsTab
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="active">Hoạt động</SelectItem>
-                                <SelectItem value="inactive">Không hoạt động</SelectItem>
-                                <SelectItem value="suspended">Tạm khóa</SelectItem>
-                                <SelectItem value="pending">Chờ duyệt</SelectItem>
+                                <SelectItem value="hoat_dong">Hoạt động</SelectItem>
+                                <SelectItem value="khoa">Không hoạt động</SelectItem>
+                                <SelectItem value="tam_khoa">Tạm khóa</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

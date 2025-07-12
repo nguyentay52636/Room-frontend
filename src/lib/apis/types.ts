@@ -1,4 +1,5 @@
  export interface role { 
+  _id? : string 
   ten : string 
   moTa : string 
 

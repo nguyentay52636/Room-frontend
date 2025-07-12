@@ -4,7 +4,6 @@ import { Label } from "@/components/ui/label"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { User } from "lucide-react"
-import { BadgeDisplay } from "../components/BadgeDisplay"
 
 interface BasicInfoTabProps {
     formData: any
@@ -25,8 +24,8 @@ export function BasicInfoTab({ formData, account, isReadOnly, onInputChange }: B
             <CardContent className="space-y-4">
                 <div className="flex items-center space-x-4 mb-6">
                     <Avatar className="h-20 w-20">
-                        <AvatarImage src={account?.avatar || "/placeholder.svg?height=80&width=80"} />
-                        <AvatarFallback className="text-lg">{formData.name.charAt(0)}</AvatarFallback>
+                        <AvatarImage src={account?.anhDaiDien || "/placeholder.svg?height=80&width=80"} />
+                        <AvatarFallback className="text-lg">{formData.ten.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div className="space-y-2">
                         {!isReadOnly && (
@@ -34,7 +33,7 @@ export function BasicInfoTab({ formData, account, isReadOnly, onInputChange }: B
                                 Thay đổi ảnh
                             </Button>
                         )}
-                        <BadgeDisplay role={formData.role} status={formData.status} />
+
                     </div>
                 </div>
 
@@ -43,8 +42,8 @@ export function BasicInfoTab({ formData, account, isReadOnly, onInputChange }: B
                         <Label htmlFor="name">Họ và tên *</Label>
                         <Input
                             id="name"
-                            value={formData.name}
-                            onChange={(e) => onInputChange("name", e.target.value)}
+                            value={formData.ten}
+                            onChange={(e) => onInputChange("ten", e.target.value)}
                             disabled={isReadOnly}
                             placeholder="Nhập họ và tên"
                         />
@@ -64,20 +63,20 @@ export function BasicInfoTab({ formData, account, isReadOnly, onInputChange }: B
                         <Label htmlFor="phone">Số điện thoại</Label>
                         <Input
                             id="phone"
-                            value={formData.phone}
-                            onChange={(e) => onInputChange("phone", e.target.value)}
+                            value={formData.soDienThoai}
+                            onChange={(e) => onInputChange("soDienThoai", e.target.value)}
                             disabled={isReadOnly}
                             placeholder="Nhập số điện thoại"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="department">Phòng ban</Label>
+                        <Label htmlFor="department">Vị trí</Label>
                         <Input
-                            id="department"
-                            value={formData.department}
-                            onChange={(e) => onInputChange("department", e.target.value)}
+                            id="vaiTro"
+                            value={formData.vaiTro}
+                            onChange={(e) => onInputChange("vaiTro", e.target.value)}
                             disabled={isReadOnly}
-                            placeholder="Nhập phòng ban"
+                            placeholder="Nhập vị trí"
                         />
                     </div>
                 </div>

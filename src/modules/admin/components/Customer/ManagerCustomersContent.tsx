@@ -22,7 +22,7 @@ import { Customer } from "@/lib/apis/types"
 import { CustomerViewDialog } from "./components/Dialog/CustomerViewDialog"
 import { EditCustomerForm } from "./components/Dialog/EditCustomer/EditCustomerForm"
 import { AddCustomerDialog } from "./components/Dialog/AddCustomer/AddCustomerDialog"
-import { ICustomerResponse } from "@/lib/apis/responseApi"
+
 export default function ManagerCustomersContent() {
     const [searchTerm, setSearchTerm] = useState("")
     const [statusFilter, setStatusFilter] = useState("all")

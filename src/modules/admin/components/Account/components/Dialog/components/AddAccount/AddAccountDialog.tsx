@@ -1,4 +1,4 @@
-import { useState } from "react"
+
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -9,22 +9,21 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Settings, User } from "lucide-react"
+import { User } from "lucide-react"
 import { BasicInfoTab } from "./tabs/BasicInfoTab"
+import { useAccountForm } from "./hooks/useAccountForm"
 import { SecurityTab } from "./tabs/SecurityTab"
 import { SettingsTab } from "./tabs/SettingsTab"
 import { ActivityTab } from "./tabs/ActivityTab"
-import { useAccountForm } from "./components/AddAccount/hooks/useAccountForm"
-
 
 interface AccountDialogProps {
-    account: any
+    account: Record<string, unknown> | null
     open: boolean
     onOpenChange: (open: boolean) => void
     mode: "view" | "edit" | "create"
 }
 
-export function DialogAddAccount({ account, open, onOpenChange, mode }: AccountDialogProps) {
+export function AddAccountDialog({ account, open, onOpenChange, mode }: AccountDialogProps) {
     const {
         formData,
         showPassword,
