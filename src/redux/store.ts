@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'; // Nhập hàm configureStore từ Redux Toolkit
-import countReducer from './slices/countSlice'; // Nhập reducer count từ countSlice
+import authReducer from './slices/authSlice'; // Nhập reducer auth từ authSlice
 
 // Tạo store với reducer là count
 const store = configureStore({
   reducer: {
-    count: countReducer, // Gán reducer count vào state
+    auth: authReducer, // Gán reducer auth vào state
   },
 });
 

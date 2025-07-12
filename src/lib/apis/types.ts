@@ -4,19 +4,31 @@
   moTa : string 
 
  }
-export interface User {
+ export interface ILoginDataType {
+  user: IUser;
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface IRefreshTokenDataType {
+  accessToken: string;
+  refreshToken: string;
+}
+export interface IUser {
   _id?: string
   ten: string
   email: string
   tenDangNhap: string
   matKhau: string
   soDienThoai: string
-  vaiTro: string | role
-  anhDaiDien: string
-  trangThai: string
+  vaiTro?: role|string
+  anhDaiDien?: string
+  trangThai?: string
   createdAt?: string
   updatedAt?: string
 }
+
+export type User = IUser
 
 export interface Overlay {
   category: string
