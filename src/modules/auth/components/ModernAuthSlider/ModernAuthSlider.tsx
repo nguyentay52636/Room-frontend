@@ -79,13 +79,11 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                 const response = await dispatch(login({ tenDangNhap: formData.tenDangNhap, matKhau: formData.matKhau })).unwrap();
 
                 console.log('Full login response:', response);
-                console.log('Response structure:', JSON.stringify(response, null, 2));
 
-                // Check if login was successful
-                const isSuccess = response.statusCode === 200 || response.data || response.user;
-                const userData = response.data?.user || response.user;
+                // Kiểm tra nếu login thành công
+                if (response && response.user && response.accessToken) {
+                    const userData = response.user;
 
-                if (isSuccess && userData) {
                     toast.success('Đăng nhập thành công!', {
                         description: `Chào mừng ${userData.tenDangNhap}`,
                     });
@@ -93,6 +91,11 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                     console.log('User data:', userData);
                     console.log('User role:', userData.vaiTro);
                     console.log('User role name:', userData.vaiTro?.ten);
+
+                    // Đóng modal nếu có
+                    if (onClose) {
+                        onClose();
+                    }
 
                     // Navigate based on user role
                     if (userData.vaiTro?.ten === "nguoi_thue") {
@@ -104,7 +107,7 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                     }
                 } else {
                     toast.error('Đăng nhập thất bại', {
-                        description: 'Có lỗi xảy ra khi đăng nhập',
+                        description: 'Thông tin đăng nhập không chính xác',
                     });
                 }
             } catch (err: any) {
