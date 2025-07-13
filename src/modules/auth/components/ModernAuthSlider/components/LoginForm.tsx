@@ -8,19 +8,21 @@ import React from "react"
 
 interface LoginFormProps {
     formData: {
-        username: string
-        password: string
+        tenDangNhap: string
+        matKhau: string
     }
     errors: {
-        username?: string
-        password?: string
+        tenDangNhap?: string
+        matKhau?: string
     }
+
     showPassword: boolean
     isLoading: boolean
-    onInputChange: (field: string, value: string) => void
+    onInputChange: (field: keyof { tenDangNhap: string; matKhau: string }, value: string) => void
     onShowPassword: () => void
     onSubmit: (e: React.FormEvent) => void
     onSocialLogin: (provider: string) => void
+    handleSubmitLogin: (e: React.FormEvent) => void
 }
 
 export function LoginForm({
@@ -30,8 +32,8 @@ export function LoginForm({
     isLoading,
     onInputChange,
     onShowPassword,
-    onSubmit,
-    onSocialLogin,
+    handleSubmitLogin,
+
 }: LoginFormProps) {
     return (
         <FormMotion
@@ -50,7 +52,7 @@ export function LoginForm({
                 <h2 className="text-4xl font-bold text-gray-800 mb-2">Đăng nhập</h2>
                 <p className="text-gray-600">hoặc sử dụng tài khoản đã đăng ký của bạn.</p>
             </FormMotion>
-            <form onSubmit={onSubmit} className="space-y-6">
+            <form onSubmit={handleSubmitLogin} className="space-y-6">
                 <FormMotion
                     className="space-y-2"
                     initial={{ opacity: 0, y: 20 }}
@@ -65,14 +67,14 @@ export function LoginForm({
                         id="username"
                         type="text"
                         placeholder="Nhập tên đăng nhập"
-                        value={formData.username}
-                        onChange={e => onInputChange("username", e.target.value)}
-                        className={`h-12 border-2 border-gray-200 rounded-lg focus:border-blue-400 focus:ring-0 transition-all duration-300 ${errors.username ? "border-red-400" : ""}`}
+                        value={formData.tenDangNhap}
+                        onChange={e => onInputChange("tenDangNhap", e.target.value)}
+                        className={`h-12 border-2 border-gray-200 rounded-lg focus:border-blue-400 focus:ring-0 transition-all duration-300 ${errors.tenDangNhap ? "border-red-400" : ""}`}
                     />
-                    {errors.username && (
+                    {errors.tenDangNhap && (
                         <div className="flex items-center gap-2 text-red-500 text-sm animate-fadeIn">
                             <AlertCircle className="w-4 h-4" />
-                            {errors.username}
+                            {errors.tenDangNhap}
                         </div>
                     )}
                 </FormMotion>
@@ -91,9 +93,9 @@ export function LoginForm({
                             id="password"
                             type={showPassword ? "text" : "password"}
                             placeholder="Nhập mật khẩu"
-                            value={formData.password}
-                            onChange={e => onInputChange("password", e.target.value)}
-                            className={`h-12 border-2 border-gray-200 rounded-lg focus:border-blue-400 focus:ring-0 transition-all duration-300 pr-10 ${errors.password ? "border-red-400" : ""}`}
+                            value={formData.matKhau}
+                            onChange={e => onInputChange("matKhau", e.target.value)}
+                            className={`h-12 border-2 border-gray-200 rounded-lg focus:border-blue-400 focus:ring-0 transition-all duration-300 pr-10 ${errors.matKhau ? "border-red-400" : ""}`}
                         />
                         <button
                             type="button"
@@ -103,10 +105,10 @@ export function LoginForm({
                             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                         </button>
                     </div>
-                    {errors.password && (
+                    {errors.matKhau && (
                         <div className="flex items-center gap-2 text-red-500 text-sm animate-fadeIn">
                             <AlertCircle className="w-4 h-4" />
-                            {errors.password}
+                            {errors.matKhau}
                         </div>
                     )}
                 </FormMotion>
@@ -140,7 +142,7 @@ export function LoginForm({
                         type="button"
                         variant="outline"
                         className="w-full cursor-pointer h-12 border-2 border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:shadow-md"
-                        onClick={() => onSocialLogin("google")}
+
                     >
                         <Chrome className="w-5 h-5 mr-2 text-red-500" />
                         Đăng nhập bằng google
@@ -149,13 +151,13 @@ export function LoginForm({
                         type="button"
                         variant="outline"
                         className="w-full cursor-pointer h-12 border-2 border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:shadow-md"
-                        onClick={() => onSocialLogin("github")}
+
                     >
                         <Facebook className="w-5 h-5 mr-2 text-blue-500" />
                         Đăng nhập bằng facebook
                     </Button>
                 </FormMotion>
-             
+
             </form>
         </FormMotion>
     )

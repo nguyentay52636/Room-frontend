@@ -76,26 +76,40 @@ export const login = createAsyncThunk(
           state.error = null;
         })
         .addCase(login.fulfilled, (state, action) => {
-          console.log('Login Response:', action.payload);
-          console.log('User Data:', action.payload.data.user);
-          console.log('User ID:', action.payload.data.user.id);
-  
+            console.log('Login Response:', action.payload);
+            console.log('Response structure:', JSON.stringify(action.payload, null, 2));
+          
           state.isLoading = false;
-          state.user = action.payload.data.user;
-          state.token = action.payload.data.accessToken;
-          state.isAuthenticated = true;
           state.error = null;
-  
-          // Lưu thông tin user vào localStorage với ID
-          const userData = {
-            ...action.payload.data.user,
-            id: action.payload.data.user.id, // Đảm bảo ID được lưu
-          };
-          console.log('Saving user data:', userData);
-  
-          localStorage.setItem('currentUser', JSON.stringify(userData));
-          localStorage.setItem('token', action.payload.data.accessToken);
-          localStorage.setItem('isAuthenticated', 'true');
+          
+          // Check if response is successful (assume 200 status code indicates success)
+          if (action.payload.statusCode === 200 || action.payload.data) {
+            const userData = action.payload.data?.user || action.payload.user;
+            const token = action.payload.data?.accessToken || action.payload.accessToken;
+            
+            if (userData && token) {
+              state.user = userData;
+              state.token = token;
+              state.isAuthenticated = true;
+      
+              // Lưu thông tin user vào localStorage với ID
+              const userDataToSave = {
+                ...userData,
+                id: userData.id, // Đảm bảo ID được lưu
+              };
+              console.log('Saving user data:', userDataToSave);
+      
+              localStorage.setItem('currentUser', JSON.stringify(userDataToSave));
+              localStorage.setItem('token', token);
+              localStorage.setItem('isAuthenticated', 'true');
+            } else {
+              state.error = 'Dữ liệu người dùng không hợp lệ';
+              state.isAuthenticated = false;
+            }
+          } else {
+            state.error = 'Đăng nhập thất bại';
+            state.isAuthenticated = false;
+          }
         })
         .addCase(login.rejected, (state, action) => {
           state.isLoading = false;
@@ -123,6 +137,7 @@ export const login = createAsyncThunk(
   });
   
   export const { logout, setCredentials, clearError, resetRegistrationSuccess } = authSlice.actions;
+  export { register }; // Export register function
   export default authSlice.reducer;
   export const selectAuth = (state: RootState) => state.auth;
   

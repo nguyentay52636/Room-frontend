@@ -14,27 +14,27 @@ import {
 } from "@/components/ui/select"
 interface RegisterFormProps {
     formData: {
+        ten: string
         email: string
-        password: string
-        confirmPassword: string
-        fullName: string
-        phone: string
-        username: string
-        group: string
+        tenDangNhap: string
+        matKhau: string
+        xacNhanMatKhau: string
+        soDienThoai: string
+        vaiTro: string
     }
     errors: {
+        ten?: string
         email?: string
-        password?: string
-        confirmPassword?: string
-        fullName?: string
-        phone?: string
-        username?: string
-        group?: string
+        tenDangNhap?: string
+        matKhau?: string
+        xacNhanMatKhau?: string
+        soDienThoai?: string
+        vaiTro?: string
     }
     showPassword: boolean
     showConfirmPassword: boolean
     isLoading: boolean
-    onInputChange: (field: string, value: string) => void
+    onInputChange: (field: keyof { ten: string; email: string; tenDangNhap: string; matKhau: string; xacNhanMatKhau: string; soDienThoai: string; vaiTro: string }, value: string) => void
     onShowPassword: () => void
     onShowConfirmPassword: () => void
     onSubmit: (e: React.FormEvent) => void
@@ -116,14 +116,14 @@ export function RegisterForm({
                         id="fullName"
                         type="text"
                         placeholder="Nhập họ và tên"
-                        value={formData.fullName}
-                        onChange={e => onInputChange("fullName", e.target.value)}
-                        className={`h- border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 ${errors.fullName ? "border-red-400" : ""}`}
+                        value={formData.ten}
+                        onChange={e => onInputChange("ten", e.target.value)}
+                        className={`h- border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 ${errors.ten ? "border-red-400" : ""}`}
                     />
-                    {errors.fullName && (
+                    {errors.ten && (
                         <div className="flex items-center gap-2 text-red-500 text-sm animate-fadeIn">
                             <AlertCircle className="w-4 h-4" />
-                            {errors.fullName}
+                            {errors.ten}
                         </div>
                     )}
                 </FormMotion>
@@ -142,14 +142,14 @@ export function RegisterForm({
                         id="username"
                         type="text"
                         placeholder="Nhập tên đăng nhập"
-                        value={formData.username}
-                        onChange={e => onInputChange("username", e.target.value)}
-                        className={` border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 ${errors.username ? "border-red-400" : ""}`}
+                        value={formData.tenDangNhap}
+                        onChange={e => onInputChange("tenDangNhap", e.target.value)}
+                        className={` border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 ${errors.tenDangNhap ? "border-red-400" : ""}`}
                     />
-                    {errors.username && (
+                    {errors.tenDangNhap && (
                         <div className="flex items-center gap-2 text-red-500 text-sm animate-fadeIn">
                             <AlertCircle className="w-4 h-4" />
-                            {errors.username}
+                            {errors.tenDangNhap}
                         </div>
                     )}
                 </FormMotion>
@@ -169,9 +169,9 @@ export function RegisterForm({
                             id="password"
                             type={showPassword ? "text" : "password"}
                             placeholder="Nhập mật khẩu"
-                            value={formData.password}
-                            onChange={e => onInputChange("password", e.target.value)}
-                            className={` border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 pr-10 ${errors.password ? "border-red-400" : ""}`}
+                            value={formData.matKhau}
+                            onChange={e => onInputChange("matKhau", e.target.value)}
+                            className={` border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 pr-10 ${errors.matKhau ? "border-red-400" : ""}`}
                         />
                         <button
                             type="button"
@@ -181,10 +181,10 @@ export function RegisterForm({
                             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                         </button>
                     </div>
-                    {errors.password && (
+                    {errors.matKhau && (
                         <div className="flex items-center gap-2 text-red-500 text-sm animate-fadeIn">
                             <AlertCircle className="w-4 h-4" />
-                            {errors.password}
+                            {errors.matKhau}
                         </div>
                     )}
                 </FormMotion>
@@ -204,9 +204,9 @@ export function RegisterForm({
                             id="confirmPassword"
                             type={showConfirmPassword ? "text" : "password"}
                             placeholder="Xác nhận mật khẩu"
-                            value={formData.confirmPassword}
-                            onChange={e => onInputChange("confirmPassword", e.target.value)}
-                            className={` border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 pr-10 ${errors.confirmPassword ? "border-red-400" : ""}`}
+                            value={formData.xacNhanMatKhau}
+                            onChange={e => onInputChange("xacNhanMatKhau", e.target.value)}
+                            className={` border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 pr-10 ${errors.xacNhanMatKhau ? "border-red-400" : ""}`}
                         />
                         <button
                             type="button"
@@ -216,10 +216,10 @@ export function RegisterForm({
                             {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                         </button>
                     </div>
-                    {errors.confirmPassword && (
+                    {errors.xacNhanMatKhau && (
                         <div className="flex items-center gap-2 text-red-500 text-sm animate-fadeIn">
                             <AlertCircle className="w-4 h-4" />
-                            {errors.confirmPassword}
+                            {errors.xacNhanMatKhau}
                         </div>
                     )}
                 </FormMotion>
@@ -238,14 +238,14 @@ export function RegisterForm({
                         id="phone"
                         type="tel"
                         placeholder="Nhập số điện thoại"
-                        value={formData.phone}
-                        onChange={e => onInputChange("phone", e.target.value)}
-                        className={` border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 ${errors.phone ? "border-red-400" : ""}`}
+                        value={formData.soDienThoai}
+                        onChange={e => onInputChange("soDienThoai", e.target.value)}
+                        className={` border-2 border-gray-200 rounded-lg focus:border-teal-400 focus:ring-0 transition-all duration-300 ${errors.soDienThoai ? "border-red-400" : ""}`}
                     />
-                    {errors.phone && (
+                    {errors.soDienThoai && (
                         <div className="flex items-center gap-2 text-red-500 text-sm animate-fadeIn">
                             <AlertCircle className="w-4 h-4" />
-                            {errors.phone}
+                            {errors.soDienThoai}
                         </div>
                     )}
                 </FormMotion>

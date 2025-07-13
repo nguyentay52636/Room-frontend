@@ -15,25 +15,29 @@ import { LoginForm } from "./components/LoginForm"
 import { RegisterForm } from "./components/RegisterForm"
 import { WelcomePanel } from "./components/WelcomePanel"
 import { AnimatedBackground } from "./components/AnimatedBackground"
+import { toast } from "sonner"
+import { login, register } from "@/redux/slices/authSlice"
+import { useDispatch } from "react-redux"
+import { AppDispatch } from "@/redux/store"
 
 interface FormData {
+    ten: string
     email: string
-    password: string
-    confirmPassword: string
-    fullName: string
-    phone: string
-    username: string
-    group: string
+    tenDangNhap: string
+    matKhau: string
+    xacNhanMatKhau: string
+    soDienThoai: string
+    vaiTro: string
 }
 
 interface FormErrors {
+    ten?: string
     email?: string
-    password?: string
-    confirmPassword?: string
-    fullName?: string
-    phone?: string
-    username?: string
-    group?: string
+    tenDangNhap?: string
+    matKhau?: string
+    xacNhanMatKhau?: string
+    soDienThoai?: string
+    vaiTro?: string
 }
 
 interface ModernAuthSliderProps {
@@ -53,16 +57,116 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
     const [pendingMode, setPendingMode] = useState<"login" | "register" | null>(null)
     const [direction, setDirection] = useState(1)
 
+    const dispatch = useDispatch<AppDispatch>()
+    const navigate = useNavigate()
     const [formData, setFormData] = useState<FormData>({
         email: "",
-        password: "",
-        confirmPassword: "",
-        fullName: "",
-        phone: "",
-        username: "",
-        group: "",
+        matKhau: "",
+        xacNhanMatKhau: "",
+        ten: "",
+        soDienThoai: "",
+        tenDangNhap: "",
+        vaiTro: "",
     })
     const [errors, setErrors] = useState<FormErrors>({})
+
+    const handleSubmitLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (formData.tenDangNhap && formData.matKhau) {
+            setIsLoading(true)
+            try {
+                const response = await dispatch(login({ tenDangNhap: formData.tenDangNhap, matKhau: formData.matKhau })).unwrap();
+
+                console.log('Full login response:', response);
+                console.log('Response structure:', JSON.stringify(response, null, 2));
+
+                // Check if login was successful
+                const isSuccess = response.statusCode === 200 || response.data || response.user;
+                const userData = response.data?.user || response.user;
+
+                if (isSuccess && userData) {
+                    toast.success('Đăng nhập thành công!', {
+                        description: `Chào mừng ${userData.tenDangNhap}`,
+                    });
+
+                    console.log('User data:', userData);
+                    console.log('User role:', userData.vaiTro);
+                    console.log('User role name:', userData.vaiTro?.ten);
+
+                    // Navigate based on user role
+                    if (userData.vaiTro?.ten === "nguoi_thue") {
+                        console.log('Navigating to user home page');
+                        navigate('/'); // User home page
+                    } else {
+                        console.log('Navigating to admin dashboard');
+                        navigate('/admin/home'); // Admin dashboard
+                    }
+                } else {
+                    toast.error('Đăng nhập thất bại', {
+                        description: 'Có lỗi xảy ra khi đăng nhập',
+                    });
+                }
+            } catch (err: any) {
+                console.error('Login error:', err);
+                toast.error('Đăng nhập thất bại', {
+                    description: err || 'Tên đăng nhập hoặc mật khẩu không đúng',
+                });
+            } finally {
+                setIsLoading(false)
+            }
+        } else {
+            toast.error('Vui lòng điền đầy đủ thông tin', {
+                description: 'Tên đăng nhập và mật khẩu là bắt buộc',
+            });
+        }
+    };
+
+    const handleSubmitRegister = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (!validateForm()) return
+
+        setIsLoading(true)
+        try {
+            const response = await dispatch(register({
+                email: formData.email,
+                ten: formData.ten,
+                tenDangNhap: formData.tenDangNhap,
+                matKhau: formData.matKhau,
+                soDienThoai: formData.soDienThoai,
+                vaiTro: formData.vaiTro
+            })).unwrap();
+
+            if (response.statusCode === 201) {
+                toast.success('Đăng ký thành công!', {
+                    description: 'Vui lòng đăng nhập để sử dụng dịch vụ',
+                });
+                setMode("login")
+                // Reset form
+                setFormData({
+                    email: "",
+                    matKhau: "",
+                    xacNhanMatKhau: "",
+                    ten: "",
+                    soDienThoai: "",
+                    tenDangNhap: "",
+                    vaiTro: "",
+                })
+            }
+        } catch (err: any) {
+            toast.error('Đăng ký thất bại', {
+                description: err || 'Vui lòng thử lại',
+            });
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const handleSocialLogin = (provider: string) => {
+        toast.info(`Đang phát triển`, {
+            description: `Tính năng đăng nhập bằng ${provider} đang được phát triển`,
+        });
+    }
 
     // Set mode based on pathname
     useEffect(() => {
@@ -111,35 +215,35 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
             newErrors.email = "Email không hợp lệ"
         }
 
-        if (!formData.password) {
-            newErrors.password = "Mật khẩu là bắt buộc"
-        } else if (formData.password.length < 6) {
-            newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự"
+        if (!formData.matKhau) {
+            newErrors.matKhau = "Mật khẩu là bắt buộc"
+        } else if (formData.matKhau.length < 6) {
+            newErrors.matKhau = "Mật khẩu phải có ít nhất 6 ký tự"
         }
 
         if (mode === "register") {
-            if (!formData.fullName) {
-                newErrors.fullName = "Họ và tên là bắt buộc"
+            if (!formData.ten) {
+                newErrors.ten = "Họ và tên là bắt buộc"
             }
 
-            if (!formData.username) {
-                newErrors.username = "Tên đăng nhập là bắt buộc"
+            if (!formData.tenDangNhap) {
+                newErrors.tenDangNhap = "Tên đăng nhập là bắt buộc"
             }
 
-            if (!formData.phone) {
-                newErrors.phone = "Số điện thoại là bắt buộc"
-            } else if (!/^[0-9]{10,11}$/.test(formData.phone)) {
-                newErrors.phone = "Số điện thoại không hợp lệ"
+            if (!formData.soDienThoai) {
+                newErrors.soDienThoai = "Số điện thoại là bắt buộc"
+            } else if (!/^[0-9]{10,11}$/.test(formData.soDienThoai)) {
+                newErrors.soDienThoai = "Số điện thoại không hợp lệ"
             }
 
-            if (!formData.confirmPassword) {
-                newErrors.confirmPassword = "Xác nhận mật khẩu là bắt buộc"
-            } else if (formData.password !== formData.confirmPassword) {
-                newErrors.confirmPassword = "Mật khẩu không khớp"
+            if (!formData.xacNhanMatKhau) {
+                newErrors.xacNhanMatKhau = "Xác nhận mật khẩu là bắt buộc"
+            } else if (formData.matKhau !== formData.xacNhanMatKhau) {
+                newErrors.xacNhanMatKhau = "Mật khẩu không khớp"
             }
 
-            if (!formData.group) {
-                newErrors.group = "Vui lòng chọn loại tài khoản"
+            if (!formData.vaiTro) {
+                newErrors.vaiTro = "Vui lòng chọn loại tài khoản"
             }
         }
 
@@ -147,20 +251,7 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
         return Object.keys(newErrors).length === 0
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if (!validateForm()) return
 
-        setIsLoading(true)
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 2000))
-            console.log(mode === "login" ? "Login:" : "Register:", formData)
-        } catch (error) {
-            console.error("Auth error:", error)
-        } finally {
-            setIsLoading(false)
-        }
-    }
 
     const handleInputChange = (field: keyof FormData, value: string) => {
         setFormData((prev) => ({ ...prev, [field]: value }))
@@ -169,9 +260,6 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
         }
     }
 
-    const handleSocialLogin = (provider: string) => {
-        console.log(`Login with ${provider}`)
-    }
 
     return (
         <div ref={containerRef} className="relative min-h-screen py-50 overflow-hidden">
@@ -207,78 +295,85 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                             className="absolute inset-0 grid lg:grid-cols-2"
                             style={{ zIndex: 2 }}
                         >
-                            {mode === "login" ? (                                <>
-                                    {/* Left Side - Login Form */}
-                                    <div className="flex flex-col justify-center p-8 lg:p-16 bg-white relative overflow-hidden">
-                                        {/* Decorative Elements */}
-                                        <div className="absolute top-10 left-10 w-20 h-20 opacity-10">
-                                            <div
-                                                className="w-full h-full border-4 border-pink-300 rounded-full animate-spin"
-                                                style={{ animationDuration: "20s" }}
-                                            />
-                                        </div>
-                                        <div className="absolute bottom-20 right-10 w-16 h-16 opacity-10">
-                                            <div className="w-full h-full bg-blue-300 rounded-lg rotate-45 animate-pulse" />
-                                        </div>
-                                        <LoginForm
-                                            formData={formData}
-                                            errors={errors}
-                                            showPassword={showPassword}
-                                            isLoading={isLoading}
-                                            onInputChange={(field, value) => handleInputChange(field as keyof FormData, value)}
-                                            onShowPassword={() => setShowPassword(!showPassword)}
-                                            onSubmit={handleSubmit}
-                                            onSocialLogin={handleSocialLogin}
+                            {mode === "login" ? (<>
+                                {/* Left Side - Login Form */}
+                                <div className="flex flex-col justify-center p-8 lg:p-16 bg-white relative overflow-hidden">
+                                    {/* Decorative Elements */}
+                                    <div className="absolute top-10 left-10 w-20 h-20 opacity-10">
+                                        <div
+                                            className="w-full h-full border-4 border-pink-300 rounded-full animate-spin"
+                                            style={{ animationDuration: "20s" }}
                                         />
                                     </div>
-                                    {/* Right Side - Welcome Panel with Rental Service Info */}
-                                    <div
-                                        className="relative flex flex-col justify-center items-center p-8 lg:p-16 text-white overflow-hidden"
-
-                                    >
-                                        <WelcomePanel
-                                            mode={mode}
-                                            isTransitioning={isTransitioning}
-                                            onSwitchMode={() => switchMode("register")}
-                                        >
-                                            <div className="mb-8">
-                                                <h2 className="text-5xl font-bold mb-4 leading-tight">Xin chào!</h2>
-                                                <p className="text-xl mb-6 opacity-90 max-w-md">
-                                                    Chào mừng đến với nền tảng cho thuê nhà hàng đầu Việt Nam
-                                                </p>
-                                            </div>
-                                            <div className="space-y-4 mb-8 max-w-sm">
-                                                <div className="flex items-center gap-3 text-left">
-                                                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                                                        <Home className="w-5 h-5" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-semibold">10,000+ Căn hộ</p>
-                                                        <p className="text-sm opacity-80">Đa dạng lựa chọn</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-3 text-left">
-                                                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                                                        <Shield className="w-5 h-5" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-semibold">Bảo mật tuyệt đối</p>
-                                                        <p className="text-sm opacity-80">Thông tin được bảo vệ</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-3 text-left">
-                                                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                                                        <Clock className="w-5 h-5" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-semibold">Hỗ trợ 24/7</p>
-                                                        <p className="text-sm opacity-80">Luôn sẵn sàng giúp đỡ</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </WelcomePanel>
+                                    <div className="absolute bottom-20 right-10 w-16 h-16 opacity-10">
+                                        <div className="w-full h-full bg-blue-300 rounded-lg rotate-45 animate-pulse" />
                                     </div>
-                                </>
+                                    <LoginForm
+                                        formData={{
+                                            tenDangNhap: formData.tenDangNhap,
+                                            matKhau: formData.matKhau
+                                        }}
+                                        errors={{
+                                            tenDangNhap: errors.tenDangNhap,
+                                            matKhau: errors.matKhau
+                                        }}
+                                        showPassword={showPassword}
+                                        isLoading={isLoading}
+                                        onInputChange={handleInputChange}
+                                        onShowPassword={() => setShowPassword(!showPassword)}
+                                        onSubmit={handleSubmitLogin}
+                                        onSocialLogin={handleSocialLogin}
+                                        handleSubmitLogin={handleSubmitLogin}
+                                    />
+                                </div>
+                                {/* Right Side - Welcome Panel with Rental Service Info */}
+                                <div
+                                    className="relative flex flex-col justify-center items-center p-8 lg:p-16 text-white overflow-hidden"
+
+                                >
+                                    <WelcomePanel
+                                        mode={mode}
+                                        isTransitioning={isTransitioning}
+                                        onSwitchMode={() => switchMode("register")}
+                                    >
+                                        <div className="mb-8">
+                                            <h2 className="text-5xl font-bold mb-4 leading-tight">Xin chào!</h2>
+                                            <p className="text-xl mb-6 opacity-90 max-w-md">
+                                                Chào mừng đến với nền tảng cho thuê nhà hàng đầu Việt Nam
+                                            </p>
+                                        </div>
+                                        <div className="space-y-4 mb-8 max-w-sm">
+                                            <div className="flex items-center gap-3 text-left">
+                                                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                                    <Home className="w-5 h-5" />
+                                                </div>
+                                                <div>
+                                                    <p className="font-semibold">10,000+ Căn hộ</p>
+                                                    <p className="text-sm opacity-80">Đa dạng lựa chọn</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-3 text-left">
+                                                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                                    <Shield className="w-5 h-5" />
+                                                </div>
+                                                <div>
+                                                    <p className="font-semibold">Bảo mật tuyệt đối</p>
+                                                    <p className="text-sm opacity-80">Thông tin được bảo vệ</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-3 text-left">
+                                                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                                    <Clock className="w-5 h-5" />
+                                                </div>
+                                                <div>
+                                                    <p className="font-semibold">Hỗ trợ 24/7</p>
+                                                    <p className="text-sm opacity-80">Luôn sẵn sàng giúp đỡ</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </WelcomePanel>
+                                </div>
+                            </>
                             ) : (
                                 <>
                                     {/* Left Side - Welcome Back Panel with Service Info */}
@@ -351,10 +446,10 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                                             showPassword={showPassword}
                                             showConfirmPassword={showConfirmPassword}
                                             isLoading={isLoading}
-                                            onInputChange={(field, value) => handleInputChange(field as keyof FormData, value)}
+                                            onInputChange={handleInputChange}
                                             onShowPassword={() => setShowPassword(!showPassword)}
                                             onShowConfirmPassword={() => setShowConfirmPassword(!showConfirmPassword)}
-                                            onSubmit={handleSubmit}
+                                            onSubmit={handleSubmitRegister}
                                             onSocialLogin={handleSocialLogin}
                                         />
                                     </div>
