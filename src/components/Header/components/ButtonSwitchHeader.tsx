@@ -1,4 +1,4 @@
-import { Globe, Plus } from 'lucide-react'
+import { Globe, LogOut, Plus, User } from 'lucide-react'
 import { DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu'
@@ -9,9 +9,14 @@ import { Link } from 'react-router-dom'
 import { ModeToggle } from '@/components/mode-toggle'
 import { Bell } from 'lucide-react'
 import { useLanguage } from '@/components/language-provider'
-
+import { useDispatch, useSelector } from 'react-redux'
+import { logout, selectAuth } from '@/redux/slices/authSlice'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 export default function ButtonSwitchHeader() {
     const { language, setLanguage, t } = useLanguage()
+    const { isAuthenticated } = useSelector(selectAuth)
+    const dispatch = useDispatch()
+    const { user } = useSelector(selectAuth)
     return (
         <>
             <Link to="/create-post-news">
@@ -68,24 +73,62 @@ export default function ButtonSwitchHeader() {
                     3
                 </Badge>
             </Button>
-            <div className="hidden md:flex items-center space-x-3">
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="rounded-full px-6 transition-all duration-300 hover:bg-primary/10 hover:text-primary hover:scale-105 border border-primary/20 theme-transition"
-                    asChild
-                >
-                    <Link to="/auth/login">Đăng nhập</Link>
-                </Button>
-                <Button
-                    size="sm"
-                    className="rounded-full px-6  bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 text-white  transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-white border-0 theme-transition"
+            {!isAuthenticated ? (
+                <>
+                    <div className="hidden md:flex items-center space-x-3">
+                        <Link to="/auth/login">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="rounded-full px-6 transition-all duration-300 hover:bg-primary/10 hover:text-primary hover:scale-105 border border-primary/20 theme-transition"
+                                asChild
+                            >
+                                Đăng nhập
 
-                    asChild
-                >
-                    <Link to="/auth/register">Đăng ký</Link>
-                </Button>
-            </div>
+                            </Button>
+                        </Link>
+                        <Link to="/auth/register">
+                            <Button
+                                size="sm"
+                                className="rounded-full px-6  bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 text-white  transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-white border-0 theme-transition"
+
+                                asChild
+                            >
+                                Đăng KÝ
+                            </Button>
+                        </Link>
+                    </div>
+                </>
+            ) : (
+                <>
+                    <div className="hidden md:flex items-center space-x-3">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant='ghost' className='relative h-10 w-10 rounded-full p-0'>
+                                    <Avatar>
+                                        <AvatarImage src='https://cdn-icons-png.flaticon.com/512/3001/3001764.png' />
+                                        <AvatarFallback>{user?.email?.charAt(0)}</AvatarFallback>
+                                    </Avatar>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className='w-56 cursor-pointer' align='end' forceMount>
+                                <DropdownMenuItem className='flex items-center gap-2'>
+                                    <User className='h-4 w-4' />
+                                    <Link to='/profile'>Chi tiết tài khoản</Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    className='flex items-center gap-2 text-red-600'
+                                    onClick={() => dispatch(logout())}
+                                >
+                                    <LogOut className='h-4 w-4' />
+                                    <span>Đăng xuất</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        <h1 className='text-lg font-medium text-orange-500'> {user?.ten}</h1>
+                    </div>
+                </>
+            )}
         </>
     )
 }
