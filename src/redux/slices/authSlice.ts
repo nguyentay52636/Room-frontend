@@ -42,9 +42,9 @@ export const login = createAsyncThunk(
       }
     },
   );
-  const register = createAsyncThunk('auth/register',async ({email,ten, tenDangNhap, matKhau, soDienThoai,vaiTro}: IUser, {rejectWithValue})=> {
+  const register = createAsyncThunk('auth/register',async ({email,ten, tenDangNhap, matKhau, xacNhanMatKhau, soDienThoai,vaiTro}: IUser & {xacNhanMatKhau: string}, {rejectWithValue})=> {
     try {
-        const response = await registerAPI({email,ten, tenDangNhap, matKhau, soDienThoai,vaiTro})
+        const response = await registerAPI({email,ten, tenDangNhap, matKhau, xacNhanMatKhau, soDienThoai,vaiTro})
         return response
     } catch (error:any) {
         return rejectWithValue((error as Error).message || 'Register failed');

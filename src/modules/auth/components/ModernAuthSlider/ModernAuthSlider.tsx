@@ -91,20 +91,19 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                     console.log('User data:', userData);
                     console.log('User role:', userData.vaiTro);
                     console.log('User role name:', userData.vaiTro?.ten);
-
-                    // Đóng modal nếu có
                     if (onClose) {
                         onClose();
                     }
 
-                    // Navigate based on user role
-                    if (userData.vaiTro?.ten === "nguoi_thue") {
-                        console.log('Navigating to user home page');
-                        navigate('/'); // User home page
-                    } else {
-                        console.log('Navigating to admin dashboard');
-                        navigate('/admin/home'); // Admin dashboard
-                    }
+                    setTimeout(() => {
+                        if (userData.vaiTro?.ten === "nguoi_thue") {
+                            console.log('Navigating to user home page');
+                            navigate('/'); // User home page
+                        } else {
+                            console.log('Navigating to admin dashboard');
+                            navigate('/admin/home'); // Admin dashboard
+                        }
+                    }, 1000); // Delay 1 giây để hiển thị thông báo
                 } else {
                     toast.error('Đăng nhập thất bại', {
                         description: 'Thông tin đăng nhập không chính xác',
@@ -127,25 +126,36 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
 
     const handleSubmitRegister = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!validateForm()) return
+
+        if (!validateForm()) {
+            console.log("❌ Form validation failed")
+            console.log("Validation errors:", errors)
+            return
+        }
+
+        console.log("✅ Form validation passed, sending to server...")
+
+        const registerData = {
+            email: formData.email,
+            ten: formData.ten,
+            tenDangNhap: formData.tenDangNhap,
+            matKhau: formData.matKhau,
+            xacNhanMatKhau: formData.xacNhanMatKhau,
+            soDienThoai: formData.soDienThoai,
+            vaiTro: formData.vaiTro
+        }
 
         setIsLoading(true)
         try {
-            const response = await dispatch(register({
-                email: formData.email,
-                ten: formData.ten,
-                tenDangNhap: formData.tenDangNhap,
-                matKhau: formData.matKhau,
-                soDienThoai: formData.soDienThoai,
-                vaiTro: formData.vaiTro
-            })).unwrap();
+            const response = await dispatch(register(registerData)).unwrap();
 
-            if (response.statusCode === 201) {
+            console.log("✅ Registration response:", response)
+            if (response && (response.statusCode === 201 || response.user)) {
                 toast.success('Đăng ký thành công!', {
-                    description: 'Vui lòng đăng nhập để sử dụng dịch vụ',
+                    description: 'Vui lòng đăng nhập để tiếp tục',
                 });
-                setMode("login")
-                // Reset form
+
+                // Reset form data
                 setFormData({
                     email: "",
                     matKhau: "",
@@ -154,11 +164,20 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                     soDienThoai: "",
                     tenDangNhap: "",
                     vaiTro: "",
-                })
+                });
+
+                // Chuyển về form đăng nhập thay vì đóng modal
+                switchMode("login");
+            } else {
+                toast.error('Đăng ký thất bại', {
+                    description: 'Vui lòng thử lại',
+                });
             }
         } catch (err: any) {
+            console.error("❌ Registration failed - Full error:", err)
+
             toast.error('Đăng ký thất bại', {
-                description: err || 'Vui lòng thử lại',
+                description: err.response?.data?.message || err.message || 'Vui lòng thử lại',
             });
         } finally {
             setIsLoading(false)
@@ -257,8 +276,14 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
 
 
     const handleInputChange = (field: keyof FormData, value: string) => {
-        setFormData((prev) => ({ ...prev, [field]: value }))
+        console.log(`📝 Input changed - Field: ${field}, Value: "${value}"`)
+        setFormData((prev) => {
+            const newData = { ...prev, [field]: value }
+            console.log("Updated form data:", newData)
+            return newData
+        })
         if (errors[field]) {
+            console.log(`🔧 Clearing error for field: ${field}`)
             setErrors((prev) => ({ ...prev, [field]: undefined }))
         }
     }

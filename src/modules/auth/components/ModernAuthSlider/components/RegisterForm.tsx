@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/select"
 interface RegisterFormProps {
     formData: {
-        ten: string
         email: string
+        ten: string
         tenDangNhap: string
         matKhau: string
         xacNhanMatKhau: string
@@ -258,13 +258,13 @@ export function RegisterForm({
                     <Label htmlFor="group" className="text-gray-700 font-medium">
                         Vai Trò
                     </Label>
-                    <Select>
+                    <Select onValueChange={value => onInputChange("vaiTro", value)}>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Vai Trò" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="light">Khách hàng</SelectItem>
-                            <SelectItem value="dark">Chú nhà</SelectItem>
+                            <SelectItem value="nguoi_thue">Khách hàng</SelectItem>
+                            <SelectItem value="chu_tro">Chủ nhà</SelectItem>
 
                         </SelectContent>
                     </Select>

@@ -10,13 +10,15 @@ export const LoginAPI  = async (userData :{tenDangNhap : string, matKhau : strin
     throw new Error(error);
    }
 }
-export const registerAPI = async ({email,ten, tenDangNhap, matKhau, soDienThoai,vaiTro}: IUser) => { 
+export const registerAPI = async ({email,ten, tenDangNhap, matKhau, xacNhanMatKhau, soDienThoai,vaiTro}: IUser & {xacNhanMatKhau: string}) => { 
     try {
-        const newUser = {email,ten, tenDangNhap, matKhau, soDienThoai,vaiTro}  
+        const newUser = {email,ten, tenDangNhap, matKhau, xacNhanMatKhau, soDienThoai,vaiTro}  
+        console.log("🚀 Sending to server:", newUser)
         const {data} = await baseApi.post('/auth/register', newUser)
         return data
     }catch(error :any) { 
-    throw new Error(error);
+        console.error("❌ API Error:", error.response?.data || error.message)
+        throw new Error(error.response?.data?.message || error.message);
     }
 } 
 export const logout = async () => { 
