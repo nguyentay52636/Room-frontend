@@ -10,7 +10,18 @@ export const getAllProperties = async () => {
         console.log(data);
         return data.properties || [];
     } catch (error: any) {
-        throw new Error(error.response?.data?.message || "Unknown error");
+        console.error('API Error in getAllProperties:', error);
+        
+        // Handle different types of errors
+        if (error.code === 'ERR_NETWORK' || error.code === 'ERR_CONNECTION_REFUSED') {
+            throw new Error("Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng hoặc liên hệ admin.");
+        } else if (error.response?.status === 404) {
+            throw new Error("API endpoint không tồn tại.");
+        } else if (error.response?.status >= 500) {
+            throw new Error("Lỗi server nội bộ. Vui lòng thử lại sau.");
+        } else {
+            throw new Error(error.response?.data?.message || error.message || "Lỗi không xác định khi tải dữ liệu");
+        }
     }
 };
 

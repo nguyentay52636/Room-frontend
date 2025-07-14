@@ -30,10 +30,12 @@ export default function ProductsContent() {
                 const propertiesData = Array.isArray(response) ? response : [];
 
                 setProperties(propertiesData);
+                setError(null); // Clear any previous errors
             } catch (error) {
                 console.error('Error fetching properties:', error);
-                setError(error as string);
-
+                // Fix: Extract error message properly instead of storing error object
+                const errorMessage = error instanceof Error ? error.message : 'Lỗi không xác định khi tải dữ liệu';
+                setError(errorMessage);
             } finally {
                 setLoading(false);
             }

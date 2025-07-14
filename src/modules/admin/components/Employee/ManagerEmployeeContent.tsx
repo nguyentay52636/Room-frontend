@@ -36,10 +36,12 @@ export default function ManagerEmployeeContent() {
                 console.log("API Response:", response)
                 console.log("Employees data:", response.data)
                 setEmployees(response.data)
-
+                setError(null) // Clear any previous errors
             } catch (err) {
                 console.error("Error fetching employees:", err)
-                setError("Failed to load employees")
+                // Fix: Extract error message properly instead of storing error object
+                const errorMessage = err instanceof Error ? err.message : "Failed to load employees";
+                setError(errorMessage)
                 setEmployees([])
             } finally {
                 setLoading(false)

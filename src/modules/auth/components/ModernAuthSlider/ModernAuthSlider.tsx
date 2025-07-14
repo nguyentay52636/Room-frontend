@@ -122,7 +122,8 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                 }
             } catch (err: any) {
                 console.error('Login error:', err);
-                toast.error(`Đăng nhập thất bại - ${err || 'Tên đăng nhập hoặc mật khẩu không đúng'}`, {
+                const errorMessage = err instanceof Error ? err.message : (err.response?.data?.message || 'Tên đăng nhập hoặc mật khẩu không đúng');
+                toast.error(`Đăng nhập thất bại - ${errorMessage}`, {
                     position: "top-right",
                     autoClose: 3000,
                     hideProgressBar: false,
@@ -206,8 +207,8 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
             }
         } catch (err: any) {
             console.error("❌ Registration failed - Full error:", err)
-
-            toast.error(`Đăng ký thất bại - ${err.response?.data?.message || err.message || 'Vui lòng thử lại'}`, {
+            const errorMessage = err instanceof Error ? err.message : (err.response?.data?.message || 'Vui lòng thử lại');
+            toast.error(`Đăng ký thất bại - ${errorMessage}`, {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
