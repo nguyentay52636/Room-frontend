@@ -22,6 +22,9 @@ import ManagerEmployee from './modules/admin/components/Employee/ManagerEmployee
 import ChatManager from './modules/admin/components/Chat/ChatManager';
 import ReviewsManager from './modules/admin/components/Reviews/ReviewsManager';
 import TestProperties from './modules/admin/components/RealEstate/TestProperties';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Profile from './modules/auth/components/Profile/Profile';
 function App() {
   const router = createBrowserRouter([
     // Main layout
@@ -37,6 +40,10 @@ function App() {
         {
           index: true,
           element: <HomePage />,
+        },
+        {
+          path: 'profile',
+          element: <Profile />
         },
         {
           path: 'auth',
@@ -128,6 +135,19 @@ function App() {
         <LanguageProvider>
           <>
             <RouterProvider router={router} />
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+              className="custom-toast"
+            />
           </>
         </LanguageProvider>
       </ThemeProvider>

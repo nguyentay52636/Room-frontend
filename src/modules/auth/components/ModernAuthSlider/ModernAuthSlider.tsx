@@ -15,7 +15,7 @@ import { LoginForm } from "./components/LoginForm"
 import { RegisterForm } from "./components/RegisterForm"
 import { WelcomePanel } from "./components/WelcomePanel"
 import { AnimatedBackground } from "./components/AnimatedBackground"
-import { toast } from "sonner"
+import { toast } from "react-toastify"
 import { login, register } from "@/redux/slices/authSlice"
 import { useDispatch } from "react-redux"
 import { AppDispatch } from "@/redux/store"
@@ -84,13 +84,19 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                 if (response && response.user && response.accessToken) {
                     const userData = response.user;
 
-                    toast.success('Đăng nhập thành công!', {
-                        description: `Chào mừng ${userData.tenDangNhap}`,
+                    toast.success(`Đăng nhập thành công! Chào mừng ${userData.tenDangNhap}`, {
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
                     });
 
                     console.log('User data:', userData);
                     console.log('User role:', userData.vaiTro);
                     console.log('User role name:', userData.vaiTro?.ten);
+
                     if (onClose) {
                         onClose();
                     }
@@ -105,21 +111,36 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                         }
                     }, 1000); // Delay 1 giây để hiển thị thông báo
                 } else {
-                    toast.error('Đăng nhập thất bại', {
-                        description: 'Thông tin đăng nhập không chính xác',
+                    toast.error('Đăng nhập thất bại - Thông tin đăng nhập không chính xác', {
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
                     });
                 }
             } catch (err: any) {
                 console.error('Login error:', err);
-                toast.error('Đăng nhập thất bại', {
-                    description: err || 'Tên đăng nhập hoặc mật khẩu không đúng',
+                toast.error(`Đăng nhập thất bại - ${err || 'Tên đăng nhập hoặc mật khẩu không đúng'}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
                 });
             } finally {
                 setIsLoading(false)
             }
         } else {
-            toast.error('Vui lòng điền đầy đủ thông tin', {
-                description: 'Tên đăng nhập và mật khẩu là bắt buộc',
+            toast.error('Vui lòng điền đầy đủ thông tin - Tên đăng nhập và mật khẩu là bắt buộc', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
             });
         }
     };
@@ -151,8 +172,13 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
 
             console.log("✅ Registration response:", response)
             if (response && (response.statusCode === 201 || response.user)) {
-                toast.success('Đăng ký thành công!', {
-                    description: 'Vui lòng đăng nhập để tiếp tục',
+                toast.success('Đăng ký thành công! Vui lòng đăng nhập để tiếp tục', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
                 });
 
                 // Reset form data
@@ -169,15 +195,25 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                 // Chuyển về form đăng nhập thay vì đóng modal
                 switchMode("login");
             } else {
-                toast.error('Đăng ký thất bại', {
-                    description: 'Vui lòng thử lại',
+                toast.error('Đăng ký thất bại - Vui lòng thử lại', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
                 });
             }
         } catch (err: any) {
             console.error("❌ Registration failed - Full error:", err)
 
-            toast.error('Đăng ký thất bại', {
-                description: err.response?.data?.message || err.message || 'Vui lòng thử lại',
+            toast.error(`Đăng ký thất bại - ${err.response?.data?.message || err.message || 'Vui lòng thử lại'}`, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
             });
         } finally {
             setIsLoading(false)
@@ -185,8 +221,13 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
     }
 
     const handleSocialLogin = (provider: string) => {
-        toast.info(`Đang phát triển`, {
-            description: `Tính năng đăng nhập bằng ${provider} đang được phát triển`,
+        toast.info(`Đang phát triển - Tính năng đăng nhập bằng ${provider} đang được phát triển`, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
         });
     }
 
