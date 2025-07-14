@@ -5,7 +5,7 @@ import React from 'react'
 
 export default function AreaMessageInput({ newMessage, setNewMessage, handleSendMessage }: { newMessage: string, setNewMessage: (value: string) => void, handleSendMessage: () => void }) {
     return (
-        <div className="flex-shrink-0 p-4 bg-white/60 backdrop-blur-sm border-t border-gray-200/50">
+        <div className="flex-shrink-0 p-4 bg-white/60 backdrop-blur-sm border-t border-gray-200/50 scroll-auto">
             <div className="flex items-center space-x-3">
                 <Button variant="outline" size="sm" className="rounded-xl bg-white/50 backdrop-blur-sm">
                     <Paperclip className="w-4 h-4" />
