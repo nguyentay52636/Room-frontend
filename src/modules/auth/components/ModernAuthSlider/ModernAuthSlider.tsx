@@ -231,7 +231,10 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
             draggable: true,
         });
     }
-
+    const handleFacebookLogin = () => {
+        const apiBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+        window.location.href = `${apiBaseUrl}/api/auth/facebook/callback`;
+    };
     // Set mode based on pathname
     useEffect(() => {
         if (pathname.pathname === "/auth/login") {
@@ -394,6 +397,7 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                                         onSubmit={handleSubmitLogin}
                                         onSocialLogin={handleSocialLogin}
                                         handleSubmitLogin={handleSubmitLogin}
+                                        handleFacebookLogin={handleFacebookLogin}
                                     />
                                 </div>
                                 {/* Right Side - Welcome Panel with Rental Service Info */}
@@ -521,6 +525,7 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                                             onShowConfirmPassword={() => setShowConfirmPassword(!showConfirmPassword)}
                                             onSubmit={handleSubmitRegister}
                                             onSocialLogin={handleSocialLogin}
+                                            handleFacebookLogin={handleFacebookLogin}
                                         />
                                     </div>
                                 </>

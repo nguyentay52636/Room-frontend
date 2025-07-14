@@ -23,6 +23,7 @@ interface LoginFormProps {
     onSubmit: (e: React.FormEvent) => void
     onSocialLogin: (provider: string) => void
     handleSubmitLogin: (e: React.FormEvent) => void
+    handleFacebookLogin: () => void
 }
 
 export function LoginForm({
@@ -33,7 +34,7 @@ export function LoginForm({
     onInputChange,
     onShowPassword,
     handleSubmitLogin,
-
+    handleFacebookLogin,
 }: LoginFormProps) {
     return (
         <FormMotion
@@ -150,6 +151,7 @@ export function LoginForm({
                     <Button
                         type="button"
                         variant="outline"
+                        onClick={handleFacebookLogin}
                         className="w-full cursor-pointer h-12 border-2 border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:shadow-md"
 
                     >

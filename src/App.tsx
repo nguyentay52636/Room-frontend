@@ -27,6 +27,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Profile from './modules/auth/components/Profile/Profile';
 import ChatHome from './modules/home/components/chat/ChatHome';
 import Products from './modules/home/components/Products/Products';
+import Success from './modules/auth/components/Facebook/success';
+import Failure from './modules/auth/components/Facebook/Failure';
 import { Component, ReactNode } from 'react';
 
 // Error Boundary Component
@@ -75,10 +77,18 @@ class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryStat
 
 function App() {
   const router = createBrowserRouter([
-    // Main layout
     {
       path: '*',
       element: <NotFound />,
+    },
+    // Add top-level routes for Facebook auth callbacks
+    {
+      path: '/success',
+      element: <Success />,
+    },
+    {
+      path: '/failure',
+      element: <Failure />,
     },
     {
       path: '/',
@@ -103,6 +113,14 @@ function App() {
             {
               path: 'register',
               element: <Register />,
+            },
+            {
+              path: 'facebook/success',
+              element: <Success />,
+            },
+            {
+              path: 'facebook/failure',
+              element: <Failure />,
             },
           ],
         },

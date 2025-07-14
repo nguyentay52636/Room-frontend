@@ -39,6 +39,7 @@ interface RegisterFormProps {
     onShowConfirmPassword: () => void
     onSubmit: (e: React.FormEvent) => void
     onSocialLogin: (provider: string) => void
+    handleFacebookLogin: () => void
 }
 
 export function RegisterForm({
@@ -52,6 +53,7 @@ export function RegisterForm({
     onShowConfirmPassword,
     onSubmit,
     onSocialLogin,
+    handleFacebookLogin,
 }: RegisterFormProps) {
     return (
         <FormMotion
