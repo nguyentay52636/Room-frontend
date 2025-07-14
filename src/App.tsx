@@ -25,6 +25,7 @@ import TestProperties from './modules/admin/components/RealEstate/TestProperties
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Profile from './modules/auth/components/Profile/Profile';
+import ChatHome from './modules/home/components/chat/ChatHome';
 function App() {
   const router = createBrowserRouter([
     // Main layout
@@ -69,6 +70,10 @@ function App() {
         {
           path: 'create-post-news',
           element: <PostNew />
+        },
+        {
+          path: 'chat',
+          element: <ChatHome />
         },
 
       ],
