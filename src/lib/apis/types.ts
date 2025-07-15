@@ -21,7 +21,7 @@ export interface IUser {
   tenDangNhap: string
   matKhau: string
   soDienThoai: string
-  vaiTro: role|string
+  vaiTro: role | string
   anhDaiDien?: string
   trangThai?: string
   createdAt?: string
