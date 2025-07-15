@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Chrome, Github, AlertCircle, Eye, EyeOff, Facebook } from "lucide-react"
 import { FormMotion } from "./Animation/FormMotion"
 import React from "react"
+import LoginWithGoogle from "../../Google/LoginWithGoogle"
 
 
 interface LoginFormProps {
@@ -139,21 +140,12 @@ export function LoginForm({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.7 }}
                 >
-                    <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full cursor-pointer h-12 border-2 border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:shadow-md"
-
-                    >
-                        <Chrome className="w-5 h-5 mr-2 text-red-500" />
-                        Đăng nhập bằng google
-                    </Button>
+                    <LoginWithGoogle />
                     <Button
                         type="button"
                         variant="outline"
                         onClick={handleFacebookLogin}
                         className="w-full cursor-pointer h-12 border-2 border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:shadow-md"
-
                     >
                         <Facebook className="w-5 h-5 mr-2 text-blue-500" />
                         Đăng nhập bằng facebook
