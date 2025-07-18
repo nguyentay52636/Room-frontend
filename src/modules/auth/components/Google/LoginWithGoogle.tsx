@@ -1,8 +1,7 @@
 
 import {
-    getRedirectResult,
+
     signInWithPopup,
-    signInWithRedirect,
 } from 'firebase/auth';
 import CryptoJS from 'crypto-js';
 
@@ -11,8 +10,8 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { auth } from '../../../../config/firebas.config';
-import googleProvider from './config';
+import { auth, provider } from '../../../../config/firebase.config';
+
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { login } from '../../../../redux/slices/authSlice';
@@ -29,7 +28,14 @@ export default function LoginWithGoogle() {
     const loginWithGoogle = async () => {
         try {
             setIsLoading(true);
-            const data = await signInWithPopup(auth, googleProvider);
+
+
+            provider.setCustomParameters({
+                prompt: 'select_account',
+                access_type: 'offline'
+            });
+
+            const data = await signInWithPopup(auth, provider);
             const check = await getUserById(data.user.uid);
             const passwordHash = CryptoJS.MD5(data.user.email || '').toString();
             if (check) {
@@ -44,7 +50,7 @@ export default function LoginWithGoogle() {
                     matKhau: passwordHash,
                     ten: data.user.displayName || '',
                     email: data.user.email || '',
-                    soDienThoai: data.user.phoneNumber || '0000000000',
+                    soDienThoai: data.user.phoneNumber || '',
                     vaiTro: 'nguoi_thue',
                     trangThai: 'hoat_dong',
                 };
@@ -58,16 +64,37 @@ export default function LoginWithGoogle() {
             navigate(url);
             toast.success('Đăng nhập thành công');
         } catch (error) {
+            console.error('Google Sign-In Error:', error);
+
+            // Add more detailed error logging
             if (error instanceof Error) {
+                console.error('Error details:', {
+                    message: error.message,
+                    name: error.name,
+                    stack: error.stack
+                });
+            }
+
+            if (error instanceof Error) {
+                // Enhanced error handling for Firebase Auth errors
                 switch (error.message) {
+                    case 'auth/configuration-not-found':
+                    case 'auth/invalid-api-key':
+                        toast.error('Cấu hình Google Sign-In chưa đúng. Vui lòng liên hệ quản trị viên.');
+                        console.error('Firebase Auth Configuration Error: Google Sign-In not properly configured in Firebase Console');
+                        console.error('Solution: Go to Firebase Console > Authentication > Sign-in method > Enable Google provider');
+                        break;
                     case 'auth/account-exists-with-different-credential':
                         toast.error('Email này đã liên kết với phương thức đăng nhập khác');
                         break;
                     case 'auth/popup-closed-by-user':
                         toast.error('Đã hủy đăng nhập');
                         break;
+                    case 'auth/unauthorized-domain':
+                        toast.error('Domain chưa được ủy quyền. Vui lòng liên hệ quản trị viên.');
+                        break;
                     default:
-                        toast.error('Đăng nhập thất bại');
+                        toast.error('Đăng nhập thất bại: ' + error.message);
                 }
                 return;
             }
