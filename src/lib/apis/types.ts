@@ -128,3 +128,17 @@ export interface Employee {
 export interface HostHome  { 
 
 }  
+
+export interface Message {
+  _id?: string
+  nguoiGuiId: string
+  ngoiNhanId: string  
+  noiDung: string
+  hinhAnh: string
+  daDoc: boolean
+  trangThai: string
+  createdAt?: string
+  updatedAt?: string
+  __v?: number
+}
+

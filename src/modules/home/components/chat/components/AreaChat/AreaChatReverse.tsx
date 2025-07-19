@@ -1,12 +1,12 @@
 import { Heart } from 'lucide-react'
 import React from 'react'
-import { MessageCircle, Shield, Sparkles } from 'lucide-react'  
+import { MessageCircle, Shield, Sparkles } from 'lucide-react'
 export default function AreaChatReverse() {
     return (
         <div className="flex-1 flex items-center justify-center">
             <div className="text-center p-8">
                 <div className="mb-6">
-                    <MessageCircle className="h-24 w-24 text-blue-400 mx-auto mb-4 animate-bounce" />
+                    <MessageCircle className="h-24 w-24 text-blue-400 mx-auto mb-4" />
                     <div className="flex items-center justify-center space-x-2 text-5xl mb-4">
                         <span>💬</span>
                         <span>🏠</span>

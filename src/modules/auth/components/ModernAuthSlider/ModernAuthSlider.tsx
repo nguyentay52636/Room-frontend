@@ -150,7 +150,7 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
         e.preventDefault()
 
         if (!validateForm()) {
-            console.log("❌ Form validation failed")
+        
             console.log("Validation errors:", errors)
             return
         }

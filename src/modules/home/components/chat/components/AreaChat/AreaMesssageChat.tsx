@@ -13,7 +13,7 @@ export default function AreaMesssageChat({ messages, currentUser, selectedChat, 
     const ref = messagesEndRef || localMessagesEndRef
 
     return (
-        <div className="flex-1 min-h-0">
+        <div className="flex-1 min-h-0 scroll-auto">
             <ScrollArea className="h-full p-6">
                 <div className="space-y-4">
                     {messages.map((message: any, index: any) => (
