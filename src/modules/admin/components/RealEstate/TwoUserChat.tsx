@@ -4,7 +4,7 @@ import { findOrCreatePrivateRoom, getRoomById } from '../../../../lib/apis/roomA
 import { getMessagesByRoom, createMessage } from '../../../../lib/apis/messageApi';
 import { useSelector } from 'react-redux';
 import { selectAuth } from '../../../../redux/slices/authSlice';
-import useChatSocket from '../../../../hooks/useChatSocket';
+import useChatSocket from '@/services/socketService';
 
 // Preset user IDs for easy testing
 const PRESET_USERS = [
@@ -30,16 +30,14 @@ export default function TwoUserChat() {
 
     // Use authenticated socket
     const {
-        socket,
+
         messages,
         setMessages,
         isConnected: socketConnected,
         error: socketError,
         connectionStatus,
         sendMessage: socketSendMessage,
-        editMessage,
-        deleteMessage,
-        joinRoom,
+
         leaveRoom
     } = useChatSocket({ roomId });
 
