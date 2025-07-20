@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Message, Room } from '../../../../lib/apis/types';
 import { findOrCreatePrivateRoom, getRoomById } from '../../../../lib/apis/roomApi';
-import { getMessagesByRoom, createMessage } from '../../../../lib/apis/messageApi';
+import { getMessagesByRoom } from '../../../../lib/apis/messageApi';
 import { useSelector } from 'react-redux';
 import { selectAuth } from '../../../../redux/slices/authSlice';
 import useChatSocket from '@/services/socketService';
@@ -25,10 +25,10 @@ export default function TwoUserChat() {
     const [isConnected, setIsConnected] = useState(false);
     const [isSendingMessage, setIsSendingMessage] = useState(false);
 
-    // Get auth info
+
     const { user, isAuthenticated } = useSelector(selectAuth);
 
-    // Use authenticated socket
+
     const {
 
         messages,
@@ -139,7 +139,7 @@ export default function TwoUserChat() {
 
         setIsLoading(true);
 
-        // Use authenticated user ID as current user
+
         const authenticatedUserId = user?._id || '';
         console.log('🚀 Starting chat between:', authenticatedUserId, 'and', targetUserInput.trim());
         console.log('🔑 Authenticated user full info:', user);
