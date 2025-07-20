@@ -14,7 +14,10 @@ import AreaHeaderChat from "./components/AreaChat/AreaHeaderChat"
 import AreaMesssageChat from "./components/AreaChat/AreaMesssageChat"
 import AreaMessageInput from "./components/AreaChat/AreaMessageInput"
 import AreaChatReverse from "./components/AreaChat/AreaChatReverse"
-
+import { Message } from "@/lib/apis/types"
+import { getMessagesByUser } from "@/lib/apis/messageApi"
+import { useSelector } from "react-redux"
+import { selectAuth } from "@/redux/slices/authSlice"
 export default function ChatHome() {
     const [searchTerm, setSearchTerm] = useState("")
     const [selectedChat, setSelectedChat] = useState<any>(null)
@@ -22,16 +25,29 @@ export default function ChatHome() {
     const [activeTab, setActiveTab] = useState("chats")
     const [isFullscreen, setIsFullscreen] = useState(true)
     const messagesEndRef = useRef<HTMLDivElement>(null)
+    const [messages, setMessages] = useState<Message[]>([])
+    const { user } = useSelector(selectAuth)
 
-    // Mock current user
+    useEffect(() => {
+        const fetchMessagesUser = async () => {
+            try {
+                if (user?._id && selectedChat?.user?.id) {
+                    const { data } = await getMessagesByUser(user._id, selectedChat.user.id)
+                    setMessages(data)
+                }
+            } catch (error: any) {
+                console.log(error)
+            }
+        }
+        fetchMessagesUser()
+    }, [selectedChat, user])
+
     const currentUser = {
         id: "current-user",
         ten: "Nguyễn Văn Minh",
         anhDaiDien: "/placeholder.svg?height=40&width=40&text=NVM",
         trangThai: "online",
     }
-
-    // Mock users data
     const users = [
         {
             id: "1",
@@ -90,8 +106,6 @@ export default function ChatHome() {
             isVerified: true,
         },
     ]
-
-    // Mock chat conversations
     const conversations = [
         {
             id: "1",
@@ -127,8 +141,6 @@ export default function ChatHome() {
             topic: "Chia sẻ kinh nghiệm",
         },
     ]
-
-    // Mock group chats
     const groupChats = [
         {
             id: "group-1",
@@ -157,164 +169,164 @@ export default function ChatHome() {
     ]
 
     // Mock messages
-    const messages = [
-        {
-            id: "1",
-            senderId: "1",
-            senderName: "Trần Thị Lan",
-            content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
-            timestamp: "14:25",
-            type: "text",
-            isRead: true,
-            reactions: ["👍"],
-        },
-        {
-            id: "1",
-            senderId: "1",
-            senderName: "Trần Thị Lan",
-            content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
-            timestamp: "14:25",
-            type: "text",
-            isRead: true,
-            reactions: ["👍"],
-        },
-        {
-            id: "1",
-            senderId: "1",
-            senderName: "Trần Thị Lan",
-            content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
-            timestamp: "14:25",
-            type: "text",
-            isRead: true,
-            reactions: ["👍"],
-        },
-        {
-            id: "1",
-            senderId: "1",
-            senderName: "Trần Thị Lan",
-            content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
-            timestamp: "14:25",
-            type: "text",
-            isRead: true,
-            reactions: ["👍"],
-        },
-        {
-            id: "1",
-            senderId: "1",
-            senderName: "Trần Thị Lan",
-            content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
-            timestamp: "14:25",
-            type: "text",
-            isRead: true,
-            reactions: ["👍"],
-        },
-        {
-            id: "1",
-            senderId: "1",
-            senderName: "Trần Thị Lan",
-            content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
-            timestamp: "14:25",
-            type: "text",
-            isRead: true,
-            reactions: ["👍"],
-        },
-        {
-            id: "1",
-            senderId: "1",
-            senderName: "Trần Thị Lan",
-            content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
-            timestamp: "14:25",
-            type: "text",
-            isRead: true,
-            reactions: ["👍"],
-        },
-        {
-            id: "1",
-            senderId: "1",
-            senderName: "Trần Thị Lan",
-            content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
-            timestamp: "14:25",
-            type: "text",
-            isRead: true,
-            reactions: ["👍"],
-        },
-        {
-            id: "1",
-            senderId: "1",
-            senderName: "Trần Thị Lan",
-            content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
-            timestamp: "14:25",
-            type: "text",
-            isRead: true,
-            reactions: ["👍"],
-        },
-        {
-            id: "1",
-            senderId: "1",
-            senderName: "Trần Thị Lan",
-            content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
-            timestamp: "14:25",
-            type: "text",
-            isRead: true,
-            reactions: ["👍"],
-        },
-        {
-            id: "1",
-            senderId: "1",
-            senderName: "Trần Thị Lan",
-            content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
-            timestamp: "14:25",
-            type: "text",
-            isRead: true,
-            reactions: ["👍"],
-        },
+    // const messages = [
+    //     {
+    //         id: "1",
+    //         senderId: "1",
+    //         senderName: "Trần Thị Lan",
+    //         content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
+    //         timestamp: "14:25",
+    //         type: "text",
+    //         isRead: true,
+    //         reactions: ["👍"],
+    //     },
+    //     {
+    //         id: "1",
+    //         senderId: "1",
+    //         senderName: "Trần Thị Lan",
+    //         content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
+    //         timestamp: "14:25",
+    //         type: "text",
+    //         isRead: true,
+    //         reactions: ["👍"],
+    //     },
+    //     {
+    //         id: "1",
+    //         senderId: "1",
+    //         senderName: "Trần Thị Lan",
+    //         content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
+    //         timestamp: "14:25",
+    //         type: "text",
+    //         isRead: true,
+    //         reactions: ["👍"],
+    //     },
+    //     {
+    //         id: "1",
+    //         senderId: "1",
+    //         senderName: "Trần Thị Lan",
+    //         content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
+    //         timestamp: "14:25",
+    //         type: "text",
+    //         isRead: true,
+    //         reactions: ["👍"],
+    //     },
+    //     {
+    //         id: "1",
+    //         senderId: "1",
+    //         senderName: "Trần Thị Lan",
+    //         content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
+    //         timestamp: "14:25",
+    //         type: "text",
+    //         isRead: true,
+    //         reactions: ["👍"],
+    //     },
+    //     {
+    //         id: "1",
+    //         senderId: "1",
+    //         senderName: "Trần Thị Lan",
+    //         content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
+    //         timestamp: "14:25",
+    //         type: "text",
+    //         isRead: true,
+    //         reactions: ["👍"],
+    //     },
+    //     {
+    //         id: "1",
+    //         senderId: "1",
+    //         senderName: "Trần Thị Lan",
+    //         content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
+    //         timestamp: "14:25",
+    //         type: "text",
+    //         isRead: true,
+    //         reactions: ["👍"],
+    //     },
+    //     {
+    //         id: "1",
+    //         senderId: "1",
+    //         senderName: "Trần Thị Lan",
+    //         content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
+    //         timestamp: "14:25",
+    //         type: "text",
+    //         isRead: true,
+    //         reactions: ["👍"],
+    //     },
+    //     {
+    //         id: "1",
+    //         senderId: "1",
+    //         senderName: "Trần Thị Lan",
+    //         content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
+    //         timestamp: "14:25",
+    //         type: "text",
+    //         isRead: true,
+    //         reactions: ["👍"],
+    //     },
+    //     {
+    //         id: "1",
+    //         senderId: "1",
+    //         senderName: "Trần Thị Lan",
+    //         content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
+    //         timestamp: "14:25",
+    //         type: "text",
+    //         isRead: true,
+    //         reactions: ["👍"],
+    //     },
+    //     {
+    //         id: "1",
+    //         senderId: "1",
+    //         senderName: "Trần Thị Lan",
+    //         content: "Chào bạn! Tôi thấy bạn cũng đang tìm nhà ở khu vực Quận 1",
+    //         timestamp: "14:25",
+    //         type: "text",
+    //         isRead: true,
+    //         reactions: ["👍"],
+    //     },
 
-        {
-            id: "2",
-            senderId: "current-user",
-            senderName: "Nguyễn Văn Minh",
-            content: "Chào bạn Lan! Đúng rồi, tôi đang tìm căn hộ 2PN ở khu vực đó. Bạn có kinh nghiệm gì không?",
-            timestamp: "14:26",
-            type: "text",
-            isRead: true,
-        },
-        {
-            id: "3",
-            senderId: "1",
-            senderName: "Trần Thị Lan",
-            content: "Tôi đã thuê ở đây được 2 năm rồi. Khu vực này rất tiện lợi, gần trung tâm và có nhiều tiện ích",
-            timestamp: "14:27",
-            type: "text",
-            isRead: true,
-        },
-        {
-            id: "4",
-            senderId: "1",
-            senderName: "Trần Thị Lan",
-            content: "Bạn có thể tham khảo một số tòa nhà tôi từng xem qua",
-            timestamp: "14:28",
-            type: "text",
-            isRead: true,
-        },
-        {
-            id: "5",
-            senderId: "1",
-            senderName: "Trần Thị Lan",
-            content: "Danh_sach_chung_cu_quan_1.pdf",
-            timestamp: "14:29",
-            type: "file",
-            isRead: true,
-        },
-        {
-            id: "6",
-            senderId: "1",
-            senderName: "Trần Thị Lan",
-            content: "Bạn có thể chia sẻ kinh nghiệm thuê nhà ở khu vực này không?",
-            timestamp: "14:30",
-            type: "text",
-            isRead: false,
-        },
-    ]
+    //     {
+    //         id: "2",
+    //         senderId: "current-user",
+    //         senderName: "Nguyễn Văn Minh",
+    //         content: "Chào bạn Lan! Đúng rồi, tôi đang tìm căn hộ 2PN ở khu vực đó. Bạn có kinh nghiệm gì không?",
+    //         timestamp: "14:26",
+    //         type: "text",
+    //         isRead: true,
+    //     },
+    //     {
+    //         id: "3",
+    //         senderId: "1",
+    //         senderName: "Trần Thị Lan",
+    //         content: "Tôi đã thuê ở đây được 2 năm rồi. Khu vực này rất tiện lợi, gần trung tâm và có nhiều tiện ích",
+    //         timestamp: "14:27",
+    //         type: "text",
+    //         isRead: true,
+    //     },
+    //     {
+    //         id: "4",
+    //         senderId: "1",
+    //         senderName: "Trần Thị Lan",
+    //         content: "Bạn có thể tham khảo một số tòa nhà tôi từng xem qua",
+    //         timestamp: "14:28",
+    //         type: "text",
+    //         isRead: true,
+    //     },
+    //     {
+    //         id: "5",
+    //         senderId: "1",
+    //         senderName: "Trần Thị Lan",
+    //         content: "Danh_sach_chung_cu_quan_1.pdf",
+    //         timestamp: "14:29",
+    //         type: "file",
+    //         isRead: true,
+    //     },
+    //     {
+    //         id: "6",
+    //         senderId: "1",
+    //         senderName: "Trần Thị Lan",
+    //         content: "Bạn có thể chia sẻ kinh nghiệm thuê nhà ở khu vực này không?",
+    //         timestamp: "14:30",
+    //         type: "text",
+    //         isRead: false,
+    //     },
+    // ]
 
     const filteredUsers = users.filter(
         (user) =>

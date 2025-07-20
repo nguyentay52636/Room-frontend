@@ -132,13 +132,24 @@ export interface HostHome  {
 export interface Message {
   _id?: string
   nguoiGuiId: string
-  ngoiNhanId: string  
   noiDung: string
   hinhAnh: string
   daDoc: boolean
   trangThai: string
+  roomId?: string  
   createdAt?: string
   updatedAt?: string
   __v?: number
 }
-
+export interface Room { 
+  _id?: string
+  tenPhong: string
+  loaiPhong: string
+  thanhVien: User[]
+  nguoiTao: User
+  tinNhan?: Message[]
+  anhDaiDien: string
+  createdAt?: string
+  updatedAt?: string
+  __v?: number
+}

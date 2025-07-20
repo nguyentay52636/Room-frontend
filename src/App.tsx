@@ -21,7 +21,7 @@ import ManagerHome from './modules/admin/components/Home/ManagerHome';
 import ManagerEmployee from './modules/admin/components/Employee/ManagerEmployee';
 import ChatManager from './modules/admin/components/Chat/ChatManager';
 import ReviewsManager from './modules/admin/components/Reviews/ReviewsManager';
-import TestProperties from './modules/admin/components/RealEstate/TestProperties';
+import TwoUserChat from './modules/admin/components/RealEstate/TwoUserChat';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Profile from './modules/auth/components/Profile/Profile';
@@ -30,6 +30,7 @@ import Products from './modules/home/components/Products/Products';
 import Success from './modules/auth/components/Facebook/success';
 import Failure from './modules/auth/components/Facebook/Failure';
 import { Component, ReactNode } from 'react';
+
 
 // Error Boundary Component
 interface ErrorBoundaryState {
@@ -81,7 +82,7 @@ function App() {
       path: '*',
       element: <NotFound />,
     },
-    // Add top-level routes for Facebook auth callbacks
+
     {
       path: '/success',
       element: <Success />,
@@ -150,6 +151,12 @@ function App() {
           element: <ChatHome />
         },
 
+        {
+          path: 'two-user-chat',
+          element: <TwoUserChat />
+        },
+
+
       ],
     },
     {
@@ -199,10 +206,7 @@ function App() {
           path: 'reviews',
           element: <ReviewsManager />
         },
-        {
-          path: 'test',
-          element: <TestProperties />
-        }
+
 
 
       ]
