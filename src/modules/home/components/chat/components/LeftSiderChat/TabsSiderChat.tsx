@@ -44,7 +44,7 @@ export default function TabsSiderChat({ getStatusColor, getRoleBadge, getStatusT
     };
 
     return (
-        <div className="flex-1 flex flex-col p-4">
+        <div className="flex-1 flex flex-col p-4  z-10">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
                 <TabsList className="grid w-full grid-cols-3 mb-4 bg-white/50 backdrop-blur-sm">
                     <TabsTrigger value="chats" className="text-xs">
