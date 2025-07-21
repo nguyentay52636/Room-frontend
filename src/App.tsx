@@ -30,6 +30,8 @@ import Products from './modules/home/components/Products/Products';
 import Success from './modules/auth/components/Facebook/success';
 import Failure from './modules/auth/components/Facebook/Failure';
 import { Component, ReactNode } from 'react';
+import NotificationPopup from './Global/NotificationPopup';
+import { NotificationProvider } from './contexts/NotificationContext';
 
 
 // Error Boundary Component
@@ -218,22 +220,25 @@ function App() {
       <SkeletonLoading loadingTime={2000} loadingText="Đang tải ứng dụng...">
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
           <LanguageProvider>
-            <>
-              <RouterProvider router={router} />
-              <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-                className="custom-toast"
-              />
-            </>
+            <NotificationProvider>
+              <>
+                <RouterProvider router={router} />
+                <NotificationPopup />
+                <ToastContainer
+                  position="top-right"
+                  autoClose={3000}
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                  className="custom-toast"
+                />
+              </>
+            </NotificationProvider>
           </LanguageProvider>
         </ThemeProvider>
       </SkeletonLoading>

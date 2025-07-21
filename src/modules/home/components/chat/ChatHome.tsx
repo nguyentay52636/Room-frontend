@@ -34,8 +34,6 @@ const ERROR_MESSAGES = {
     FORBIDDEN: "Bạn không có quyền xem tin nhắn trong phòng này",
     NOT_FOUND: "Không tìm thấy phòng chat này",
     UNAUTHORIZED: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại",
-    GENERIC: "Không thể tải tin nhắn. Vui lòng thử lại sau.",
-
     CREATE_ROOM_FAILED: "Không thể tạo phòng chat. Vui lòng thử lại sau.",
     USER_NOT_FOUND: "Không tìm thấy người dùng",
     CREATE_ROOM_FORBIDDEN: "Bạn không có quyền tạo phòng chat"
@@ -57,7 +55,7 @@ const getErrorMessage = (error: any) => {
         case 403: return ERROR_MESSAGES.FORBIDDEN
         case 404: return ERROR_MESSAGES.NOT_FOUND
         case 401: return ERROR_MESSAGES.UNAUTHORIZED
-        default: return ERROR_MESSAGES.GENERIC
+        default: return ERROR_MESSAGES.CREATE_ROOM_FAILED
     }
 }
 
@@ -90,7 +88,6 @@ export default function ChatHome() {
     const [clickedMessage, setClickedMessage] = useState<any>(null);
     const [isRealtimeEnabled, setIsRealtimeEnabled] = useState(true);
     const [lastMessageCount, setLastMessageCount] = useState(0);
-    const [newMessageNotification, setNewMessageNotification] = useState<string | null>(null);
 
     // Enhanced chat features states
     const [replyingTo, setReplyingTo] = useState<any>(null);
@@ -378,14 +375,6 @@ export default function ChatHome() {
             if (freshMessages.length > lastMessageCount) {
                 console.log("🆕 New messages detected:", freshMessages.length - lastMessageCount);
 
-                const latestMessage = freshMessages[freshMessages.length - 1];
-                const isFromOtherUser = latestMessage.senderId !== user?._id;
-
-                if (isFromOtherUser) {
-                    setNewMessageNotification(`💬 ${latestMessage.senderName}: ${latestMessage.content}`);
-                    setTimeout(() => setNewMessageNotification(null), NOTIFICATION_DURATION);
-                }
-
                 setMessages(freshMessages);
                 setLastMessageCount(freshMessages.length);
                 setTimeout(scrollToBottom, 100);
@@ -507,7 +496,7 @@ export default function ChatHome() {
 
         } catch (error) {
 
-            setErrorWithAutoClear(ERROR_MESSAGES.GENERIC, 4000);
+
         } finally {
             setUploadingFiles(false);
         }
@@ -716,31 +705,31 @@ export default function ChatHome() {
     ) : null;
 
     // Notification component
-    const NotificationPopup = () => newMessageNotification ? (
-        <div className="fixed top-20 right-4 z-50 animate-in slide-in-from-right duration-300">
-            <div className="bg-white border border-blue-200 rounded-lg shadow-lg p-4 max-w-sm">
-                <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                            <MessageCircle className="w-4 h-4 text-white" />
-                        </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900">Tin nhắn mới</p>
-                        <p className="text-sm text-gray-600 line-clamp-2">{newMessageNotification}</p>
-                    </div>
-                    <button
-                        onClick={() => setNewMessageNotification(null)}
-                        className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
-                    >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-    ) : null;
+    // const NotificationPopup = () => newMessageNotification ? (
+    //     <div className="fixed top-20 right-4 z-50 animate-in slide-in-from-right duration-300">
+    //         <div className="bg-white border border-blue-200 rounded-lg shadow-lg p-4 max-w-sm">
+    //             <div className="flex items-start space-x-3">
+    //                 <div className="flex-shrink-0">
+    //                     <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+    //                         <MessageCircle className="w-4 h-4 text-white" />
+    //                     </div>
+    //                 </div>
+    //                 <div className="flex-1 min-w-0">
+    //                     <p className="text-sm font-medium text-gray-900">Tin nhắn mới</p>
+    //                     <p className="text-sm text-gray-600 line-clamp-2">{newMessageNotification}</p>
+    //                 </div>
+    //                 <button
+    //                     onClick={() => setNewMessageNotification(null)}
+    //                     className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+    //                 >
+    //                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    //                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    //                     </svg>
+    //                 </button>
+    //             </div>
+    //         </div>
+    //     </div>
+    // ) : null;
 
     // Room list modal component
     const RoomListModal = () => showRoomsList ? (
@@ -925,7 +914,6 @@ export default function ChatHome() {
                 </div>
             </div>
 
-            <NotificationPopup />
             <RoomListModal />
         </div>
     )
