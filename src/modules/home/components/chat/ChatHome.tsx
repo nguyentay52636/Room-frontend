@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge"
 
 import {
     Home,
-    Users
+    Users,
+    MessageCircle
 } from "lucide-react"
 import HeaderChat from "./components/HeaderChat"
 import HeaderSiderChat from "./components/LeftSiderChat/HeaderSiderChat"
@@ -39,6 +40,9 @@ export default function ChatHome() {
     const [realUsers, setRealUsers] = useState<any[]>([]);
     const [showRoomsList, setShowRoomsList] = useState(false);
     const [clickedMessage, setClickedMessage] = useState<any>(null);
+    const [isRealtimeEnabled, setIsRealtimeEnabled] = useState(true);
+    const [lastMessageCount, setLastMessageCount] = useState(0);
+    const [newMessageNotification, setNewMessageNotification] = useState<string | null>(null);
 
     // Helper function to transform API messages to UI format
     const transformMessages = (messagesData: any[], selectedChat: any, user: any) => {
@@ -186,20 +190,17 @@ export default function ChatHome() {
             if (user?._id && isAuthenticated) {
                 try {
                     setLoading(true);
-
-                    // Load both rooms and users in parallel
                     const [roomResponse, usersResponse] = await Promise.all([
                         getRoomChatByIdUser(user._id),
                         getUsers()
                     ]);
 
                     console.log("✅ Loaded rooms:", roomResponse);
-                    console.log("✅ Loaded users:", usersResponse);
+                    // console.log("✅ Loaded users:", usersResponse);
 
                     const roomsData = roomResponse.data || roomResponse || [];
                     setRooms(roomsData);
 
-                    // Filter out current user from users list
                     const filteredUsers = (usersResponse || []).filter((u: any) => u._id !== user._id);
 
                     // Transform users to match expected format
@@ -212,7 +213,7 @@ export default function ChatHome() {
                         soDienThoai: u.soDienThoai,
                         anhDaiDien: u.anhDaiDien || "/placeholder.svg",
                         trangThai: u.trangThai || "offline",
-                        vaiTro: typeof u.vaiTro === 'object' ? 'tenant' : u.vaiTro, // Handle role object
+                        vaiTro: typeof u.vaiTro === 'object' ? 'tenant' : u.vaiTro,
                         lastSeen: u.trangThai === "hoat_dong" ? "Đang online" : "Offline",
                         diaChi: "Chưa cập nhật",
                         soSao: 5.0,
@@ -247,7 +248,7 @@ export default function ChatHome() {
                             user: {
                                 id: otherUser?._id || "unknown",
                                 ten: otherUser?.ten || room.tenPhong || "Người dùng",
-                                anhDaiDien: otherUser?.anhDaiDien || room.anhDaiDien || "/placeholder.svg",
+                                anhDaiDien: otherUser?.anhDaiDien || room.anhDaiDien,
                                 trangThai: otherUser?.trangThai || "offline",
                                 lastSeen: otherUser?.trangThai === "online" ? "Đang online" : "Offline",
                                 diaChi: "Chưa cập nhật",
@@ -291,16 +292,6 @@ export default function ChatHome() {
         getRoomChat()
     }, [user, isAuthenticated])
 
-    // Load messages when selectedChat changes - REMOVED as we now use handleChatSelection
-    // This old effect is replaced by the new handleChatSelection function that calls getRoomById
-    /*
-    useEffect(() => {
-        const loadMessages = async () => {
-            // ... old message loading logic removed ...
-        };
-        loadMessages();
-    }, [selectedChat?.id, isAuthenticated, user?._id]);
-    */
 
     const currentUser = {
         id: user?._id || "current-user",
@@ -312,101 +303,10 @@ export default function ChatHome() {
     }
 
 
-    const users = !isAuthenticated ? [
-        {
-            id: "1",
-            ten: "Trần Thị Lan",
-            anhDaiDien: "/placeholder.svg?height=40&width=40&text=TTL",
-            trangThai: "online",
-            lastSeen: "Đang online",
-            diaChi: "Quận 1, TP.HCM",
-            vaiTro: "tenant",
-            soSao: 4.8,
-            soLuotDanhGia: 12,
-            gioiThieu: "Tôi đang tìm kiếm căn hộ 2PN tại khu vực trung tâm",
-            sothich: ["Căn hộ cao cấp", "Gần trung tâm", "View đẹp"],
-            isVerified: true,
-        },
-        {
-            id: "2",
-            ten: "Lê Văn Đức",
-            anhDaiDien: "/placeholder.svg?height=40&width=40&text=LVD",
-            trangThai: "online",
-            lastSeen: "5 phút trước",
-            diaChi: "Quận 7, TP.HCM",
-            vaiTro: "landlord",
-            soSao: 4.9,
-            soLuotDanhGia: 28,
-            gioiThieu: "Chủ sở hữu nhiều bất động sản cao cấp tại TP.HCM",
-            sothich: ["Bất động sản cao cấp", "Đầu tư", "Tư vấn"],
-            isVerified: true,
-        },
-        {
-            id: "3",
-            ten: "Phạm Thị Hoa",
-            anhDaiDien: "/placeholder.svg?height=40&width=40&text=PTH",
-            trangThai: "away",
-            lastSeen: "30 phút trước",
-            diaChi: "Quận 3, TP.HCM",
-            vaiTro: "tenant",
-            soSao: 4.5,
-            soLuotDanhGia: 8,
-            gioiThieu: "Sinh viên tìm phòng trọ giá rẻ gần trường đại học",
-            sothich: ["Phòng trọ", "Giá rẻ", "Gần trường học"],
-            isVerified: false,
-        },
-        {
-            id: "4",
-            ten: "Võ Minh Tuấn",
-            anhDaiDien: "/placeholder.svg?height=40&width=40&text=VMT",
-            trangThai: "offline",
-            lastSeen: "2 giờ trước",
-            diaChi: "Bình Thạnh, TP.HCM",
-            vaiTro: "landlord",
-            soSao: 4.7,
-            soLuotDanhGia: 15,
-            gioiThieu: "Chuyên cho thuê căn hộ dịch vụ và văn phòng",
-            sothich: ["Căn hộ dịch vụ", "Văn phòng", "Ngắn hạn"],
-            isVerified: true,
-        },
-    ] : [];
+    const users = !isAuthenticated ? [] : realUsers;
 
     // Mock conversations - only when not authenticated
-    const mockConversations = !isAuthenticated ? [
-        {
-            id: "1",
-            userId: "1",
-            user: users[0],
-            lastMessage: "Bạn có thể chia sẻ kinh nghiệm thuê nhà ở khu vực này không?",
-            lastMessageTime: "14:30",
-            unreadCount: 2,
-            isPinned: true,
-            isGroup: false,
-            topic: "Tư vấn khu vực",
-        },
-        {
-            id: "2",
-            userId: "2",
-            user: users[1],
-            lastMessage: "Tôi có một số căn hộ phù hợp với yêu cầu của bạn",
-            lastMessageTime: "11:45",
-            unreadCount: 0,
-            isPinned: false,
-            isGroup: false,
-            topic: "Tìm nhà",
-        },
-        {
-            id: "3",
-            userId: "3",
-            user: users[2],
-            lastMessage: "Cảm ơn bạn đã chia sẻ thông tin hữu ích!",
-            lastMessageTime: "09:20",
-            unreadCount: 1,
-            isPinned: false,
-            isGroup: false,
-            topic: "Chia sẻ kinh nghiệm",
-        },
-    ] : [];
+    const mockConversations = !isAuthenticated ? conversations : [];
 
     const groupChats = [
         {
@@ -659,95 +559,6 @@ export default function ChatHome() {
         )
     }
 
-    const handleSendMessage = async () => {
-        if (newMessage.trim() && selectedChat?.id && user?._id) {
-            try {
-                console.log("🔄 Sending message:", newMessage);
-
-                const messageData = {
-                    roomId: selectedChat.id,
-                    nguoiGuiId: user._id,
-                    noiDung: newMessage.trim(),
-                    daDoc: false,
-                    trangThai: "sent"
-                };
-
-                const response = await createMessage(messageData);
-                console.log("✅ Message sent:", response);
-
-                // Clear input
-                setNewMessage("");
-
-                // Reload messages to show the new message
-                const updatedMessages = await getMessagesByRoom(selectedChat.id);
-                const messagesData = updatedMessages.data || updatedMessages || [];
-
-                // Transform messages to match the expected format
-                const transformedMessages = transformMessages(messagesData, selectedChat, user);
-
-                setMessages(transformedMessages);
-
-            } catch (error) {
-                console.error("❌ Error sending message:", error);
-                // You could show a toast notification here
-            }
-        }
-    }
-
-    const handleStartChat = async (targetUser: any) => {
-        try {
-            console.log("�� Starting chat with user:", targetUser);
-            console.log("📝 Current user:", user?._id);
-            console.log("📝 Target user:", targetUser.id || targetUser._id);
-
-            const existingChat = displayConversations.find((conv) => conv.userId === (targetUser.id || targetUser._id))
-            if (existingChat) {
-                console.log("✅ Found existing chat:", existingChat);
-                setSelectedChat(existingChat)
-            } else {
-                if (!user?._id) {
-                    throw new Error("User not authenticated");
-                }
-
-                const targetUserId = targetUser.id || targetUser._id;
-                console.log("🔄 Creating private room between:", user._id, "and", targetUserId);
-
-                // Use current authenticated user ID and target user ID
-                const response = await findOrCreatePrivateRoom(user._id, targetUserId);
-                console.log("✅ Room response:", response);
-
-                // Transform the room response to match expected chat format
-                const roomData = response.room || response;
-                const newChat = {
-                    id: roomData._id,
-                    userId: targetUserId,
-                    user: targetUser,
-                    lastMessage: "",
-                    lastMessageTime: "",
-                    unreadCount: 0,
-                    isPinned: false,
-                    isGroup: false,
-                    topic: "Cuộc trò chuyện mới",
-                    roomData: roomData
-                };
-
-                console.log("🎯 Setting new chat:", newChat);
-                setSelectedChat(newChat);
-            }
-            setActiveTab("chats")
-        } catch (error: any) {
-            console.error("❌ Error starting chat:", error);
-            const errorMessage = error.response?.status === 403
-                ? "Bạn không có quyền tạo phòng chat"
-                : error.response?.status === 404
-                    ? "Không tìm thấy người dùng"
-                    : error.response?.status === 401
-                        ? "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại"
-                        : "Không thể tạo phòng chat. Vui lòng thử lại sau.";
-            setMessageError(errorMessage);
-        }
-    }
-
     // Enhanced function to handle chat selection with room data loading
     const handleChatSelection = async (chatItem: any) => {
         try {
@@ -770,6 +581,7 @@ export default function ChatHome() {
 
             console.log("💬 Setting messages from room data:", transformedMessages);
             setMessages(transformedMessages);
+            setLastMessageCount(transformedMessages.length);
 
             // Scroll to bottom after messages are loaded
             setTimeout(() => {
@@ -810,6 +622,181 @@ export default function ChatHome() {
             console.log("✨ Chat selection completed");
         }
     };
+
+    // Realtime polling function
+    const realtimeUpdateMessages = async (roomId: string) => {
+        try {
+            console.log("🔄 Realtime update for room:", roomId);
+
+            // Get fresh room data
+            const roomResponse = await getRoomById(roomId);
+            const roomData = roomResponse.data || roomResponse;
+            const freshMessages = transformRoomMessages(roomData, user);
+
+            // Check if there are new messages
+            if (freshMessages.length > lastMessageCount) {
+                console.log("🆕 New messages detected:", freshMessages.length - lastMessageCount);
+
+                // Get the latest message for notification
+                const latestMessage = freshMessages[freshMessages.length - 1];
+                const isFromOtherUser = latestMessage.senderId !== user?._id;
+
+                // Show notification only for messages from other users
+                if (isFromOtherUser) {
+                    setNewMessageNotification(`💬 ${latestMessage.senderName}: ${latestMessage.content}`);
+
+                    // Auto hide notification after 4 seconds
+                    setTimeout(() => {
+                        setNewMessageNotification(null);
+                    }, 4000);
+                }
+
+                setMessages(freshMessages);
+                setLastMessageCount(freshMessages.length);
+
+                // Auto scroll to bottom for new messages
+                setTimeout(() => {
+                    scrollToBottom();
+                }, 100);
+
+                // Show notification for new messages (optional)
+                if (freshMessages.length > lastMessageCount + 1) {
+                    console.log("📢 Multiple new messages received");
+                }
+            } else if (freshMessages.length !== messages.length) {
+                // Messages were deleted or modified
+                console.log("🔄 Messages updated (modified/deleted)");
+                setMessages(freshMessages);
+                setLastMessageCount(freshMessages.length);
+            }
+
+        } catch (error) {
+            console.warn("⚠️ Realtime update failed:", error);
+            // Don't show error to user for background updates
+        }
+    };
+
+    // Realtime polling effect
+    useEffect(() => {
+        let intervalId: NodeJS.Timeout | null = null;
+
+        if (selectedChat?.id && isAuthenticated && isRealtimeEnabled) {
+            console.log("🚀 Starting realtime polling for room:", selectedChat.id);
+
+            // Poll every 3 seconds
+            intervalId = setInterval(() => {
+                realtimeUpdateMessages(selectedChat.id);
+            }, 3000);
+        }
+
+        // Cleanup interval when chat changes or component unmounts
+        return () => {
+            if (intervalId) {
+                console.log("🛑 Stopping realtime polling");
+                clearInterval(intervalId);
+            }
+        };
+    }, [selectedChat?.id, isAuthenticated, isRealtimeEnabled, lastMessageCount]);
+
+    // Enhanced send message with realtime update
+    const handleSendMessage = async () => {
+        if (newMessage.trim() && selectedChat?.id && user?._id) {
+            try {
+                console.log("🔄 Sending message:", newMessage);
+
+                const messageData = {
+                    roomId: selectedChat.id,
+                    nguoiGuiId: user._id,
+                    noiDung: newMessage.trim(),
+                    daDoc: false,
+                    trangThai: "sent"
+                };
+
+                const response = await createMessage(messageData);
+                console.log("✅ Message sent:", response);
+
+                // Clear input
+                setNewMessage("");
+
+                // Immediately reload messages for instant feedback
+                const updatedRoomResponse = await getRoomById(selectedChat.id);
+                const roomData = updatedRoomResponse.data || updatedRoomResponse;
+                const transformedMessages = transformRoomMessages(roomData, user);
+
+                setMessages(transformedMessages);
+                setLastMessageCount(transformedMessages.length);
+
+                // Scroll to bottom
+                setTimeout(() => {
+                    scrollToBottom();
+                }, 100);
+
+            } catch (error) {
+                console.error("❌ Error sending message:", error);
+                // You could show a toast notification here
+            }
+        }
+    }
+
+    // Toggle realtime function
+    const toggleRealtime = () => {
+        setIsRealtimeEnabled(!isRealtimeEnabled);
+        console.log("🔄 Realtime toggled:", !isRealtimeEnabled);
+    };
+
+    const handleStartChat = async (targetUser: any) => {
+        try {
+            console.log("🔄 Starting chat with user:", targetUser);
+            console.log("📝 Current user:", user?._id);
+            console.log("📝 Target user:", targetUser.id || targetUser._id);
+
+            const existingChat = displayConversations.find((conv) => conv.userId === (targetUser.id || targetUser._id))
+            if (existingChat) {
+                console.log("✅ Found existing chat:", existingChat);
+                await handleChatSelection(existingChat);
+            } else {
+                if (!user?._id) {
+                    throw new Error("User not authenticated");
+                }
+
+                const targetUserId = targetUser.id || targetUser._id;
+                console.log("🔄 Creating private room between:", user._id, "and", targetUserId);
+
+                // Use current authenticated user ID and target user ID
+                const response = await findOrCreatePrivateRoom(user._id, targetUserId);
+                console.log("✅ Room response:", response);
+
+                // Transform the room response to match expected chat format
+                const roomData = response.room || response;
+                const newChat = {
+                    id: roomData._id,
+                    userId: targetUserId,
+                    user: targetUser,
+                    lastMessage: "",
+                    lastMessageTime: "",
+                    unreadCount: 0,
+                    isPinned: false,
+                    isGroup: false,
+                    topic: "Cuộc trò chuyện mới",
+                    roomData: roomData
+                };
+
+                console.log("🎯 Setting new chat:", newChat);
+                await handleChatSelection(newChat);
+            }
+            setActiveTab("chats")
+        } catch (error: any) {
+            console.error("❌ Error starting chat:", error);
+            const errorMessage = error.response?.status === 403
+                ? "Bạn không có quyền tạo phòng chat"
+                : error.response?.status === 404
+                    ? "Không tìm thấy người dùng"
+                    : error.response?.status === 401
+                        ? "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại"
+                        : "Không thể tạo phòng chat. Vui lòng thử lại sau.";
+            setMessageError(errorMessage);
+        }
+    }
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -874,7 +861,12 @@ export default function ChatHome() {
     return (
         <div className="h-screen mt-14! bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col fixed w-full">
             {/* Full Screen Header */}
-            <HeaderChat isFullscreen={isFullscreen} setIsFullscreen={setIsFullscreen} />
+            <HeaderChat
+                isFullscreen={isFullscreen}
+                setIsFullscreen={setIsFullscreen}
+                isRealtimeEnabled={isRealtimeEnabled}
+                toggleRealtime={toggleRealtime}
+            />
             {process.env.NODE_ENV === 'development' && isAuthenticated && (
                 <div className="bg-yellow-50 border-b border-yellow-200 p-2 text-xs">
                     <details className="cursor-pointer">
@@ -1018,6 +1010,33 @@ export default function ChatHome() {
                     )}
                 </div>
             </div>
+
+            {/* New Message Notification */}
+            {newMessageNotification && (
+                <div className="fixed top-20 right-4 z-50 animate-in slide-in-from-right duration-300">
+                    <div className="bg-white border border-blue-200 rounded-lg shadow-lg p-4 max-w-sm">
+                        <div className="flex items-start space-x-3">
+                            <div className="flex-shrink-0">
+                                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                                    <MessageCircle className="w-4 h-4 text-white" />
+                                </div>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-gray-900">Tin nhắn mới</p>
+                                <p className="text-sm text-gray-600 line-clamp-2">{newMessageNotification}</p>
+                            </div>
+                            <button
+                                onClick={() => setNewMessageNotification(null)}
+                                className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Room List Modal */}
             {showRoomsList && (

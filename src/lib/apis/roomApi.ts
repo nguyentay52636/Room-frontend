@@ -13,7 +13,7 @@ export const getRoomChatByIdUser = async (userId: string) => {
 export const getRoomById = async (roomId: string) => { 
     try { 
         const {data} = await baseApi.get(`/room/${roomId}`)
-        console.log("🔍 Room data:", data);
+        // console.log("🔍 Room data:", data);
         return data
     } catch (error:any) {
         throw new Error(error.response.data.message)

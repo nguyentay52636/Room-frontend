@@ -9,9 +9,8 @@ export const getUsers = async () => {
         const {data} = await baseApi.get<IusersResponse>(`/user`)
         const res = data.users
         return res
-    } catch (error) {
-        console.error("Error fetching users:", error)
-        throw error
+    } catch (error:any) {
+        throw new Error(error.response.data.message)
     }
 }
 
@@ -20,9 +19,8 @@ export const getUserById = async (id: string) => {
         const {data} = await baseApi.get<{message: string, data: User}>(`/user/${id}`)
         const res = data.data
         return res
-    } catch (error) {
-        console.error("Error fetching user by id:", error)
-        throw error
+    } catch (error:any) {
+        throw new Error(error.response.data.message)
     }
 }
 export const createUser  = async ( { ten, email, tenDangNhap, matKhau, soDienThoai, vaiTro, anhDaiDien, trangThai}: User) => {
