@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-
+import { getDatabase } from "firebase/database";
 const firebaseConfig = {
   apiKey: "AIzaSyCn5tIC_iy8J5e71QBc2QAAa06EZHzXb14",
   authDomain: "new-live-4b1d4.firebaseapp.com",
@@ -14,10 +14,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+const db = getDatabase(app);
 
 // Add additional configuration to ensure proper Google Sign-In setup
 provider.setCustomParameters({
   prompt: 'select_account'
 });
 
-export { auth, firebaseConfig, app, provider }; 
+export { auth, firebaseConfig, app, provider, db }; 

@@ -1,5 +1,5 @@
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback, useMemo } from "react"
 
 import { Badge } from "@/components/ui/badge"
 
@@ -25,7 +25,7 @@ import { getUsers } from "@/lib/apis/userApi"
 import useChatSocket from "@/services/socketService"
 
 // Constants
-const REALTIME_POLL_INTERVAL = 3000
+const REALTIME_POLL_INTERVAL = 4000
 const NOTIFICATION_DURATION = 4000
 const ERROR_CLEAR_DURATION = 5000
 const UPLOAD_SIMULATION_DELAY = 1000
@@ -245,13 +245,15 @@ export default function ChatHome() {
         getRoomChat()
     }, [user, isAuthenticated])
 
-    const currentUser = {
+    // Memoized currentUser to prevent unnecessary re-renders
+    const currentUser = useMemo(() => ({
         id: user?._id || "current-user",
         ten: user?.ten || "Người dùng",
         anhDaiDien: user?.anhDaiDien || "",
         tenDangNhap: user?.tenDangNhap || "",
         trangThai: user?.trangThai || "hoat_dong",
-    }
+        _id: user?._id || "current-user"
+    }), [user?._id, user?.ten, user?.anhDaiDien, user?.tenDangNhap, user?.trangThai])
 
     const users = !isAuthenticated ? [] : realUsers;
     const mockConversations = !isAuthenticated ? conversations : [];
@@ -439,7 +441,34 @@ export default function ChatHome() {
         setTimeout(scrollToBottom, 100);
     }
 
-    const handleSendMessage = async (files?: File[], audioBlob?: Blob) => {
+    const uploadAndSendMessage = useCallback(async (content: string, files: File[]) => {
+        try {
+            if (!user?._id || !selectedChat?.id) {
+                throw new Error("User not authenticated or no chat selected");
+            }
+
+            const imageUrls = await uploadFiles(files);
+
+            const messageData = {
+                roomId: selectedChat.id,
+                nguoiGuiId: user._id,
+                noiDung: content,
+                hinhAnh: imageUrls[0] || "",
+                daDoc: false,
+                trangThai: "sent"
+            };
+
+            await createMessage(messageData);
+            await updateMessagesAfterSend();
+
+        } catch (error) {
+            console.error("❌ Error in uploadAndSendMessage:", error);
+            throw error;
+        }
+    }, [user?._id, selectedChat?.id, uploadFiles, updateMessagesAfterSend]);
+
+    // Optimized handleSendMessage with useCallback
+    const handleSendMessage = useCallback(async (files?: File[], audioBlob?: Blob) => {
         if ((!newMessage.trim() && (!files || files.length === 0) && !audioBlob) || !selectedChat?.id || !user?._id) {
             return;
         }
@@ -495,45 +524,25 @@ export default function ChatHome() {
             await updateMessagesAfterSend();
 
         } catch (error) {
-
-
+            console.error("❌ Error sending message:", error);
+            setErrorWithAutoClear("Không thể gửi tin nhắn. Vui lòng thử lại.");
         } finally {
             setUploadingFiles(false);
         }
-    }
+    }, [newMessage, selectedChat?.id, user?._id, replyingTo, socketSendMessage, uploadFiles, uploadAndSendMessage, updateMessagesAfterSend, setErrorWithAutoClear])
 
-    const uploadAndSendMessage = async (content: string, files: File[]) => {
-        try {
-            if (!user?._id || !selectedChat?.id) {
-                throw new Error("User not authenticated or no chat selected");
-            }
-
-            const imageUrls = await uploadFiles(files);
-
-            const messageData = {
-                roomId: selectedChat.id,
-                nguoiGuiId: user._id,
-                noiDung: content,
-                hinhAnh: imageUrls[0] || "",
-                daDoc: false,
-                trangThai: "sent"
-            };
-
-            await createMessage(messageData);
-            await updateMessagesAfterSend();
-
-        } catch (error) {
-            console.error("❌ Error in uploadAndSendMessage:", error);
-            throw error;
-        }
-    };
-
-    const handleReplyToMessage = (message: any) => {
+    // Optimized message handlers
+    const handleReplyToMessage = useCallback((message: any) => {
         setReplyingTo(message);
         console.log("💬 Replying to message:", message);
-    };
+    }, []);
 
-    const handleCancelReply = () => setReplyingTo(null);
+    const handleCancelReply = useCallback(() => setReplyingTo(null), []);
+
+    // Optimized setNewMessage to reduce re-renders
+    const optimizedSetNewMessage = useCallback((value: string) => {
+        setNewMessage(value);
+    }, []);
 
     const handleTypingStart = () => setIsTyping(true);
     const handleTypingStop = () => setIsTyping(false);
@@ -704,32 +713,6 @@ export default function ChatHome() {
         </div>
     ) : null;
 
-    // Notification component
-    // const NotificationPopup = () => newMessageNotification ? (
-    //     <div className="fixed top-20 right-4 z-50 animate-in slide-in-from-right duration-300">
-    //         <div className="bg-white border border-blue-200 rounded-lg shadow-lg p-4 max-w-sm">
-    //             <div className="flex items-start space-x-3">
-    //                 <div className="flex-shrink-0">
-    //                     <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-    //                         <MessageCircle className="w-4 h-4 text-white" />
-    //                     </div>
-    //                 </div>
-    //                 <div className="flex-1 min-w-0">
-    //                     <p className="text-sm font-medium text-gray-900">Tin nhắn mới</p>
-    //                     <p className="text-sm text-gray-600 line-clamp-2">{newMessageNotification}</p>
-    //                 </div>
-    //                 <button
-    //                     onClick={() => setNewMessageNotification(null)}
-    //                     className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
-    //                 >
-    //                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    //                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-    //                     </svg>
-    //                 </button>
-    //             </div>
-    //         </div>
-    //     </div>
-    // ) : null;
 
     // Room list modal component
     const RoomListModal = () => showRoomsList ? (
@@ -870,7 +853,7 @@ export default function ChatHome() {
                 </div>
 
                 {/* Chat Area */}
-                <div className="flex-1 flex flex-col bg-white/40 backdrop-blur-sm">
+                <div className="flex-1 mb-10! flex flex-col bg-white/40 backdrop-blur-sm">
                     {selectedChat ? (
                         <>
                             <AreaHeaderChat
@@ -899,7 +882,7 @@ export default function ChatHome() {
 
                             <AreaMessageInput
                                 newMessage={newMessage}
-                                setNewMessage={setNewMessage}
+                                setNewMessage={optimizedSetNewMessage}
                                 handleSendMessage={handleSendMessage}
                                 replyingTo={replyingTo}
                                 onCancelReply={handleCancelReply}
