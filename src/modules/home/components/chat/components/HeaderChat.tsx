@@ -38,8 +38,8 @@ export default function HeaderChat({
                             size="sm"
                             onClick={toggleRealtime}
                             className={`rounded-xl backdrop-blur-sm transition-all ${isRealtimeEnabled
-                                    ? 'bg-green-50/80 border-green-200 text-green-700 hover:bg-green-100/80'
-                                    : 'bg-gray-50/80 border-gray-200 text-gray-600 hover:bg-gray-100/80'
+                                ? 'bg-green-50/80 border-green-200 text-green-700 hover:bg-green-100/80'
+                                : 'bg-gray-50/80 border-gray-200 text-gray-600 hover:bg-gray-100/80'
                                 }`}
                         >
                             {isRealtimeEnabled ? (

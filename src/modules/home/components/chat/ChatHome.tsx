@@ -22,6 +22,7 @@ import { selectAuth } from "@/redux/slices/authSlice"
 import { getRoomChatByIdUser, findOrCreatePrivateRoom, getRoomById } from "@/lib/apis/roomApi"
 import { getMessagesByRoom, createMessage } from "@/lib/apis/messageApi"
 import { getUsers } from "@/lib/apis/userApi"
+import useChatSocket from "@/services/socketService"
 
 // Constants
 const REALTIME_POLL_INTERVAL = 3000
@@ -34,7 +35,7 @@ const ERROR_MESSAGES = {
     NOT_FOUND: "Không tìm thấy phòng chat này",
     UNAUTHORIZED: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại",
     GENERIC: "Không thể tải tin nhắn. Vui lòng thử lại sau.",
-    SEND_FAILED: "Không thể gửi tin nhắn. Vui lòng thử lại.",
+
     CREATE_ROOM_FAILED: "Không thể tạo phòng chat. Vui lòng thử lại sau.",
     USER_NOT_FOUND: "Không tìm thấy người dùng",
     CREATE_ROOM_FORBIDDEN: "Bạn không có quyền tạo phòng chat"
@@ -96,6 +97,9 @@ export default function ChatHome() {
     const [isTyping, setIsTyping] = useState(false);
     const [typingUsers, setTypingUsers] = useState<string[]>([]);
     const [uploadingFiles, setUploadingFiles] = useState<boolean>(false);
+
+    // WebSocket integration - chỉ để gửi tin nhắn
+    const { sendMessage: socketSendMessage } = useChatSocket({ roomId: selectedChat?.id });
 
     // Unified message transformation function
     const transformMessages = (messagesData: any[], currentUser: any, selectedChat?: any, roomData?: any) => {
@@ -494,16 +498,16 @@ export default function ChatHome() {
                 ...(replyingTo && { replyTo: replyingTo.id })
             };
 
-            const response = await createMessage(messageData);
-            console.log("✅ Enhanced message sent:", response);
+            await socketSendMessage(messageContent, imageUrls.length > 0 ? imageUrls[0] : "");
+            console.log("✅ Enhanced message sent via WebSocket");
 
             setNewMessage("");
             setReplyingTo(null);
             await updateMessagesAfterSend();
 
         } catch (error) {
-            console.error("❌ Error sending enhanced message:", error);
-            setErrorWithAutoClear(ERROR_MESSAGES.SEND_FAILED, 3000);
+
+            setErrorWithAutoClear(ERROR_MESSAGES.GENERIC, 4000);
         } finally {
             setUploadingFiles(false);
         }
