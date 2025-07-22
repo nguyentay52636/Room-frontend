@@ -104,10 +104,10 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                     setTimeout(() => {
                         if (userData.vaiTro?.ten === "nguoi_thue") {
                             console.log('Navigating to user home page');
-                            navigate('/'); 
+                            navigate('/');
                         } else {
                             console.log('Navigating to admin dashboard');
-                            navigate('/'); 
+                            navigate('/');
                         }
                     }, 1000); // Delay 1 giây để hiển thị thông báo
                 } else {
@@ -150,7 +150,7 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
         e.preventDefault()
 
         if (!validateForm()) {
-        
+
             console.log("Validation errors:", errors)
             return
         }
@@ -232,7 +232,7 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
         });
     }
     const handleFacebookLogin = () => {
-        const apiBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+        const apiBaseUrl = import.meta.env.VITE_API_URL || "https://da92df21-3a0a-4d9b-a7fb-47550e4c282f-00-3q7tqjx3vn1pz.pike.replit.dev/";
         window.location.href = `${apiBaseUrl}/auth/facebook/callback`;
     };
     // Set mode based on pathname
