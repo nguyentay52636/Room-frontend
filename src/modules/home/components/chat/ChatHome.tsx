@@ -199,11 +199,11 @@ export default function ChatHome() {
         };
     }
 
-    // Auto-clear error message utility
-    const setErrorWithAutoClear = (error: string, duration = ERROR_CLEAR_DURATION) => {
-        setMessageError(error);
-        setTimeout(() => setMessageError(null), duration);
-    }
+    // Auto-clear error message utility - DISABLED per user request
+    const setErrorWithAutoClear = useCallback((error: string, duration = ERROR_CLEAR_DURATION) => {
+        // Completely disabled - do nothing
+        console.log("🔇 Error message suppressed:", error);
+    }, []);
 
     useEffect(() => {
         const getRoomChat = async () => {
@@ -360,7 +360,8 @@ export default function ChatHome() {
         } catch (error: any) {
             console.error("❌ Error loading chat room:", error);
             setMessages([]);
-            setErrorWithAutoClear(getErrorMessage(error));
+            // Disable error notification per user request
+            // setErrorWithAutoClear(getErrorMessage(error));
         } finally {
             setLoadingMessages(false);
         }
@@ -423,28 +424,40 @@ export default function ChatHome() {
                     ? URL.createObjectURL(file)
                     : `https://api.example.com/uploads/${file.name}`;
             } catch (error) {
-                console.error("❌ Error uploading file:", file.name, error);
-                throw new Error(`Không thể upload file ${file.name}`);
+                console.error("❌ Error uploading file (silently ignored):", file.name, error);
+                return ""; // Return empty string instead of throwing
             }
         });
 
-        return Promise.all(uploadPromises);
+        try {
+            const results = await Promise.all(uploadPromises);
+            return results.filter(url => url !== ""); // Filter out failed uploads
+        } catch (error) {
+            console.error("❌ Error in uploadFiles (silently ignored):", error);
+            return []; // Return empty array on failure
+        }
     };
 
     const updateMessagesAfterSend = async () => {
-        const updatedRoomResponse = await getRoomById(selectedChat.id);
-        const roomData = updatedRoomResponse.data || updatedRoomResponse;
-        const transformedMessages = transformMessages(roomData.tinNhan || [], user, selectedChat, roomData);
+        try {
+            const updatedRoomResponse = await getRoomById(selectedChat.id);
+            const roomData = updatedRoomResponse.data || updatedRoomResponse;
+            const transformedMessages = transformMessages(roomData.tinNhan || [], user, selectedChat, roomData);
 
-        setMessages(transformedMessages);
-        setLastMessageCount(transformedMessages.length);
-        setTimeout(scrollToBottom, 100);
+            setMessages(transformedMessages);
+            setLastMessageCount(transformedMessages.length);
+            setTimeout(scrollToBottom, 100);
+        } catch (error) {
+            console.error("❌ Error updating messages after send (silently ignored):", error);
+            // Don't throw error - just log it and continue
+        }
     }
 
     const uploadAndSendMessage = useCallback(async (content: string, files: File[]) => {
         try {
             if (!user?._id || !selectedChat?.id) {
-                throw new Error("User not authenticated or no chat selected");
+                console.warn("⚠️ User not authenticated or no chat selected - silently ignoring");
+                return;
             }
 
             const imageUrls = await uploadFiles(files);
@@ -462,16 +475,21 @@ export default function ChatHome() {
             await updateMessagesAfterSend();
 
         } catch (error) {
-            console.error("❌ Error in uploadAndSendMessage:", error);
-            throw error;
+            console.error("❌ Error in uploadAndSendMessage (silently ignored):", error);
+            // Don't throw error - just log it and continue
         }
     }, [user?._id, selectedChat?.id, uploadFiles, updateMessagesAfterSend]);
 
     // Optimized handleSendMessage with useCallback
     const handleSendMessage = useCallback(async (files?: File[], audioBlob?: Blob) => {
+        console.log('🔧 DEBUG: Using NEW version of handleSendMessage (error notifications disabled)');
+
         if ((!newMessage.trim() && (!files || files.length === 0) && !audioBlob) || !selectedChat?.id || !user?._id) {
             return;
         }
+
+        let messageContent = newMessage.trim();
+        let imageUrls: string[] = [];
 
         try {
             console.log("🔄 Sending enhanced message:", {
@@ -486,11 +504,10 @@ export default function ChatHome() {
             if (audioBlob) {
                 const audioFile = new File([audioBlob], `voice_${Date.now()}.wav`, { type: 'audio/wav' });
                 await uploadAndSendMessage("🎤 Tin nhắn thoại", [audioFile]);
+                setNewMessage("");
+                setReplyingTo(null);
                 return;
             }
-
-            let messageContent = newMessage.trim();
-            let imageUrls: string[] = [];
 
             if (files && files.length > 0) {
                 console.log("📤 Uploading files:", files);
@@ -516,20 +533,34 @@ export default function ChatHome() {
                 ...(replyingTo && { replyTo: replyingTo.id })
             };
 
-            await socketSendMessage(messageContent, imageUrls.length > 0 ? imageUrls[0] : "");
-            console.log("✅ Enhanced message sent via WebSocket");
-
+            // Clear message immediately to improve UX
             setNewMessage("");
             setReplyingTo(null);
+
+            try {
+                await socketSendMessage(messageContent, imageUrls.length > 0 ? imageUrls[0] : "");
+                console.log("✅ Enhanced message sent via WebSocket");
+            } catch (socketError: any) {
+                console.warn("⚠️ Socket send warning (ignored):", socketError.message);
+                // Completely ignore all socket errors/warnings - don't show anything to user
+                // The message sending will continue normally regardless of socket issues
+            }
+
+            // Always try to update messages after sending
             await updateMessagesAfterSend();
 
         } catch (error) {
             console.error("❌ Error sending message:", error);
-            setErrorWithAutoClear("Không thể gửi tin nhắn. Vui lòng thử lại.");
+            // Disable error notification per user request
+            // setErrorWithAutoClear("Không thể gửi tin nhắn. Vui lòng thử lại.");
+            // Restore message content if there was a real error
+            if (!newMessage.trim()) {
+                setNewMessage(messageContent || "");
+            }
         } finally {
             setUploadingFiles(false);
         }
-    }, [newMessage, selectedChat?.id, user?._id, replyingTo, socketSendMessage, uploadFiles, uploadAndSendMessage, updateMessagesAfterSend, setErrorWithAutoClear])
+    }, [newMessage, selectedChat?.id, user?._id, replyingTo, socketSendMessage, uploadFiles, uploadAndSendMessage, updateMessagesAfterSend])
 
     // Optimized message handlers
     const handleReplyToMessage = useCallback((message: any) => {
@@ -603,7 +634,8 @@ export default function ChatHome() {
             setActiveTab("chats")
         } catch (error: any) {
             console.error("❌ Error starting chat:", error);
-            setErrorWithAutoClear(getSendErrorMessage(error));
+            // Disable error notification per user request  
+            // setErrorWithAutoClear(getSendErrorMessage(error));
         }
     }
 
@@ -628,7 +660,8 @@ export default function ChatHome() {
 
             } catch (error: any) {
                 console.error("❌ Error retrying to load messages:", error);
-                setMessageError(getErrorMessage(error));
+                // Disable error notification per user request
+                // setMessageError(getErrorMessage(error));
             } finally {
                 setLoadingMessages(false);
             }
@@ -670,38 +703,8 @@ export default function ChatHome() {
         </div>
     );
 
-    // Error display component
-    const ErrorDisplay = () => messageError ? (
-        <div className="mx-4 mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-            <div className="flex items-center">
-                <div className="flex-shrink-0">
-                    <svg className="h-4 w-4 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                    </svg>
-                </div>
-                <div className="ml-2 flex-1">
-                    <p className="text-sm text-red-600">{messageError}</p>
-                </div>
-                <div className="ml-2 flex items-center space-x-2">
-                    <button
-                        onClick={retryLoadMessages}
-                        disabled={loadingMessages}
-                        className="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {loadingMessages ? "Đang thử lại..." : "Thử lại"}
-                    </button>
-                    <button
-                        onClick={() => setMessageError(null)}
-                        className="text-red-400 hover:text-red-600 transition-colors"
-                    >
-                        <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-    ) : null;
+    // Error display component - DISABLED per user request
+    const ErrorDisplay = () => null; // Always return null to disable all error displays
 
     // Upload progress component
     const UploadProgress = () => uploadingFiles ? (

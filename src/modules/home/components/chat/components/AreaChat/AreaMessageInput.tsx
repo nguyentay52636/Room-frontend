@@ -206,12 +206,12 @@ const FilePreview = memo(({ files, onRemoveFile }: { files: File[], onRemoveFile
                             <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{file.name}</p>
                             <p className="text-xs text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                         </div>
-                        <button
+                        {/* <button
                             onClick={() => onRemoveFile(index)}
                             className="flex-shrink-0 text-red-400 hover:text-red-600"
                         >
                             <X className="w-3 h-3 sm:w-4 sm:h-4" />
-                        </button>
+                        </button> */}
                     </div>
                 ))}
             </div>

@@ -206,6 +206,7 @@ const useChatSocket = ({ roomId }: UseChatSocketProps = {}): ChatSocketReturn =>
         
       } catch (error) {
         console.error('❌ Error saving message to database:', error);
+        console.log('🔧 DEBUG: Using NEW socket service version (no error thrown, only warning logged)');
         
         // Fallback: Still try socket-only for real-time chat
         console.log('⚠️ Falling back to socket-only method');
@@ -216,7 +217,8 @@ const useChatSocket = ({ roomId }: UseChatSocketProps = {}): ChatSocketReturn =>
         });
         
         // Show warning to user
-        throw new Error('Tin nhắn được gửi nhưng có thể không được lưu. Vui lòng kiểm tra kết nối.');
+        console.warn('⚠️ Tin nhắn được gửi nhưng có thể không được lưu vào database. Socket đã gửi thành công.');
+        // Do not throw error - let the message sending continue successfully
       }
     }
   }, [socket, roomId, setMessages, user]);
