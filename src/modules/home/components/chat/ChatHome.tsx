@@ -27,6 +27,16 @@ import { getMessagesByRoom, createMessage } from "@/lib/apis/messageApi"
 import { getUsers } from "@/lib/apis/userApi"
 import useChatSocket from "@/services/socketService"
 
+// Import responsive hooks
+import { useMobileFirst, useBreakpoint, responsive } from "@/hooks/useResponsive"
+import {
+    ResponsiveContainer,
+    ShowOn,
+    HideOn,
+    ResponsiveText,
+    ResponsiveSpacing
+} from "@/components/ResponsiveProvider"
+
 // Constants
 const REALTIME_POLL_INTERVAL = 4000
 const NOTIFICATION_DURATION = 4000
@@ -92,9 +102,11 @@ export default function ChatHome() {
     const [isRealtimeEnabled, setIsRealtimeEnabled] = useState(true);
     const [lastMessageCount, setLastMessageCount] = useState(0);
 
-    // Mobile specific states
+    // Enhanced responsive states
+    const { isMobile, isTablet, isDesktop, isLargeDesktop } = useMobileFirst()
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [isMobileView, setIsMobileView] = useState(false);
+    const isSmallScreen = useBreakpoint('md') === false; // < 768px
+    const isLargeScreen = useBreakpoint('lg'); // >= 1024px
 
     // Enhanced chat features states
     const [replyingTo, setReplyingTo] = useState<any>(null);
@@ -102,23 +114,27 @@ export default function ChatHome() {
     const [typingUsers, setTypingUsers] = useState<string[]>([]);
     const [uploadingFiles, setUploadingFiles] = useState<boolean>(false);
 
-    // WebSocket integration - chỉ để gửi tin nhắn
+    // WebSocket integration
     const { sendMessage: socketSendMessage } = useChatSocket({ roomId: selectedChat?.id });
 
-    // Mobile responsive handler
+    // Enhanced responsive handler
     useEffect(() => {
         const handleResize = () => {
-            const isMobile = window.innerWidth < 768;
-            setIsMobileView(isMobile);
-            if (!isMobile) {
+            // Auto-close sidebar on larger screens
+            if (isLargeScreen && isSidebarOpen) {
                 setIsSidebarOpen(false);
+            }
+
+            // Auto-open sidebar on mobile when no chat is selected
+            if (isMobile && !selectedChat && !isSidebarOpen) {
+                setIsSidebarOpen(true);
             }
         };
 
         handleResize();
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    }, [isMobile, isLargeScreen, isSidebarOpen, selectedChat]);
 
     // Unified message transformation function
     const transformMessages = (messagesData: any[], currentUser: any, selectedChat?: any, roomData?: any) => {
@@ -368,7 +384,7 @@ export default function ChatHome() {
             setSelectedChat(chatItem);
 
             // Close sidebar on mobile when selecting chat
-            if (isMobileView) {
+            if (isMobile) {
                 setIsSidebarOpen(false);
             }
 
@@ -713,27 +729,47 @@ export default function ChatHome() {
     // Back to chat list handler (mobile)
     const handleBackToList = () => {
         setSelectedChat(null);
-        if (isMobileView) {
+        if (isMobile) {
             setIsSidebarOpen(true);
         }
     };
 
-    // Shared loading component
+    // Enhanced responsive loading component
     const LoadingSpinner = ({ text }: { text: string }) => (
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex-1 flex items-center justify-center p-4">
             <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
-                <p className="text-sm text-gray-500">{text}</p>
+                <div className={`animate-spin rounded-full border-b-2 border-blue-500 mx-auto mb-2 ${isMobile ? 'h-6 w-6' : 'h-8 w-8'
+                    }`}></div>
+                <ResponsiveText
+                    className="text-gray-500"
+                    size={{ mobile: 'text-sm', tablet: 'text-base' }}
+                >
+                    {text}
+                </ResponsiveText>
             </div>
         </div>
     );
 
-    // Shared empty state component
+    // Enhanced responsive empty state component
     const EmptyState = ({ title, subtitle }: { title: string; subtitle: string }) => (
         <div className="flex-1 flex items-center justify-center p-4">
-            <div className="text-center">
-                <p className="text-sm text-gray-500 mb-2">{title}</p>
-                <p className="text-xs text-gray-400">{subtitle}</p>
+            <div className="text-center max-w-sm mx-auto">
+                <div className={`mx-auto mb-4 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center ${isMobile ? 'w-12 h-12' : 'w-16 h-16'
+                    }`}>
+                    <MessageCircle className={`text-gray-400 ${isMobile ? 'w-6 h-6' : 'w-8 h-8'}`} />
+                </div>
+                <ResponsiveText
+                    className="text-gray-500 mb-2 font-medium"
+                    size={{ mobile: 'text-sm', tablet: 'text-base' }}
+                >
+                    {title}
+                </ResponsiveText>
+                <ResponsiveText
+                    className="text-gray-400"
+                    size={{ mobile: 'text-xs', tablet: 'text-sm' }}
+                >
+                    {subtitle}
+                </ResponsiveText>
             </div>
         </div>
     );
@@ -741,48 +777,71 @@ export default function ChatHome() {
     // Error display component - DISABLED per user request
     const ErrorDisplay = () => null; // Always return null to disable all error displays
 
-    // Upload progress component
+    // Enhanced responsive upload progress component
     const UploadProgress = () => uploadingFiles ? (
-        <div className="mx-4 mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <div className="flex items-center">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mr-2"></div>
-                <p className="text-sm text-blue-600">Đang tải file lên...</p>
+        <ResponsiveContainer className="mx-4 mt-2" maxWidth="full">
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-center">
+                    <div className={`animate-spin rounded-full border-b-2 border-blue-500 mr-2 ${isMobile ? 'h-3 w-3' : 'h-4 w-4'
+                        }`}></div>
+                    <ResponsiveText
+                        className="text-blue-600"
+                        size={{ mobile: 'text-sm', tablet: 'text-base' }}
+                    >
+                        Đang tải file lên...
+                    </ResponsiveText>
+                </div>
+
+                {/* Progress bar for mobile */}
+                <ShowOn breakpoints={['mobile']}>
+                    <div className="mt-2 w-full bg-blue-200 rounded-full h-1">
+                        <div className="bg-blue-600 h-1 rounded-full animate-pulse" style={{ width: '60%' }}></div>
+                    </div>
+                </ShowOn>
             </div>
-        </div>
+        </ResponsiveContainer>
     ) : null;
 
 
-    // Room list modal component
+    // Enhanced responsive room list modal component
     const RoomListModal = () => showRoomsList ? (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[80vh] overflow-hidden">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <ResponsiveContainer
+                className="bg-white rounded-lg shadow-xl max-h-[80vh] overflow-hidden"
+                maxWidth={isMobile ? 'full' : 'md'}
+            >
                 <div className="flex items-center justify-between p-4 border-b">
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <ResponsiveText
+                        className="font-semibold text-gray-900"
+                        size={{ mobile: 'text-lg', tablet: 'text-xl', desktop: 'text-xl' }}
+                    >
                         Danh sách phòng chat ({rooms.length})
-                    </h3>
-                    <button
+                    </ResponsiveText>
+                    <Button
+                        variant="ghost"
+                        size="sm"
                         onClick={handleCloseRoomsList}
-                        className="text-gray-400 hover:text-gray-600 transition-colors"
+                        className="text-gray-400 hover:text-gray-600 transition-colors h-8 w-8 p-0"
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="p-4">
                     {clickedMessage && (
                         <div className="mb-4 p-3 bg-blue-50 rounded-lg">
-                            <p className="text-sm text-blue-800">
+                            <ResponsiveText className="text-blue-800" size={{ mobile: 'text-sm', tablet: 'text-base' }}>
                                 <span className="font-medium">Tin nhắn được chọn:</span> "{clickedMessage.content}"
-                            </p>
-                            <p className="text-xs text-blue-600 mt-1">
+                            </ResponsiveText>
+                            <ResponsiveText className="text-blue-600 mt-1" size={{ mobile: 'text-xs', tablet: 'text-sm' }}>
                                 Từ: {clickedMessage.senderName} - {clickedMessage.timestamp}
-                            </p>
+                            </ResponsiveText>
                         </div>
                     )}
 
-                    <div className="space-y-2 max-h-60 overflow-y-auto">
+                    <div className={`space-y-2 overflow-y-auto ${isMobile ? 'max-h-60' : 'max-h-96'}`}>
                         {rooms.length > 0 ? (
                             rooms.map((room: any) => (
                                 <div
@@ -792,87 +851,131 @@ export default function ChatHome() {
                                     <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white font-medium text-sm">
                                         {room.tenPhong ? room.tenPhong.charAt(0).toUpperCase() : 'R'}
                                     </div>
-                                    <div className="ml-3 flex-1">
-                                        <h4 className="text-sm font-medium text-gray-900">
+                                    <div className="ml-3 flex-1 min-w-0">
+                                        <ResponsiveText
+                                            className="font-medium text-gray-900 truncate"
+                                            size={{ mobile: 'text-sm', tablet: 'text-base' }}
+                                        >
                                             {room.tenPhong || `Phòng ${room._id.slice(-6)}`}
-                                        </h4>
-                                        <div className="flex items-center text-xs text-gray-500 mt-1">
-                                            <span className="mr-2">ID: {room._id}</span>
-                                            <span className="mr-2">•</span>
-                                            <span className="mr-2">Loại: {room.loaiPhong}</span>
-                                            <span className="mr-2">•</span>
-                                            <span>{room.thanhVien?.length || 0} thành viên</span>
+                                        </ResponsiveText>
+                                        <div className="flex flex-wrap items-center text-gray-500 mt-1 gap-1">
+                                            <ResponsiveText size={{ mobile: 'text-xs', tablet: 'text-sm' }}>
+                                                ID: {room._id.slice(-6)}
+                                            </ResponsiveText>
+                                            <span className="hidden sm:inline">•</span>
+                                            <ResponsiveText size={{ mobile: 'text-xs', tablet: 'text-sm' }}>
+                                                {room.loaiPhong}
+                                            </ResponsiveText>
+                                            <span className="hidden sm:inline">•</span>
+                                            <ResponsiveText size={{ mobile: 'text-xs', tablet: 'text-sm' }}>
+                                                {room.thanhVien?.length || 0} thành viên
+                                            </ResponsiveText>
                                         </div>
                                     </div>
-                                    <div className="flex-shrink-0">
-                                        <button
+                                    <div className="flex-shrink-0 ml-2">
+                                        <Button
                                             onClick={() => {
                                                 console.log("🎯 Room selected:", room);
                                                 handleCloseRoomsList();
                                             }}
-                                            className="text-blue-600 hover:text-blue-800 font-medium text-sm px-3 py-1 rounded border border-blue-200 hover:bg-blue-50 transition-colors"
+                                            size={isMobile ? "sm" : "default"}
+                                            className="text-blue-600 hover:text-blue-800 font-medium border border-blue-200 hover:bg-blue-50 transition-colors bg-white"
                                         >
                                             Chọn
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
                             ))
                         ) : (
                             <div className="text-center py-8">
-                                <div className="text-gray-400 text-sm">Không có phòng chat nào</div>
+                                <ResponsiveText className="text-gray-400" size={{ mobile: 'text-sm', tablet: 'text-base' }}>
+                                    Không có phòng chat nào
+                                </ResponsiveText>
                             </div>
                         )}
                     </div>
                 </div>
 
                 <div className="p-4 border-t bg-gray-50">
-                    <button
+                    <Button
                         onClick={handleCloseRoomsList}
-                        className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                        className="w-full bg-gray-600 text-white hover:bg-gray-700 transition-colors"
+                        size={isMobile ? "sm" : "default"}
                     >
                         Đóng
-                    </button>
+                    </Button>
+
+                    <ResponsiveSpacing size={{ mobile: 'h-2', tablet: 'h-1' }} />
+
+                    <ShowOn breakpoints={['mobile']}>
+                        <ResponsiveText className="text-center text-gray-500 mt-2" size={{ mobile: 'text-xs' }}>
+                            Vuốt xuống để đóng
+                        </ResponsiveText>
+                    </ShowOn>
                 </div>
-            </div>
+            </ResponsiveContainer>
         </div>
     ) : null;
 
     return (
-        <div className="h-screen pt-16 bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col fixed w-full overflow-hidden">
-            {/* Desktop Header - only show when not mobile or when fullscreen */}
-            {(!isMobileView || isFullscreen) && (
+        <ResponsiveContainer className="h-screen pt-16 bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col fixed w-full overflow-hidden" maxWidth="full" padding={false}>
+            {/* Responsive Header - Desktop only on large screens, mobile shows conditionally */}
+            <ShowOn breakpoints={['desktop', 'large-desktop']}>
                 <HeaderChat
                     isFullscreen={isFullscreen}
                     setIsFullscreen={setIsFullscreen}
                     isRealtimeEnabled={isRealtimeEnabled}
                     toggleRealtime={toggleRealtime}
                 />
-            )}
+            </ShowOn>
+
+            {/* Mobile Header - Only show when in fullscreen mode on small screens */}
+            <HideOn breakpoints={['desktop', 'large-desktop']}>
+                {isFullscreen && (
+                    <HeaderChat
+                        isFullscreen={isFullscreen}
+                        setIsFullscreen={setIsFullscreen}
+                        isRealtimeEnabled={isRealtimeEnabled}
+                        toggleRealtime={toggleRealtime}
+                    />
+                )}
+            </HideOn>
 
             <div className="flex-1 flex overflow-hidden relative">
                 {/* Mobile Overlay for sidebar */}
-                {isMobileView && isSidebarOpen && (
-                    <div
-                        className="fixed inset-0 bg-black/50 z-40 md:hidden"
-                        onClick={() => setIsSidebarOpen(false)}
-                    />
-                )}
+                <HideOn breakpoints={['tablet', 'desktop', 'large-desktop']}>
+                    {isSidebarOpen && (
+                        <div
+                            className="fixed inset-0 bg-black/50 z-40"
+                            onClick={() => setIsSidebarOpen(false)}
+                        />
+                    )}
+                </HideOn>
 
-                {/* Left Sidebar - Mobile responsive */}
+                {/* Responsive Sidebar */}
                 <div className={`
-                    ${isMobileView
-                        ? `fixed inset-y-0 left-0 z-50 w-full sm:w-80 transform transition-transform duration-300 ease-in-out ${isSidebarOpen || !selectedChat ? 'translate-x-0' : '-translate-x-full'
-                        }`
-                        : 'w-80 flex-shrink-0'
-                    } 
-                    bg-white/60 backdrop-blur-sm border-r border-gray-200/50
-                    ${isMobileView && selectedChat && !isSidebarOpen ? 'hidden' : 'block'}
-                `}>
+                    ${isMobile
+                        ? `fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out ${isSidebarOpen || !selectedChat ? 'translate-x-0' : '-translate-x-full'
+                        } w-full sm:w-80`
+                        : 'w-80 flex-shrink-0 relative'
+                    }
+                `}
+                    style={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                        backdropFilter: 'blur(8px)',
+                        borderRight: '1px solid rgba(229, 231, 235, 0.5)',
+                        display: isMobile && selectedChat && !isSidebarOpen ? 'none' : 'block'
+                    }}>
                     <div className="h-full flex flex-col">
                         {/* Mobile header for sidebar */}
-                        {isMobileView && (
+                        <HideOn breakpoints={['tablet', 'desktop', 'large-desktop']}>
                             <div className="flex items-center justify-between p-4 border-b border-gray-200/50 bg-white/80">
-                                <h2 className="font-semibold text-gray-900">💬 Tin nhắn</h2>
+                                <ResponsiveText
+                                    className="font-semibold text-gray-900"
+                                    size={{ mobile: 'text-lg', tablet: 'text-xl' }}
+                                >
+                                    💬 Tin nhắn
+                                </ResponsiveText>
                                 {selectedChat && (
                                     <Button
                                         variant="ghost"
@@ -884,7 +987,7 @@ export default function ChatHome() {
                                     </Button>
                                 )}
                             </div>
-                        )}
+                        </HideOn>
 
                         <HeaderSiderChat setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
 
@@ -926,16 +1029,17 @@ export default function ChatHome() {
                     </div>
                 </div>
 
-                {/* Chat Area - Mobile responsive */}
+                {/* Responsive Chat Area */}
                 <div className={`
                     flex-1 flex flex-col bg-white/40 backdrop-blur-sm
-                    ${isMobileView && !selectedChat ? 'hidden' : 'flex'}
+                    ${isMobile && !selectedChat ? 'hidden' : 'flex'}
                 `}>
                     {selectedChat ? (
                         <>
-                            {/* Enhanced chat header with mobile support */}
+                            {/* Enhanced responsive chat header */}
                             <div className="flex items-center bg-white/80 backdrop-blur-sm border-b border-gray-200/50">
-                                {isMobileView && (
+                                {/* Mobile back button */}
+                                <HideOn breakpoints={['tablet', 'desktop', 'large-desktop']}>
                                     <Button
                                         variant="ghost"
                                         size="sm"
@@ -944,18 +1048,21 @@ export default function ChatHome() {
                                     >
                                         <ArrowLeft className="h-4 w-4" />
                                     </Button>
-                                )}
+                                </HideOn>
 
-                                {!isMobileView && selectedChat && (
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => setIsSidebarOpen(true)}
-                                        className="md:hidden ml-2 h-8 w-8 p-0"
-                                    >
-                                        <MenuIcon className="h-4 w-4" />
-                                    </Button>
-                                )}
+                                {/* Tablet menu button */}
+                                <ShowOn breakpoints={['tablet']}>
+                                    {selectedChat && (
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => setIsSidebarOpen(true)}
+                                            className="ml-2 h-8 w-8 p-0"
+                                        >
+                                            <MenuIcon className="h-4 w-4" />
+                                        </Button>
+                                    )}
+                                </ShowOn>
 
                                 <div className="flex-1">
                                     <AreaHeaderChat
@@ -969,6 +1076,9 @@ export default function ChatHome() {
 
                             <ErrorDisplay />
                             <UploadProgress />
+
+                            {/* Responsive spacing */}
+                            <ResponsiveSpacing size={{ mobile: 'h-2', tablet: 'h-4', desktop: 'h-4' }} />
 
                             {loadingMessages ? (
                                 <LoadingSpinner text="Đang tải tin nhắn..." />
@@ -998,13 +1108,23 @@ export default function ChatHome() {
                     ) : (
                         <>
                             {/* Mobile-optimized empty state */}
-                            {isMobileView ? (
+                            <HideOn breakpoints={['tablet', 'desktop', 'large-desktop']}>
                                 <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
                                     <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl flex items-center justify-center mb-4">
                                         <MessageCircle className="w-8 h-8 text-white" />
                                     </div>
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Chào mừng đến với Chat</h3>
-                                    <p className="text-gray-500 mb-6 text-center px-4">Chọn một cuộc trò chuyện để bắt đầu nhắn tin</p>
+                                    <ResponsiveText
+                                        className="font-semibold text-gray-900 mb-2"
+                                        size={{ mobile: 'text-lg', tablet: 'text-xl' }}
+                                    >
+                                        Chào mừng đến với Chat
+                                    </ResponsiveText>
+                                    <ResponsiveText
+                                        className="text-gray-500 mb-6 text-center px-4"
+                                        size={{ mobile: 'text-sm', tablet: 'text-base' }}
+                                    >
+                                        Chọn một cuộc trò chuyện để bắt đầu nhắn tin
+                                    </ResponsiveText>
                                     <Button
                                         onClick={() => setIsSidebarOpen(true)}
                                         className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-3"
@@ -1013,15 +1133,18 @@ export default function ChatHome() {
                                         Xem danh sách chat
                                     </Button>
                                 </div>
-                            ) : (
+                            </HideOn>
+
+                            {/* Desktop empty state */}
+                            <ShowOn breakpoints={['tablet', 'desktop', 'large-desktop']}>
                                 <AreaChatReverse />
-                            )}
+                            </ShowOn>
                         </>
                     )}
                 </div>
             </div>
 
             <RoomListModal />
-        </div>
+        </ResponsiveContainer>
     )
 }

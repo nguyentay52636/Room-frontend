@@ -139,8 +139,6 @@ export function ResponsiveContainer({
     maxWidth = 'xl',
     padding = true
 }: ResponsiveContainerProps) {
-    const { isMobile, isTablet } = useMobileFirst()
-
     const maxWidthClasses = {
         sm: 'max-w-sm',
         md: 'max-w-md',
