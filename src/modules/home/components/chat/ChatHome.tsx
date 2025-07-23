@@ -6,7 +6,9 @@ import { Badge } from "@/components/ui/badge"
 import {
     Home,
     Users,
-    MessageCircle
+    MessageCircle,
+    ArrowLeft,
+    Menu as MenuIcon
 } from "lucide-react"
 import HeaderChat from "./components/HeaderChat"
 import HeaderSiderChat from "./components/LeftSiderChat/HeaderSiderChat"
@@ -16,6 +18,7 @@ import AreaMesssageChat from "./components/AreaChat/AreaMesssageChat"
 import AreaMessageInput from "./components/AreaChat/AreaMessageInput"
 import AreaChatReverse from "./components/AreaChat/AreaChatReverse"
 import { Room } from "@/lib/apis/types"
+import { Button } from "@/components/ui/button"
 
 import { useSelector } from "react-redux"
 import { selectAuth } from "@/redux/slices/authSlice"
@@ -89,6 +92,10 @@ export default function ChatHome() {
     const [isRealtimeEnabled, setIsRealtimeEnabled] = useState(true);
     const [lastMessageCount, setLastMessageCount] = useState(0);
 
+    // Mobile specific states
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isMobileView, setIsMobileView] = useState(false);
+
     // Enhanced chat features states
     const [replyingTo, setReplyingTo] = useState<any>(null);
     const [isTyping, setIsTyping] = useState(false);
@@ -97,6 +104,21 @@ export default function ChatHome() {
 
     // WebSocket integration - chỉ để gửi tin nhắn
     const { sendMessage: socketSendMessage } = useChatSocket({ roomId: selectedChat?.id });
+
+    // Mobile responsive handler
+    useEffect(() => {
+        const handleResize = () => {
+            const isMobile = window.innerWidth < 768;
+            setIsMobileView(isMobile);
+            if (!isMobile) {
+                setIsSidebarOpen(false);
+            }
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // Unified message transformation function
     const transformMessages = (messagesData: any[], currentUser: any, selectedChat?: any, roomData?: any) => {
@@ -344,6 +366,11 @@ export default function ChatHome() {
             setLoadingMessages(true);
             setMessageError(null);
             setSelectedChat(chatItem);
+
+            // Close sidebar on mobile when selecting chat
+            if (isMobileView) {
+                setIsSidebarOpen(false);
+            }
 
             const roomResponse = await getRoomById(chatItem.id);
             console.log("🏠 Full room data loaded:", roomResponse);
@@ -683,6 +710,14 @@ export default function ChatHome() {
         setClickedMessage(null);
     };
 
+    // Back to chat list handler (mobile)
+    const handleBackToList = () => {
+        setSelectedChat(null);
+        if (isMobileView) {
+            setIsSidebarOpen(true);
+        }
+    };
+
     // Shared loading component
     const LoadingSpinner = ({ text }: { text: string }) => (
         <div className="flex-1 flex items-center justify-center">
@@ -803,18 +838,54 @@ export default function ChatHome() {
     ) : null;
 
     return (
-        <div className="h-screen mt-14! bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col fixed w-full">
-            <HeaderChat
-                isFullscreen={isFullscreen}
-                setIsFullscreen={setIsFullscreen}
-                isRealtimeEnabled={isRealtimeEnabled}
-                toggleRealtime={toggleRealtime}
-            />
+        <div className="h-screen pt-16 bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col fixed w-full overflow-hidden">
+            {/* Desktop Header - only show when not mobile or when fullscreen */}
+            {(!isMobileView || isFullscreen) && (
+                <HeaderChat
+                    isFullscreen={isFullscreen}
+                    setIsFullscreen={setIsFullscreen}
+                    isRealtimeEnabled={isRealtimeEnabled}
+                    toggleRealtime={toggleRealtime}
+                />
+            )}
 
-            <div className="flex-1 flex overflow-hidden">
-                {/* Left Sidebar */}
-                <div className="w-80 flex-shrink-0 bg-white/60 backdrop-blur-sm border-r border-gray-200/50">
+            <div className="flex-1 flex overflow-hidden relative">
+                {/* Mobile Overlay for sidebar */}
+                {isMobileView && isSidebarOpen && (
+                    <div
+                        className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                        onClick={() => setIsSidebarOpen(false)}
+                    />
+                )}
+
+                {/* Left Sidebar - Mobile responsive */}
+                <div className={`
+                    ${isMobileView
+                        ? `fixed inset-y-0 left-0 z-50 w-full sm:w-80 transform transition-transform duration-300 ease-in-out ${isSidebarOpen || !selectedChat ? 'translate-x-0' : '-translate-x-full'
+                        }`
+                        : 'w-80 flex-shrink-0'
+                    } 
+                    bg-white/60 backdrop-blur-sm border-r border-gray-200/50
+                    ${isMobileView && selectedChat && !isSidebarOpen ? 'hidden' : 'block'}
+                `}>
                     <div className="h-full flex flex-col">
+                        {/* Mobile header for sidebar */}
+                        {isMobileView && (
+                            <div className="flex items-center justify-between p-4 border-b border-gray-200/50 bg-white/80">
+                                <h2 className="font-semibold text-gray-900">💬 Tin nhắn</h2>
+                                {selectedChat && (
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => setIsSidebarOpen(false)}
+                                        className="h-8 w-8 p-0"
+                                    >
+                                        <ArrowLeft className="h-4 w-4" />
+                                    </Button>
+                                )}
+                            </div>
+                        )}
+
                         <HeaderSiderChat setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
 
                         {loading && isAuthenticated ? (
@@ -855,16 +926,46 @@ export default function ChatHome() {
                     </div>
                 </div>
 
-                {/* Chat Area */}
-                <div className="flex-1 mb-10! flex flex-col bg-white/40 backdrop-blur-sm">
+                {/* Chat Area - Mobile responsive */}
+                <div className={`
+                    flex-1 flex flex-col bg-white/40 backdrop-blur-sm
+                    ${isMobileView && !selectedChat ? 'hidden' : 'flex'}
+                `}>
                     {selectedChat ? (
                         <>
-                            <AreaHeaderChat
-                                getStatusColor={getStatusColor}
-                                getRoleBadge={getRoleBadge}
-                                getStatusText={getStatusText}
-                                selectedChat={selectedChat}
-                            />
+                            {/* Enhanced chat header with mobile support */}
+                            <div className="flex items-center bg-white/80 backdrop-blur-sm border-b border-gray-200/50">
+                                {isMobileView && (
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={handleBackToList}
+                                        className="ml-2 h-8 w-8 p-0"
+                                    >
+                                        <ArrowLeft className="h-4 w-4" />
+                                    </Button>
+                                )}
+
+                                {!isMobileView && selectedChat && (
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => setIsSidebarOpen(true)}
+                                        className="md:hidden ml-2 h-8 w-8 p-0"
+                                    >
+                                        <MenuIcon className="h-4 w-4" />
+                                    </Button>
+                                )}
+
+                                <div className="flex-1">
+                                    <AreaHeaderChat
+                                        getStatusColor={getStatusColor}
+                                        getRoleBadge={getRoleBadge}
+                                        getStatusText={getStatusText}
+                                        selectedChat={selectedChat}
+                                    />
+                                </div>
+                            </div>
 
                             <ErrorDisplay />
                             <UploadProgress />
@@ -895,7 +996,27 @@ export default function ChatHome() {
                             />
                         </>
                     ) : (
-                        <AreaChatReverse />
+                        <>
+                            {/* Mobile-optimized empty state */}
+                            {isMobileView ? (
+                                <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+                                    <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl flex items-center justify-center mb-4">
+                                        <MessageCircle className="w-8 h-8 text-white" />
+                                    </div>
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Chào mừng đến với Chat</h3>
+                                    <p className="text-gray-500 mb-6 text-center px-4">Chọn một cuộc trò chuyện để bắt đầu nhắn tin</p>
+                                    <Button
+                                        onClick={() => setIsSidebarOpen(true)}
+                                        className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-3"
+                                    >
+                                        <MessageCircle className="w-4 h-4 mr-2" />
+                                        Xem danh sách chat
+                                    </Button>
+                                </div>
+                            ) : (
+                                <AreaChatReverse />
+                            )}
+                        </>
                     )}
                 </div>
             </div>

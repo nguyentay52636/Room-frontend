@@ -1,0 +1,563 @@
+/* ==============================================
+   RESPONSIVE DESIGN SYSTEM
+   ============================================== */
+
+/* CSS Custom Properties for Responsive Design */
+:root {
+    /* Breakpoints */
+    --bp-xs: 0px;
+    --bp-sm: 640px;
+    --bp-md: 768px;
+    --bp-lg: 1024px;
+    --bp-xl: 1280px;
+    --bp-2xl: 1536px;
+
+    /* Container max widths */
+    --container-sm: 640px;
+    --container-md: 768px;
+    --container-lg: 1024px;
+    --container-xl: 1280px;
+    --container-2xl: 1536px;
+
+    /* Responsive spacing scale */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+
+    /* Responsive typography scale */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+    --text-4xl: 2.25rem;
+    --text-5xl: 3rem;
+
+    /* Device-specific adjustments */
+    --mobile-padding: 1rem;
+    --tablet-padding: 1.5rem;
+    --desktop-padding: 2rem;
+
+    /* Touch target sizes */
+    --touch-target-min: 44px;
+    --touch-target-comfortable: 48px;
+}
+
+/* ==============================================
+   LAYOUT FOUNDATIONS
+   ============================================== */
+
+/* Mobile-first base styles */
+.mobile-layout {
+    --current-padding: var(--mobile-padding);
+    --current-text-size: var(--text-sm);
+    --current-spacing: var(--spacing-md);
+}
+
+.tablet-layout {
+    --current-padding: var(--tablet-padding);
+    --current-text-size: var(--text-base);
+    --current-spacing: var(--spacing-lg);
+}
+
+.desktop-layout {
+    --current-padding: var(--desktop-padding);
+    --current-text-size: var(--text-lg);
+    --current-spacing: var(--spacing-xl);
+}
+
+.large-desktop-layout {
+    --current-padding: var(--desktop-padding);
+    --current-text-size: var(--text-xl);
+    --current-spacing: var(--spacing-2xl);
+}
+
+/* ==============================================
+   ORIENTATION HANDLING
+   ============================================== */
+
+.portrait-orientation {
+    /* Styles for portrait orientation */
+}
+
+.landscape-orientation {
+    /* Styles for landscape orientation */
+}
+
+/* Special handling for mobile landscape */
+@media (max-width: 767px) and (orientation: landscape) {
+    .mobile-layout.landscape-orientation {
+        /* Reduce vertical padding in mobile landscape */
+        --current-padding: calc(var(--mobile-padding) * 0.5);
+    }
+
+    /* Ensure chat and forms are still usable in mobile landscape */
+    .mobile-layout.landscape-orientation .chat-container,
+    .mobile-layout.landscape-orientation .form-container {
+        height: 100vh;
+        overflow-y: auto;
+    }
+}
+
+/* ==============================================
+   ASPECT RATIO SPECIFIC STYLES
+   ============================================== */
+
+/* Ultra-wide screens (21:9, 32:9) */
+@media (min-aspect-ratio: 21/9) {
+    .large-desktop-layout {
+        /* Add side margins for ultra-wide displays */
+        padding-left: 10vw;
+        padding-right: 10vw;
+    }
+}
+
+/* Square-ish screens (close to 1:1) */
+@media (min-aspect-ratio: 9/10) and (max-aspect-ratio: 10/9) {
+
+    .desktop-layout,
+    .large-desktop-layout {
+        /* Optimize for square displays */
+        display: grid;
+        place-items: center;
+    }
+}
+
+/* Very tall screens (mobile portrait, tall monitors) */
+@media (max-aspect-ratio: 3/4) {
+    .portrait-orientation {
+        /* Increase vertical spacing for tall screens */
+        --current-spacing: calc(var(--current-spacing) * 1.25);
+    }
+}
+
+/* ==============================================
+   HIGH DPI / RETINA DISPLAYS
+   ============================================== */
+
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+
+    /* High DPI adjustments */
+    .high-dpi {
+        /* Slightly smaller text on high DPI to account for increased sharpness */
+        font-size: 0.95em;
+    }
+
+    /* Thinner borders on high DPI */
+    .border-responsive {
+        border-width: 0.5px;
+    }
+
+    /* Adjust shadows for high DPI */
+    .shadow-responsive {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* ==============================================
+   RESPONSIVE CONTAINERS
+   ============================================== */
+
+.responsive-container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--current-padding);
+    padding-right: var(--current-padding);
+}
+
+/* Container max-widths */
+@media (min-width: 640px) {
+    .responsive-container {
+        max-width: var(--container-sm);
+    }
+}
+
+@media (min-width: 768px) {
+    .responsive-container {
+        max-width: var(--container-md);
+    }
+}
+
+@media (min-width: 1024px) {
+    .responsive-container {
+        max-width: var(--container-lg);
+    }
+}
+
+@media (min-width: 1280px) {
+    .responsive-container {
+        max-width: var(--container-xl);
+    }
+}
+
+@media (min-width: 1536px) {
+    .responsive-container {
+        max-width: var(--container-2xl);
+    }
+}
+
+/* ==============================================
+   RESPONSIVE TYPOGRAPHY
+   ============================================== */
+
+.responsive-text {
+    font-size: var(--current-text-size);
+    line-height: 1.5;
+    transition: font-size 0.2s ease;
+}
+
+.responsive-heading {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+@media (min-width: 640px) {
+    .responsive-heading {
+        font-size: var(--text-2xl);
+    }
+}
+
+@media (min-width: 768px) {
+    .responsive-heading {
+        font-size: var(--text-3xl);
+    }
+}
+
+@media (min-width: 1024px) {
+    .responsive-heading {
+        font-size: var(--text-4xl);
+    }
+}
+
+/* ==============================================
+   RESPONSIVE SPACING
+   ============================================== */
+
+.responsive-spacing {
+    padding: var(--current-spacing);
+}
+
+.responsive-spacing-x {
+    padding-left: var(--current-spacing);
+    padding-right: var(--current-spacing);
+}
+
+.responsive-spacing-y {
+    padding-top: var(--current-spacing);
+    padding-bottom: var(--current-spacing);
+}
+
+.responsive-margin {
+    margin: var(--current-spacing);
+}
+
+.responsive-gap {
+    gap: var(--current-spacing);
+}
+
+/* ==============================================
+   TOUCH-FRIENDLY INTERACTIVE ELEMENTS
+   ============================================== */
+
+.touch-target {
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
+}
+
+.touch-target-comfortable {
+    min-height: var(--touch-target-comfortable);
+    min-width: var(--touch-target-comfortable);
+}
+
+/* Increase touch targets on touch devices */
+@media (pointer: coarse) {
+    .touch-adaptive {
+        min-height: var(--touch-target-comfortable);
+        min-width: var(--touch-target-comfortable);
+        padding: 0.75rem;
+    }
+}
+
+/* ==============================================
+   RESPONSIVE GRIDS
+   ============================================== */
+
+.responsive-grid {
+    display: grid;
+    gap: var(--current-spacing);
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+    .responsive-grid-sm {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 768px) {
+    .responsive-grid-md {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .responsive-grid-lg {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 1280px) {
+    .responsive-grid-xl {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* Auto-fit grids */
+.responsive-grid-auto {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.responsive-grid-auto-sm {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.responsive-grid-auto-lg {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* ==============================================
+   RESPONSIVE UTILITIES
+   ============================================== */
+
+/* Visibility utilities */
+.mobile-only {
+    display: block;
+}
+
+.tablet-only,
+.desktop-only,
+.large-desktop-only {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .mobile-only {
+        display: none;
+    }
+
+    .tablet-only {
+        display: block;
+    }
+}
+
+@media (min-width: 1024px) {
+    .tablet-only {
+        display: none;
+    }
+
+    .desktop-only {
+        display: block;
+    }
+}
+
+@media (min-width: 1536px) {
+    .desktop-only {
+        display: none;
+    }
+
+    .large-desktop-only {
+        display: block;
+    }
+}
+
+/* Responsive flexbox utilities */
+.responsive-flex {
+    display: flex;
+    flex-direction: column;
+    gap: var(--current-spacing);
+}
+
+@media (min-width: 768px) {
+    .responsive-flex-md {
+        flex-direction: row;
+    }
+}
+
+@media (min-width: 1024px) {
+    .responsive-flex-lg {
+        flex-direction: row;
+    }
+}
+
+/* ==============================================
+   SCROLL OPTIMIZATION
+   ============================================== */
+
+/* Smooth scrolling on devices that can handle it */
+@media (prefers-reduced-motion: no-preference) {
+    .responsive-scroll {
+        scroll-behavior: smooth;
+    }
+}
+
+/* Optimize scrolling for touch devices */
+.responsive-scroll-touch {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* ==============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================== */
+
+/* Use hardware acceleration for transforms */
+.responsive-transform {
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+/* Optimize repaints */
+.responsive-optimize {
+    contain: layout style paint;
+}
+
+/* ==============================================
+   DARK MODE RESPONSIVE ADJUSTMENTS
+   ============================================== */
+
+@media (prefers-color-scheme: dark) {
+    .responsive-dark {
+        /* Slightly increase text size in dark mode for better readability */
+        font-size: calc(var(--current-text-size) * 1.02);
+    }
+
+    /* Adjust shadows for dark mode */
+    .shadow-responsive {
+        box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* ==============================================
+   REDUCED MOTION SUPPORT
+   ============================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .responsive-motion {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ==============================================
+   PRINT STYLES
+   ============================================== */
+
+@media print {
+    .responsive-print {
+        font-size: 12pt;
+        line-height: 1.4;
+        color: black;
+        background: white;
+    }
+
+    .mobile-only,
+    .tablet-only,
+    .desktop-only,
+    .large-desktop-only {
+        display: block !important;
+    }
+}
+
+/* ==============================================
+   RESPONSIVE ANIMATIONS
+   ============================================== */
+
+.responsive-fade-in {
+    opacity: 0;
+    animation: responsiveFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes responsiveFadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Scale animations based on device */
+@media (max-width: 767px) {
+    .responsive-scale {
+        transform: scale(0.95);
+    }
+}
+
+@media (min-width: 768px) {
+    .responsive-scale {
+        transform: scale(1);
+    }
+}
+
+/* ==============================================
+   COMPONENT-SPECIFIC RESPONSIVE STYLES
+   ============================================== */
+
+/* Responsive forms */
+.responsive-form {
+    width: 100%;
+    max-width: 100%;
+}
+
+@media (min-width: 768px) {
+    .responsive-form {
+        max-width: 500px;
+    }
+}
+
+/* Responsive modals */
+.responsive-modal {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
+}
+
+@media (min-width: 768px) {
+    .responsive-modal {
+        width: 90vw;
+        height: auto;
+        max-width: 600px;
+        margin: 2rem auto;
+        border-radius: 0.5rem;
+    }
+}
+
+/* Responsive cards */
+.responsive-card {
+    padding: var(--current-spacing);
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.responsive-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 767px) {
+    .responsive-card:hover {
+        transform: none;
+    }
+}

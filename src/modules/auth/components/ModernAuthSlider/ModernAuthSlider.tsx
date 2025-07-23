@@ -57,6 +57,10 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
     const [pendingMode, setPendingMode] = useState<"login" | "register" | null>(null)
     const [direction, setDirection] = useState(1)
 
+    // Responsive states
+    const [isMobile, setIsMobile] = useState(false)
+    const [isTablet, setIsTablet] = useState(false)
+
     const dispatch = useDispatch<AppDispatch>()
     const navigate = useNavigate()
     const [formData, setFormData] = useState<FormData>({
@@ -69,6 +73,19 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
         vaiTro: "",
     })
     const [errors, setErrors] = useState<FormErrors>({})
+
+    // Responsive detection
+    useEffect(() => {
+        const handleResize = () => {
+            const width = window.innerWidth
+            setIsMobile(width < 768)
+            setIsTablet(width >= 768 && width < 1024)
+        }
+
+        handleResize()
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
 
     const handleSubmitLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -335,25 +352,33 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
 
 
     return (
-        <div ref={containerRef} className="relative min-h-screen py-50 overflow-hidden">
-            {/* Close Button */}
+        <div ref={containerRef} className="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
+            {/* Close Button - Responsive */}
             {onClose && (
                 <button
                     onClick={onClose}
-                    className="absolute top-6 right-6 z-50 bg-white/80 backdrop-blur-sm hover:bg-white text-gray-600 hover:text-gray-800 p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
+                    className="fixed top-3 right-3 sm:top-6 sm:right-6 z-50 bg-white/90 backdrop-blur-sm hover:bg-white text-gray-600 hover:text-gray-800 p-2 sm:p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg border border-gray-200"
                 >
-                    <X className="w-6 h-6" />
+                    <X className="w-4 h-4 sm:w-6 sm:h-6" />
                 </button>
             )}
 
             {/* Animated Background Elements */}
             <AnimatedBackground mousePosition={mousePosition} />
 
-            {/* Main Container */}
-            <div className="relative w-full h-full flex items-center justify-center">
-                <div className="relative w-full max-w-7xl min-h-[800px] bg-white rounded-3xl shadow-2xl overflow-hidden"
+            {/* Main Container - Fully Responsive */}
+            <div className="relative w-full min-h-screen flex items-center justify-center p-2 sm:p-4 lg:p-8">
+                <div className={`
+                    relative w-full max-w-7xl bg-white shadow-2xl overflow-hidden
+                    ${isMobile
+                        ? 'min-h-screen rounded-none'
+                        : isTablet
+                            ? 'min-h-[700px] rounded-2xl'
+                            : 'min-h-[800px] rounded-3xl'
+                    }
+                `}
                     style={{
-                        backgroundImage: "url('https://smartland.vn/wp-content/uploads/2021/10/bat-dong-san-ven-song-sai-gon-01-e1620704384316.jpg')",
+                        backgroundImage: isMobile ? "none" : "url('https://smartland.vn/wp-content/uploads/2021/10/bat-dong-san-ven-song-sai-gon-01-e1620704384316.jpg')",
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                     }}>
@@ -365,169 +390,295 @@ export default function ModernAuthSlider({ onClose }: ModernAuthSliderProps) {
                             animate={{ x: 0, opacity: 1, scale: 1 }}
                             exit={{ x: -100 * direction + "%", opacity: 0, scale: 0.98 }}
                             transition={{ duration: 0.7, ease: [0.4, 0.01, 0.165, 0.99] }}
-                            className="absolute inset-0 grid lg:grid-cols-2"
+                            className={`
+                                absolute inset-0
+                                ${isMobile
+                                    ? 'flex flex-col'
+                                    : 'grid lg:grid-cols-2'
+                                }
+                            `}
                             style={{ zIndex: 2 }}
                         >
                             {mode === "login" ? (<>
-                                {/* Left Side - Login Form */}
-                                <div className="flex flex-col justify-center p-8 lg:p-16 bg-white relative overflow-hidden">
-                                    {/* Decorative Elements */}
-                                    <div className="absolute top-10 left-10 w-20 h-20 opacity-10">
-                                        <div
-                                            className="w-full h-full border-4 border-pink-300 rounded-full animate-spin"
-                                            style={{ animationDuration: "20s" }}
-                                        />
-                                    </div>
-                                    <div className="absolute bottom-20 right-10 w-16 h-16 opacity-10">
-                                        <div className="w-full h-full bg-blue-300 rounded-lg rotate-45 animate-pulse" />
-                                    </div>
-                                    <LoginForm
-                                        formData={{
-                                            tenDangNhap: formData.tenDangNhap,
-                                            matKhau: formData.matKhau
-                                        }}
-                                        errors={{
-                                            tenDangNhap: errors.tenDangNhap,
-                                            matKhau: errors.matKhau
-                                        }}
-                                        showPassword={showPassword}
-                                        isLoading={isLoading}
-                                        onInputChange={handleInputChange}
-                                        onShowPassword={() => setShowPassword(!showPassword)}
-                                        onSubmit={handleSubmitLogin}
-                                        onSocialLogin={handleSocialLogin}
-                                        handleSubmitLogin={handleSubmitLogin}
-                                        handleFacebookLogin={handleFacebookLogin}
-                                    />
-                                </div>
-                                {/* Right Side - Welcome Panel with Rental Service Info */}
-                                <div
-                                    className="relative flex flex-col justify-center items-center p-8 lg:p-16 text-white overflow-hidden"
+                                {/* Mobile: Single column layout */}
+                                {isMobile ? (
+                                    <div className="flex flex-col min-h-screen">
+                                        {/* Mobile Welcome Section */}
+                                        <div className="bg-gradient-to-br from-blue-600 to-purple-700 text-white p-6 text-center">
+                                            <div className="mb-4">
+                                                <h2 className="text-2xl font-bold mb-2">Xin chào!</h2>
+                                                <p className="text-sm opacity-90">
+                                                    Chào mừng đến với nền tảng cho thuê nhà hàng đầu Việt Nam
+                                                </p>
+                                            </div>
+                                            <div className="flex justify-center gap-6 text-xs">
+                                                <div className="text-center">
+                                                    <Home className="w-4 h-4 mx-auto mb-1" />
+                                                    <p className="font-semibold">10K+ Căn hộ</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <Shield className="w-4 h-4 mx-auto mb-1" />
+                                                    <p className="font-semibold">Bảo mật</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <Clock className="w-4 h-4 mx-auto mb-1" />
+                                                    <p className="font-semibold">24/7</p>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                >
-                                    <WelcomePanel
-                                        mode={mode}
-                                        isTransitioning={isTransitioning}
-                                        onSwitchMode={() => switchMode("register")}
-                                    >
-                                        <div className="mb-8">
-                                            <h2 className="text-5xl font-bold mb-4 leading-tight">Xin chào!</h2>
-                                            <p className="text-xl mb-6 opacity-90 max-w-md">
-                                                Chào mừng đến với nền tảng cho thuê nhà hàng đầu Việt Nam
-                                            </p>
-                                        </div>
-                                        <div className="space-y-4 mb-8 max-w-sm">
-                                            <div className="flex items-center gap-3 text-left">
-                                                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                                                    <Home className="w-5 h-5" />
-                                                </div>
-                                                <div>
-                                                    <p className="font-semibold">10,000+ Căn hộ</p>
-                                                    <p className="text-sm opacity-80">Đa dạng lựa chọn</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-3 text-left">
-                                                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                                                    <Shield className="w-5 h-5" />
-                                                </div>
-                                                <div>
-                                                    <p className="font-semibold">Bảo mật tuyệt đối</p>
-                                                    <p className="text-sm opacity-80">Thông tin được bảo vệ</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-3 text-left">
-                                                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                                                    <Clock className="w-5 h-5" />
-                                                </div>
-                                                <div>
-                                                    <p className="font-semibold">Hỗ trợ 24/7</p>
-                                                    <p className="text-sm opacity-80">Luôn sẵn sàng giúp đỡ</p>
-                                                </div>
+                                        {/* Mobile Login Form */}
+                                        <div className="flex-1 p-4 sm:p-6 bg-white">
+                                            <LoginForm
+                                                formData={{
+                                                    tenDangNhap: formData.tenDangNhap,
+                                                    matKhau: formData.matKhau
+                                                }}
+                                                errors={{
+                                                    tenDangNhap: errors.tenDangNhap,
+                                                    matKhau: errors.matKhau
+                                                }}
+                                                showPassword={showPassword}
+                                                isLoading={isLoading}
+                                                onInputChange={handleInputChange}
+                                                onShowPassword={() => setShowPassword(!showPassword)}
+                                                onSubmit={handleSubmitLogin}
+                                                onSocialLogin={handleSocialLogin}
+                                                handleSubmitLogin={handleSubmitLogin}
+                                                handleFacebookLogin={handleFacebookLogin}
+                                            />
+
+                                            {/* Mobile Switch to Register */}
+                                            <div className="mt-6 text-center">
+                                                <button
+                                                    onClick={() => switchMode("register")}
+                                                    className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                                                >
+                                                    Chưa có tài khoản? Đăng ký ngay
+                                                </button>
                                             </div>
                                         </div>
-                                    </WelcomePanel>
-                                </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        {/* Desktop/Tablet: Two column layout */}
+                                        {/* Left Side - Login Form */}
+                                        <div className="flex flex-col justify-center p-4 sm:p-8 lg:p-16 bg-white relative overflow-hidden">
+                                            {/* Decorative Elements - Hidden on small screens */}
+                                            <div className="hidden lg:block absolute top-10 left-10 w-20 h-20 opacity-10">
+                                                <div
+                                                    className="w-full h-full border-4 border-pink-300 rounded-full animate-spin"
+                                                    style={{ animationDuration: "20s" }}
+                                                />
+                                            </div>
+                                            <div className="hidden lg:block absolute bottom-20 right-10 w-16 h-16 opacity-10">
+                                                <div className="w-full h-full bg-blue-300 rounded-lg rotate-45 animate-pulse" />
+                                            </div>
+                                            <LoginForm
+                                                formData={{
+                                                    tenDangNhap: formData.tenDangNhap,
+                                                    matKhau: formData.matKhau
+                                                }}
+                                                errors={{
+                                                    tenDangNhap: errors.tenDangNhap,
+                                                    matKhau: errors.matKhau
+                                                }}
+                                                showPassword={showPassword}
+                                                isLoading={isLoading}
+                                                onInputChange={handleInputChange}
+                                                onShowPassword={() => setShowPassword(!showPassword)}
+                                                onSubmit={handleSubmitLogin}
+                                                onSocialLogin={handleSocialLogin}
+                                                handleSubmitLogin={handleSubmitLogin}
+                                                handleFacebookLogin={handleFacebookLogin}
+                                            />
+                                        </div>
+                                        {/* Right Side - Welcome Panel with Rental Service Info */}
+                                        <div className="relative flex flex-col justify-center items-center p-4 sm:p-8 lg:p-16 text-white overflow-hidden">
+                                            <WelcomePanel
+                                                mode={mode}
+                                                isTransitioning={isTransitioning}
+                                                onSwitchMode={() => switchMode("register")}
+                                            >
+                                                <div className="mb-6 lg:mb-8">
+                                                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 lg:mb-4 leading-tight">Xin chào!</h2>
+                                                    <p className="text-base sm:text-lg lg:text-xl mb-4 lg:mb-6 opacity-90 max-w-md">
+                                                        Chào mừng đến với nền tảng cho thuê nhà hàng đầu Việt Nam
+                                                    </p>
+                                                </div>
+                                                <div className="space-y-3 lg:space-y-4 mb-6 lg:mb-8 max-w-sm">
+                                                    <div className="flex items-center gap-3 text-left">
+                                                        <div className="w-8 h-8 lg:w-10 lg:h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                                            <Home className="w-4 h-4 lg:w-5 lg:h-5" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-semibold text-sm lg:text-base">10,000+ Căn hộ</p>
+                                                            <p className="text-xs lg:text-sm opacity-80">Đa dạng lựa chọn</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-3 text-left">
+                                                        <div className="w-8 h-8 lg:w-10 lg:h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                                            <Shield className="w-4 h-4 lg:w-5 lg:h-5" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-semibold text-sm lg:text-base">Bảo mật tuyệt đối</p>
+                                                            <p className="text-xs lg:text-sm opacity-80">Thông tin được bảo vệ</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-3 text-left">
+                                                        <div className="w-8 h-8 lg:w-10 lg:h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                                            <Clock className="w-4 h-4 lg:w-5 lg:h-5" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-semibold text-sm lg:text-base">Hỗ trợ 24/7</p>
+                                                            <p className="text-xs lg:text-sm opacity-80">Luôn sẵn sàng giúp đỡ</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </WelcomePanel>
+                                        </div>
+                                    </>
+                                )}
                             </>
                             ) : (
                                 <>
-                                    {/* Left Side - Welcome Back Panel with Service Info */}
-                                    <div
-                                        className="relative flex flex-col justify-center items-center p-8 lg:p-16 text-white overflow-hidden"
-                                        style={{
-                                            backgroundImage: "url('https://smartland.vn/wp-content/uploads/2021/10/bat-dong-san-ven-song-sai-gon-01-e1620704384316.jpg')",
-                                            backgroundSize: "cover",
-                                            backgroundPosition: "center",
-                                            backgroundRepeat: "no-repeat",
-                                        }}
-                                    >
-                                        <WelcomePanel
-                                            mode={mode}
-                                            isTransitioning={isTransitioning}
-                                            onSwitchMode={() => switchMode("login")}
-                                        >
-                                            <div className="mb-8">
-                                                <h2 className="text-5xl font-bold mb-4 leading-tight">Chào mừng trở lại!</h2>
-                                                <p className="text-xl mb-6 opacity-90 max-w-md">
-                                                    Đăng nhập để tiếp tục hành trình tìm kiếm ngôi nhà lý tưởng
-                                                </p>
-                                            </div>
-                                            <div className="space-y-4 mb-8 max-w-sm">
-                                                <div className="flex items-center gap-3 text-left">
-                                                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                                                        <Users className="w-5 h-5" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-semibold">50,000+ Khách hàng</p>
-                                                        <p className="text-sm opacity-80">Tin tưởng sử dụng</p>
-                                                    </div>
+                                    {/* Register Mode */}
+                                    {isMobile ? (
+                                        <div className="flex flex-col min-h-screen">
+                                            {/* Mobile Welcome Back Section */}
+                                            <div className="bg-gradient-to-br from-purple-600 to-blue-700 text-white p-6 text-center">
+                                                <div className="mb-4">
+                                                    <h2 className="text-2xl font-bold mb-2">Tạo tài khoản mới!</h2>
+                                                    <p className="text-sm opacity-90">
+                                                        Bắt đầu hành trình tìm kiếm ngôi nhà lý tưởng
+                                                    </p>
                                                 </div>
-                                                <div className="flex items-center gap-3 text-left">
-                                                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                                                        <Star className="w-5 h-5" />
+                                                <div className="flex justify-center gap-6 text-xs">
+                                                    <div className="text-center">
+                                                        <Users className="w-4 h-4 mx-auto mb-1" />
+                                                        <p className="font-semibold">50K+ Khách hàng</p>
                                                     </div>
-                                                    <div>
+                                                    <div className="text-center">
+                                                        <Star className="w-4 h-4 mx-auto mb-1" />
                                                         <p className="font-semibold">4.9/5 Đánh giá</p>
-                                                        <p className="text-sm opacity-80">Từ người dùng</p>
                                                     </div>
-                                                </div>
-                                                <div className="flex items-center gap-3 text-left">
-                                                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                                                        <MapPin className="w-5 h-5" />
-                                                    </div>
-                                                    <div>
+                                                    <div className="text-center">
+                                                        <MapPin className="w-4 h-4 mx-auto mb-1" />
                                                         <p className="font-semibold">63 Tỉnh thành</p>
-                                                        <p className="text-sm opacity-80">Phủ sóng toàn quốc</p>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </WelcomePanel>
-                                    </div>
-                                    {/* Right Side - Register Form */}
-                                    <div className="flex flex-col justify-center p-8 lg:p-8 bg-white relative overflow-hidden">
-                                        {/* Decorative Elements */}
-                                        <div className="absolute top-10 right-10 w-20 h-20 opacity-10">
+
+                                            {/* Mobile Register Form */}
+                                            <div className="flex-1 p-4 sm:p-6 bg-white overflow-y-auto">
+                                                <RegisterForm
+                                                    formData={formData}
+                                                    errors={errors}
+                                                    showPassword={showPassword}
+                                                    showConfirmPassword={showConfirmPassword}
+                                                    isLoading={isLoading}
+                                                    onInputChange={handleInputChange}
+                                                    onShowPassword={() => setShowPassword(!showPassword)}
+                                                    onShowConfirmPassword={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                    onSubmit={handleSubmitRegister}
+                                                    onSocialLogin={handleSocialLogin}
+                                                    handleFacebookLogin={handleFacebookLogin}
+                                                />
+
+                                                {/* Mobile Switch to Login */}
+                                                <div className="mt-6 text-center pb-6">
+                                                    <button
+                                                        onClick={() => switchMode("login")}
+                                                        className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                                                    >
+                                                        Đã có tài khoản? Đăng nhập ngay
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            {/* Desktop/Tablet: Two column layout */}
+                                            {/* Left Side - Welcome Back Panel with Service Info */}
                                             <div
-                                                className="w-full h-full border-4 border-teal-300 rounded-full animate-spin"
-                                                style={{ animationDuration: "20s" }}
-                                            />
-                                        </div>
-                                        <div className="absolute bottom-20 left-10 w-16 h-16 opacity-10">
-                                            <div className="w-full h-full bg-pink-300 rounded-lg rotate-45 animate-pulse" />
-                                        </div>
-                                        <RegisterForm
-                                            formData={formData}
-                                            errors={errors}
-                                            showPassword={showPassword}
-                                            showConfirmPassword={showConfirmPassword}
-                                            isLoading={isLoading}
-                                            onInputChange={handleInputChange}
-                                            onShowPassword={() => setShowPassword(!showPassword)}
-                                            onShowConfirmPassword={() => setShowConfirmPassword(!showConfirmPassword)}
-                                            onSubmit={handleSubmitRegister}
-                                            onSocialLogin={handleSocialLogin}
-                                            handleFacebookLogin={handleFacebookLogin}
-                                        />
-                                    </div>
+                                                className="relative flex flex-col justify-center items-center p-4 sm:p-8 lg:p-16 text-white overflow-hidden"
+                                                style={{
+                                                    backgroundImage: "url('https://smartland.vn/wp-content/uploads/2021/10/bat-dong-san-ven-song-sai-gon-01-e1620704384316.jpg')",
+                                                    backgroundSize: "cover",
+                                                    backgroundPosition: "center",
+                                                    backgroundRepeat: "no-repeat",
+                                                }}
+                                            >
+                                                <WelcomePanel
+                                                    mode={mode}
+                                                    isTransitioning={isTransitioning}
+                                                    onSwitchMode={() => switchMode("login")}
+                                                >
+                                                    <div className="mb-6 lg:mb-8">
+                                                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 lg:mb-4 leading-tight">Chào mừng trở lại!</h2>
+                                                        <p className="text-base sm:text-lg lg:text-xl mb-4 lg:mb-6 opacity-90 max-w-md">
+                                                            Đăng nhập để tiếp tục hành trình tìm kiếm ngôi nhà lý tưởng
+                                                        </p>
+                                                    </div>
+                                                    <div className="space-y-3 lg:space-y-4 mb-6 lg:mb-8 max-w-sm">
+                                                        <div className="flex items-center gap-3 text-left">
+                                                            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                                                <Users className="w-4 h-4 lg:w-5 lg:h-5" />
+                                                            </div>
+                                                            <div>
+                                                                <p className="font-semibold text-sm lg:text-base">50,000+ Khách hàng</p>
+                                                                <p className="text-xs lg:text-sm opacity-80">Tin tưởng sử dụng</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-3 text-left">
+                                                            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                                                <Star className="w-4 h-4 lg:w-5 lg:h-5" />
+                                                            </div>
+                                                            <div>
+                                                                <p className="font-semibold text-sm lg:text-base">4.9/5 Đánh giá</p>
+                                                                <p className="text-xs lg:text-sm opacity-80">Từ người dùng</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-3 text-left">
+                                                            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                                                <MapPin className="w-4 h-4 lg:w-5 lg:h-5" />
+                                                            </div>
+                                                            <div>
+                                                                <p className="font-semibold text-sm lg:text-base">63 Tỉnh thành</p>
+                                                                <p className="text-xs lg:text-sm opacity-80">Phủ sóng toàn quốc</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </WelcomePanel>
+                                            </div>
+                                            {/* Right Side - Register Form */}
+                                            <div className="flex flex-col justify-center p-4 sm:p-6 lg:p-8 bg-white relative overflow-hidden overflow-y-auto">
+                                                {/* Decorative Elements - Hidden on small screens */}
+                                                <div className="hidden lg:block absolute top-10 right-10 w-20 h-20 opacity-10">
+                                                    <div
+                                                        className="w-full h-full border-4 border-teal-300 rounded-full animate-spin"
+                                                        style={{ animationDuration: "20s" }}
+                                                    />
+                                                </div>
+                                                <div className="hidden lg:block absolute bottom-20 left-10 w-16 h-16 opacity-10">
+                                                    <div className="w-full h-full bg-pink-300 rounded-lg rotate-45 animate-pulse" />
+                                                </div>
+                                                <RegisterForm
+                                                    formData={formData}
+                                                    errors={errors}
+                                                    showPassword={showPassword}
+                                                    showConfirmPassword={showConfirmPassword}
+                                                    isLoading={isLoading}
+                                                    onInputChange={handleInputChange}
+                                                    onShowPassword={() => setShowPassword(!showPassword)}
+                                                    onShowConfirmPassword={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                    onSubmit={handleSubmitRegister}
+                                                    onSocialLogin={handleSocialLogin}
+                                                    handleFacebookLogin={handleFacebookLogin}
+                                                />
+                                            </div>
+                                        </>
+                                    )}
                                 </>
                             )}
                         </motion.div>
