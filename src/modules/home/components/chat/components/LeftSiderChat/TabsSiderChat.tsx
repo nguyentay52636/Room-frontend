@@ -75,7 +75,7 @@ export default function TabsSiderChat({ getStatusColor, getRoleBadge, getStatusT
 
                 {/* Chat List */}
                 <TabsContent value="chats" className="flex-1">
-                    <ScrollArea className="h-full">
+                    <ScrollArea className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
                         <div className="space-y-2">
                             {filteredConversations.length > 0 ? (
                                 filteredConversations.map((conv) => (
@@ -151,7 +151,7 @@ export default function TabsSiderChat({ getStatusColor, getRoleBadge, getStatusT
 
                 {/* Users List */}
                 <TabsContent value="users" className="flex-1">
-                    <ScrollArea className="h-full">
+                    <ScrollArea className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
                         <div className="space-y-3">
                             {filteredUsers.length > 0 ? (
                                 filteredUsers.map((user) => (
@@ -220,7 +220,7 @@ export default function TabsSiderChat({ getStatusColor, getRoleBadge, getStatusT
 
                 {/* Groups List */}
                 <TabsContent value="groups" className="flex-1">
-                    <ScrollArea className="h-full">
+                    <ScrollArea className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
                         <div className="space-y-3">
                             {groupChats.map((group) => (
                                 <div
