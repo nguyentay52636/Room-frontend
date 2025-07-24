@@ -1,4 +1,4 @@
-export { DialogAddAccount } from "./DialogAddAccount"
+export { DialogAddAccount } from "./components/AddAccount/DialogAddAccount"
 export { BasicInfoTab } from "./tabs/BasicInfoTab"
 export { SecurityTab } from "./tabs/SecurityTab"
 export { SettingsTab } from "./tabs/SettingsTab"

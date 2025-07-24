@@ -1,7 +1,7 @@
 import { Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
-export default function ManagerEmployeeHeader({ handleAddStaff }: { handleAddStaff: any }) {
+export default function ManagerEmployeeHeader() {
     return (
         <div className="flex flex-col my-4 mx-4 md:flex-row justify-between items-start md:items-center gap-4">
             <div className="space-y-2">
@@ -18,7 +18,7 @@ export default function ManagerEmployeeHeader({ handleAddStaff }: { handleAddSta
                 </div>
             </div>
             <Button
-                onClick={handleAddStaff}
+
                 className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-300"
             >
                 <Plus className="h-4 w-4 mr-2" />

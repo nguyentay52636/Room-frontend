@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card'
-import React from 'react'
+import React, { useState } from 'react'
 import { CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
@@ -8,11 +8,27 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
+import { Employee } from '@/lib/apis/types'
+import ActionTableEmployee from './ActionTableEmployee'
 
-export default function ManagerEmployeeTable({ filteredEmployees, searchQuery, setSearchQuery, handleViewStaff, handleEditStaff, handleDeleteStaff, getPositionIcon, getPositionLabel, getDepartmentLabel, getStatusBadge }: { filteredEmployees: any, searchQuery: any, setSearchQuery: any, handleViewStaff: any, handleEditStaff: any, handleDeleteStaff: any, getPositionIcon: any, getPositionLabel: any, getDepartmentLabel: any, getStatusBadge: any }) {
-    // Add null check for filteredEmployees
+export default function ManagerEmployeeTable({ filteredEmployees, searchQuery, setSearchQuery, getPositionIcon, getPositionLabel, getDepartmentLabel, getStatusBadge }: { filteredEmployees: any, searchQuery: any, setSearchQuery: any, getPositionIcon: any, getPositionLabel: any, getDepartmentLabel: any, getStatusBadge: any }) {
+    const [selectedEmployee, setSelectEmployee] = useState<Employee | null>(null);
+    const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [employeeDelete, setEmployeeDelete] = useState<Employee | null>(null);
     const employees = filteredEmployees || []
+    const handleViewDetails = (employee: Employee) => {
+        setSelectEmployee(employee);
+        setIsUpdateDialogOpen(true);
+    }
+    const handleDeleteClick = (employee: Employee) => {
+        setEmployeeDelete(employee);
+        setIsDeleteDialogOpen(true);
+    };
+    const handleEdit = (employee: Employee) => {
+        setSelectEmployee(employee)
+        setIsUpdateDialogOpen(true);
+    };
 
     return (
         <>
@@ -127,36 +143,12 @@ export default function ManagerEmployeeTable({ filteredEmployees, searchQuery, s
                                                 </div>
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="sm" className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                            <MoreHorizontal className="h-4 w-4" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end" className="w-48">
-                                                        <DropdownMenuItem
-                                                            onClick={() => handleViewStaff(person)}
-                                                            className="hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                                                        >
-                                                            <Eye className="h-4 w-4 mr-2 text-blue-600" />
-                                                            Xem chi tiết
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem
-                                                            onClick={() => handleEditStaff(person)}
-                                                            className="hover:bg-green-50 dark:hover:bg-green-900/20"
-                                                        >
-                                                            <Edit className="h-4 w-4 mr-2 text-green-600" />
-                                                            Chỉnh sửa
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem
-                                                            className="text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-                                                            onClick={() => handleDeleteStaff(person._id)}
-                                                        >
-                                                            <Trash2 className="h-4 w-4 mr-2" />
-                                                            Xóa
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
+                                                <ActionTableEmployee
+                                                    employee={employees}
+                                                    onEdit={handleEdit}
+                                                    onViewDetail={handleViewDetails}
+                                                    onDelete={handleDeleteClick}
+                                                />
                                             </TableCell>
                                         </TableRow>
                                     ))}

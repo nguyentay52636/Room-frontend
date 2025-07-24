@@ -12,18 +12,16 @@ import {
 
 } from "lucide-react"
 import PaginationManagerEmployee from "./components/PaginationManagerEmployee"
-import { DialogAddEmployee } from "./components/Dialog/DialogAddEmployee"
 import ManagerEmployeeHeader from "./components/ManagerEmployeeHeader"
 import ManagerEmployeeCards from "./components/ManagerEmployeeCards"
 import ManagerEmployeeTable from "./components/ManagerEmployeeTable"
-import { staff } from "./components/data/employee"
 import { getEmployees } from "@/lib/apis/employeeApi"
 import { Employee } from "@/lib/apis/types"
 import ReloadError from "./components/ReloadError"
 export default function ManagerEmployeeContent() {
     const [searchQuery, setSearchQuery] = useState("")
     const [dialogOpen, setDialogOpen] = useState(false)
-    const [dialogMode, setDialogMode] = useState<"add" | "edit" | "view">("add")
+
     const [selectedStaff, setSelectedStaff] = useState(null)
 
     const [loading, setLoading] = useState(true)
@@ -149,34 +147,9 @@ export default function ManagerEmployeeContent() {
         }
     }
 
-    const handleAddStaff = () => {
-        console.log("Add staff button clicked")
-        setDialogMode("add")
-        setSelectedStaff(null)
-        setDialogOpen(true)
-        console.log("Dialog state:", { dialogOpen: true, dialogMode: "add" })
-    }
-
-    const handleEditStaff = (staff: any) => {
-        setDialogMode("edit")
-        setSelectedStaff(staff)
-        setDialogOpen(true)
-    }
-
-    const handleViewStaff = (staff: any) => {
-        setDialogMode("view")
-        setSelectedStaff(staff)
-        setDialogOpen(true)
-    }
-
-    const handleDeleteStaff = (id: number) => {
-        if (confirm("Bạn có chắc chắn muốn xóa nhân viên này?")) {
-            console.log("Deleting staff:", id)
-        }
-    }
 
 
-    console.log("Rendering DialogAddEmployee with props:", { dialogOpen, selectedStaff, dialogMode })
+
 
     // Show loading state
     if (loading) {
@@ -198,7 +171,7 @@ export default function ManagerEmployeeContent() {
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
             <div className="p-6 space-y-8">
 
-                <ManagerEmployeeHeader handleAddStaff={handleAddStaff} />
+                <ManagerEmployeeHeader />
 
                 {error ? (
                     <ReloadError error={error} />
@@ -209,9 +182,8 @@ export default function ManagerEmployeeContent() {
                             filteredEmployees={filteredEmployees}
                             searchQuery={searchQuery}
                             setSearchQuery={setSearchQuery}
-                            handleViewStaff={handleViewStaff}
-                            handleEditStaff={handleEditStaff}
-                            handleDeleteStaff={handleDeleteStaff}
+
+
                             getPositionIcon={getPositionIcon}
                             getPositionLabel={getPositionLabel}
                             getDepartmentLabel={getDepartmentLabel}
@@ -230,12 +202,12 @@ export default function ManagerEmployeeContent() {
 
             </div>
 
-            <DialogAddEmployee
+            {/* <DialogAddEmployee
                 open={dialogOpen}
                 onOpenChange={setDialogOpen}
                 staff={selectedStaff}
-                mode={dialogMode}
-            />
+            
+            /> */}
         </div>
     )
 }

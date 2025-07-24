@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { User, Mail, Phone, Calendar, Briefcase, MapPin, FileText, DollarSign, Building, Eye, UserCheck, UserX, Crown, Users } from "lucide-react"
+import { Employee } from "@/lib/apis/types"
 
 interface DialogViewDetailsEmployeeProps {
     open: boolean
@@ -22,51 +23,55 @@ interface DialogViewDetailsEmployeeProps {
     staff?: any
 }
 
-interface FormData {
-    name: string
-    email: string
-    phone: string
-    position: string
-    department: string
-    status: string
-    joinDate: string
-    salary: string
-    address: string
-    avatar: string
-    bio: string
-}
 
-const initialFormData: FormData = {
-    name: "",
-    email: "",
-    phone: "",
-    position: "staff",
-    department: "sales",
-    status: "active",
-    joinDate: new Date().toISOString().split("T")[0],
-    salary: "",
-    address: "",
-    avatar: "",
-    bio: "",
-}
 
+const initialFormData: Employee = {
+    nguoiDungId: {
+        _id: "",
+        ten: "",
+        email: "",
+        tenDangNhap: "",
+        matKhau: "",
+        soDienThoai: "",
+        vaiTro: "",
+        anhDaiDien: "",
+        trangThai: "",
+    },
+    phongBan: "sales",
+    chucVu: "staff",
+    luong: 0,
+    hieuSuat: 0,
+    ngayVaoLam: new Date(),
+    trangThai: "active",
+}
 export default function DialogViewDetailsEmployee({ open, onOpenChange, staff }: DialogViewDetailsEmployeeProps) {
-    const [formData, setFormData] = useState<FormData>(initialFormData)
+    const [formData, setFormData] = useState<Employee>(initialFormData)
 
     useEffect(() => {
         if (staff) {
             setFormData({
-                name: staff.name || "",
-                email: staff.email || "",
-                phone: staff.phone || "",
-                position: staff.position || "staff",
-                department: staff.department || "sales",
-                status: staff.status || "active",
-                joinDate: staff.joinDate || new Date().toISOString().split("T")[0],
-                salary: staff.salary || "",
-                address: staff.address || "",
-                avatar: staff.avatar || "",
-                bio: staff.bio || "",
+                nguoiDungId: {
+                    _id: staff.nguoiDungId?._id || "",
+                    ten: staff.nguoiDungId?.ten || "",
+                    email: staff.nguoiDungId?.email || "",
+                    tenDangNhap: staff.nguoiDungId?.tenDangNhap || "",
+                    matKhau: staff.nguoiDungId?.matKhau || "",
+                    soDienThoai: staff.nguoiDungId?.soDienThoai || "",
+                    vaiTro: staff.nguoiDungId?.vaiTro || "",
+                    anhDaiDien: staff.nguoiDungId?.anhDaiDien || "",
+                    trangThai: staff.nguoiDungId?.trangThai || "",
+                    createdAt: staff.nguoiDungId?.createdAt,
+                    updatedAt: staff.nguoiDungId?.updatedAt,
+                },
+                phongBan: staff.phongBan || "sales",
+                chucVu: staff.chucVu || "staff",
+                luong: staff.luong || 0,
+                hieuSuat: staff.hieuSuat || 0,
+                ngayVaoLam: staff.ngayVaoLam ? new Date(staff.ngayVaoLam) : new Date(),
+                trangThai: staff.trangThai || "active",
+                createdAt: staff.createdAt,
+                updatedAt: staff.updatedAt,
+                __v: staff.__v,
             })
         }
     }, [staff])
@@ -127,26 +132,18 @@ export default function DialogViewDetailsEmployee({ open, onOpenChange, staff }:
         }
     }
 
-    const getPositionIcon = (position: string) => {
-        switch (position) {
-            case "admin":
-                return <Crown className="h-4 w-4 text-purple-600" />
-            case "manager":
-                return <Users className="h-4 w-4 text-blue-600" />
-            default:
-                return <UserCheck className="h-4 w-4 text-green-600" />
-        }
-    }
 
-    const formatDate = (dateString: string) => {
+    const formatDate = (dateString?: string): string => {
         if (!dateString) return "Chưa có thông tin"
         const date = new Date(dateString)
+        if (isNaN(date.getTime())) return "Ngày không hợp lệ"
         return date.toLocaleDateString('vi-VN', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         })
     }
+
 
     const formatSalary = (salary: string) => {
         if (!salary) return "Chưa có thông tin"
@@ -182,18 +179,18 @@ export default function DialogViewDetailsEmployee({ open, onOpenChange, staff }:
                         <div className="flex flex-col items-center space-y-4">
                             <div className="relative group">
                                 <Avatar className="h-24 w-24 border-4 border-gray-100 dark:border-gray-700 shadow-lg">
-                                    <AvatarImage src={formData.avatar || "/placeholder.svg"} alt={formData.name} />
+                                    <AvatarImage src={formData.nguoiDungId?.anhDaiDien || "/placeholder.svg"} alt={formData.nguoiDungId?.anhDaiDien} />
                                     <AvatarFallback className="text-2xl bg-gradient-to-br from-purple-500 to-purple-600 text-white font-semibold">
-                                        {formData.name.charAt(0) || "S"}
+                                        {formData.nguoiDungId?.ten.charAt(0) || "S"}
                                     </AvatarFallback>
                                 </Avatar>
                             </div>
                             <div className="text-center">
-                                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{formData.name}</h3>
+                                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{formData.nguoiDungId?.ten}</h3>
                                 <div className="flex items-center justify-center space-x-2 mt-2">
-                                    {getPositionIcon(formData.position)}
+                                    {/* {getPositionIcon(formData.position)} */}
                                     <span className="text-sm text-gray-600 dark:text-gray-400">
-                                        {getPositionLabel(formData.position)}
+                                        {/* {getPositionLabel(formData.position)} */}
                                     </span>
                                 </div>
                             </div>
@@ -216,7 +213,7 @@ export default function DialogViewDetailsEmployee({ open, onOpenChange, staff }:
                                         <div className="flex items-center space-x-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                             <User className="h-4 w-4 text-gray-400" />
                                             <span className="text-gray-900 dark:text-gray-100 font-medium">
-                                                {formData.name || "Chưa có thông tin"}
+                                                {formData.nguoiDungId?.ten || "Chưa có thông tin"}
                                             </span>
                                         </div>
                                     </div>
@@ -228,7 +225,7 @@ export default function DialogViewDetailsEmployee({ open, onOpenChange, staff }:
                                         <div className="flex items-center space-x-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                             <Mail className="h-4 w-4 text-gray-400" />
                                             <span className="text-gray-900 dark:text-gray-100">
-                                                {formData.email || "Chưa có thông tin"}
+                                                {formData.nguoiDungId?.email || "Chưa có thông tin"}
                                             </span>
                                         </div>
                                     </div>
@@ -240,7 +237,7 @@ export default function DialogViewDetailsEmployee({ open, onOpenChange, staff }:
                                         <div className="flex items-center space-x-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                             <Phone className="h-4 w-4 text-gray-400" />
                                             <span className="text-gray-900 dark:text-gray-100">
-                                                {formData.phone || "Chưa có thông tin"}
+                                                {formData.nguoiDungId?.soDienThoai || "Chưa có thông tin"}
                                             </span>
                                         </div>
                                     </div>
@@ -252,23 +249,23 @@ export default function DialogViewDetailsEmployee({ open, onOpenChange, staff }:
                                         <div className="flex items-center space-x-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                             <DollarSign className="h-4 w-4 text-gray-400" />
                                             <span className="text-gray-900 dark:text-gray-100 font-medium">
-                                                {formatSalary(formData.salary)}
+                                                {formatSalary(String(formData.luong))}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
+                                {/* <div className="space-y-2">
                                     <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Địa chỉ
                                     </Label>
                                     <div className="flex items-start space-x-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                         <MapPin className="h-4 w-4 text-gray-400 mt-0.5" />
                                         <span className="text-gray-900 dark:text-gray-100">
-                                            {formData.address || "Chưa có thông tin"}
+                                            {formData || "Chưa có thông tin"}
                                         </span>
                                     </div>
-                                </div>
+                                </div> */}
                             </CardContent>
                         </Card>
 
@@ -289,7 +286,7 @@ export default function DialogViewDetailsEmployee({ open, onOpenChange, staff }:
                                         <div className="flex items-center space-x-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                             <Briefcase className="h-4 w-4 text-gray-400" />
                                             <span className="text-gray-900 dark:text-gray-100 font-medium">
-                                                {getPositionLabel(formData.position)}
+                                                {getPositionLabel(formData.chucVu)}
                                             </span>
                                         </div>
                                     </div>
@@ -301,7 +298,7 @@ export default function DialogViewDetailsEmployee({ open, onOpenChange, staff }:
                                         <div className="flex items-center space-x-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                             <Building className="h-4 w-4 text-gray-400" />
                                             <span className="text-gray-900 dark:text-gray-100">
-                                                {getDepartmentLabel(formData.department)}
+                                                {getDepartmentLabel(formData.phongBan)}
                                             </span>
                                         </div>
                                     </div>
@@ -311,7 +308,7 @@ export default function DialogViewDetailsEmployee({ open, onOpenChange, staff }:
                                             Trạng thái
                                         </Label>
                                         <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                            {getStatusBadge(formData.status)}
+                                            {getStatusBadge(formData.trangThai)}
                                         </div>
                                     </div>
 
@@ -322,23 +319,23 @@ export default function DialogViewDetailsEmployee({ open, onOpenChange, staff }:
                                         <div className="flex items-center space-x-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                             <Calendar className="h-4 w-4 text-gray-400" />
                                             <span className="text-gray-900 dark:text-gray-100">
-                                                {formatDate(formData.joinDate)}
+                                                {formatDate(formData.createdAt)}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
+                                {/* <div className="space-y-2">
                                     <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Giới thiệu
                                     </Label>
                                     <div className="flex items-start space-x-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                         <FileText className="h-4 w-4 text-gray-400 mt-0.5" />
                                         <span className="text-gray-900 dark:text-gray-100">
-                                            {formData.bio || "Chưa có thông tin"}
+                                            {formData. || "Chưa có thông tin"}
                                         </span>
                                     </div>
-                                </div>
+                                </div> */}
                             </CardContent>
                         </Card>
                     </div>

@@ -94,6 +94,10 @@ function App() {
       element: <Failure />,
     },
     {
+      path: 'chat',
+      element: <ChatHome />
+    },
+    {
       path: '/',
       element: <MainLayout />,
       errorElement: <div className="p-8 text-center"><h2>Lỗi routing</h2><p>Có lỗi xảy ra khi điều hướng.</p></div>,
@@ -148,10 +152,7 @@ function App() {
           path: 'create-post-news',
           element: <PostNew />
         },
-        {
-          path: 'chat',
-          element: <ChatHome />
-        },
+
 
         {
           path: 'two-user-chat',
