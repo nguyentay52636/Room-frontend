@@ -1,13 +1,19 @@
-import { Customer, User } from "./types"; 
+import { Customer, UserType } from "./types"; 
 export interface IAPIResponseWrapperArray<T> {
     statusCode: number;
     message: string;
     data: T[];
 }
+export interface IAPIResponseWrapper<T> {
+    statusCode: number;
+    message: string;
+    data: T;
+}
+
 
 export interface IusersResponse {
     message: string;
-    users: User[];
+    users: UserType[];
 }
 
 export interface IEmployeeResponse {

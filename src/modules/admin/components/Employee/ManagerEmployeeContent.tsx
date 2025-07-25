@@ -46,7 +46,7 @@ export default function ManagerEmployeeContent() {
             }
         }
         fetchEmployees()
-    }, [])
+    }, [employees])
 
     const [currentPage, setCurrentPage] = useState(1)
     const [rowsPerPage, setRowsPerPage] = useState(10)

@@ -15,13 +15,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, Phone, Calendar, Upload, Briefcase, FileText, DollarSign, Building, Edit, User } from "lucide-react";
+import { Mail, Phone, Calendar, Upload, Briefcase, FileText, DollarSign, Building, Edit, User, CheckCircle } from "lucide-react";
 import { z } from "zod";
 import { Employee, UserType } from "@/lib/apis/types";
+import { updateEmployee } from "@/lib/apis/employeeApi";
+import { toast } from 'sonner';
 
-// Define Zod schema synchronized with Employee and IUser interfaces
 const formSchema = z.object({
     ten: z.string().min(1, "Họ và tên là bắt buộc"),
     email: z.string().min(1, "Email là bắt buộc").email("Email không hợp lệ"),
@@ -30,7 +30,7 @@ const formSchema = z.object({
         .min(1, "Số điện thoại là bắt buộc")
         .regex(/^[0-9]{10,11}$/, "Số điện thoại phải có 10 hoặc 11 chữ số"),
     anhDaiDien: z.string().optional(),
-    vaiTro: z.string().optional(), // Assuming role is a string; adjust if enum
+    vaiTro: z.string().optional(),
     phongBan: z.string().min(1, "Phòng ban là bắt buộc"),
     chucVu: z.string().min(1, "Chức vụ là bắt buộc"),
     luong: z
@@ -45,7 +45,6 @@ const formSchema = z.object({
         .min(1, "Ngày vào làm là bắt buộc")
         .refine((val) => !isNaN(Date.parse(val)), "Ngày vào làm phải là định dạng ngày hợp lệ"),
     trangThai: z.string().min(1, "Trạng thái là bắt buộc"),
-    bio: z.string().optional(), // Not in Employee but included for UI compatibility
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -70,7 +69,7 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
         hieuSuat: 0,
         ngayVaoLam: new Date().toISOString().split("T")[0],
         trangThai: "",
-        bio: "",
+
     });
     const [errors, setErrors] = useState<Partial<Record<keyof FormValues, string>>>({});
 
@@ -81,7 +80,9 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                 email: staff.nguoiDungId?.email || "",
                 soDienThoai: staff.nguoiDungId?.soDienThoai || "",
                 anhDaiDien: staff.nguoiDungId?.anhDaiDien || "",
-                vaiTro: staff.nguoiDungId?.vaiTro?.ten || "",
+                vaiTro: typeof staff.nguoiDungId?.vaiTro === "object"
+                    ? (staff.nguoiDungId?.vaiTro as any)?.ten || ""
+                    : staff.nguoiDungId?.vaiTro || "",
                 phongBan: staff.phongBan || "",
                 chucVu: staff.chucVu || "",
                 luong: staff.luong || 0,
@@ -90,7 +91,7 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                     ? new Date(staff.ngayVaoLam).toISOString().split("T")[0]
                     : new Date().toISOString().split("T")[0],
                 trangThai: staff.trangThai || "",
-                bio: "",
+
             });
             setErrors({});
         }
@@ -99,9 +100,7 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
     const handleInputChange = (field: keyof FormValues, value: string | number) => {
         setFormData((prev) => ({
             ...prev,
-            [field]: typeof value === "string" && ["luong", "hieuSuat"].includes(field)
-                ? Number(value) || 0
-                : value,
+            [field]: (["luong", "hieuSuat"].includes(field) ? Number(value) || 0 : value) as any,
         }));
         if (errors[field]) {
             setErrors((prev) => ({ ...prev, [field]: "" }));
@@ -123,27 +122,34 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
         return true;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (validateForm()) {
+            if (!staff || !staff._id) {
+                alert("Không tìm thấy ID nhân viên để cập nhật");
+                return;
+            }
+            // Chỉ cập nhật các trường cho phép
             const updatedEmployee: Partial<Employee> = {
-                nguoiDungId: {
-                    ten: formData.ten,
-                    email: formData.email,
-                    soDienThoai: formData.soDienThoai,
-                    anhDaiDien: formData.anhDaiDien || undefined,
-                    vaiTro: formData.vaiTro || undefined,
-                } as UserType,
                 phongBan: formData.phongBan,
                 chucVu: formData.chucVu,
                 luong: formData.luong,
                 hieuSuat: formData.hieuSuat || 0,
                 ngayVaoLam: new Date(formData.ngayVaoLam),
                 trangThai: formData.trangThai,
+                nguoiDungId: staff.nguoiDungId // truyền đúng UserType (IUser)
             };
-            console.log("Updating employee:", updatedEmployee);
-            // TODO: Implement API call to update employee
-            onOpenChange(false);
-            onUpdateSuccess();
+            try {
+                await updateEmployee(staff._id, updatedEmployee as Employee);
+                toast.success("Đăng ký thành công!", {
+                    description: "Nhân viên đã được cập nhật vào hệ thống.",
+                    icon: <CheckCircle className='text-green-500' />,
+                    duration: 3000,
+                });
+                onOpenChange(false);
+                onUpdateSuccess();
+            } catch (error: any) {
+                toast.error(error.message || "Cập nhật nhân viên thất bại");
+            }
         }
     };
 
@@ -185,6 +191,7 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                                     // TODO: Implement avatar upload logic
                                     console.log("Avatar upload clicked");
                                 }}
+                                disabled
                             >
                                 <Upload className="h-4 w-4 mr-2" />
                                 Tải ảnh lên
@@ -208,11 +215,11 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                                             <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                                             <Input
                                                 id="ten"
-                                                value={formData.ten}
+                                                value={formData.ten ?? ""}
                                                 onChange={(e) => handleInputChange("ten", e.target.value)}
                                                 placeholder="Nguyễn Văn A"
-                                                className={`pl-10 h-11 border-gray-200 dark:border-gray-700 focus:border-green-500 dark:focus:border-green-400 ${errors.ten ? "border-red-500 focus:border-red-500" : ""
-                                                    }`}
+                                                className={`pl-10 h-11 border-gray-200 dark:border-gray-700 focus:border-green-500 dark:focus:border-green-400 ${errors.ten ? "border-red-500 focus:border-red-500" : ""}`}
+                                                disabled
                                             />
                                             {errors.ten && <p className="text-sm text-red-500 mt-1">{errors.ten}</p>}
                                         </div>
@@ -227,11 +234,11 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                                             <Input
                                                 id="email"
                                                 type="email"
-                                                value={formData.email}
+                                                value={formData.email ?? ""}
                                                 onChange={(e) => handleInputChange("email", e.target.value)}
                                                 placeholder="example@newlife.vn"
-                                                className={`pl-10 h-11 border-gray-200 dark:border-gray-700 focus:border-green-500 dark:focus:border-green-400 ${errors.email ? "border-red-500 focus:border-red-500" : ""
-                                                    }`}
+                                                className={`pl-10 h-11 border-gray-200 dark:border-gray-700 focus:border-green-500 dark:focus:border-green-400 ${errors.email ? "border-red-500 focus:border-red-500" : ""}`}
+                                                disabled
                                             />
                                             {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
                                         </div>
@@ -245,11 +252,11 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                                             <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                                             <Input
                                                 id="soDienThoai"
-                                                value={formData.soDienThoai}
+                                                value={formData.soDienThoai ?? ""}
                                                 onChange={(e) => handleInputChange("soDienThoai", e.target.value)}
                                                 placeholder="0987654321"
-                                                className={`pl-10 h-11 border-gray-200 dark:border-gray-700 focus:border-green-500 dark:focus:border-green-400 ${errors.soDienThoai ? "border-red-500 focus:border-red-500" : ""
-                                                    }`}
+                                                className={`pl-10 h-11 border-gray-200 dark:border-gray-700 focus:border-green-500 dark:focus:border-green-400 ${errors.soDienThoai ? "border-red-500 focus:border-red-500" : ""}`}
+                                                disabled
                                             />
                                             {errors.soDienThoai && <p className="text-sm text-red-500 mt-1">{errors.soDienThoai}</p>}
                                         </div>
@@ -264,15 +271,15 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                                             <Select
                                                 value={formData.vaiTro}
                                                 onValueChange={(value) => handleInputChange("vaiTro", value)}
+                                                disabled
                                             >
                                                 <SelectTrigger className="pl-10 h-11 border-gray-200 dark:border-gray-700 focus:border-green-500 dark:focus:border-green-400">
                                                     <SelectValue placeholder="Chọn vai trò" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    {/* Adjust values based on role enum/type if defined */}
-                                                    <SelectItem value="employee">Nhân viên</SelectItem>
-                                                    <SelectItem value="manager">Quản lý</SelectItem>
-                                                    <SelectItem value="admin">Quản trị viên</SelectItem>
+                                                    <SelectItem value="Nhan vien">Nhân viên</SelectItem>
+                                                    <SelectItem value="Quan ly">Quản lý</SelectItem>
+                                                    <SelectItem value="Admin">Quản trị viên</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
@@ -287,11 +294,10 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                                             <Input
                                                 id="luong"
                                                 type="number"
-                                                value={formData.luong || ""}
+                                                value={formData.luong === undefined || formData.luong === null ? "" : String(formData.luong)}
                                                 onChange={(e) => handleInputChange("luong", e.target.value)}
                                                 placeholder="10000000"
-                                                className={`pl-10 h-11 border-gray-200 dark:border-gray-700 focus:border-green-500 dark:focus:border-green-400 ${errors.luong ? "border-red-500 focus:border-red-500" : ""
-                                                    }`}
+                                                className={`pl-10 h-11 border-gray-200 dark:border-gray-700 focus:border-green-500 dark:focus:border-green-400 ${errors.luong ? "border-red-500 focus:border-red-500" : ""}`}
                                             />
                                             {errors.luong && <p className="text-sm text-red-500 mt-1">{errors.luong}</p>}
                                         </div>
@@ -306,33 +312,17 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                                             <Input
                                                 id="hieuSuat"
                                                 type="number"
-                                                value={formData.hieuSuat || ""}
+                                                value={formData.hieuSuat === undefined || formData.hieuSuat === null ? "" : String(formData.hieuSuat)}
                                                 onChange={(e) => handleInputChange("hieuSuat", e.target.value)}
                                                 placeholder="0"
-                                                className={`pl-10 h-11 border-gray-200 dark:border-gray-700 focus:border-green-500 dark:focus:border-green-400 ${errors.hieuSuat ? "border-red-500 focus:border-red-500" : ""
-                                                    }`}
+                                                className={`pl-10 h-11 border-gray-200 dark:border-gray-700 focus:border-green-500 dark:focus:border-green-400 ${errors.hieuSuat ? "border-red-500 focus:border-red-500" : ""}`}
                                             />
                                             {errors.hieuSuat && <p className="text-sm text-red-500 mt-1">{errors.hieuSuat}</p>}
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="bio" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        Giới thiệu
-                                    </Label>
-                                    <div className="relative">
-                                        <FileText className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                        <Textarea
-                                            id="bio"
-                                            value={formData.bio}
-                                            onChange={(e) => handleInputChange("bio", e.target.value)}
-                                            placeholder="Thông tin thêm về nhân viên..."
-                                            rows={3}
-                                            className="pl-10 border-gray-200 dark:border-gray-700 focus:border-green-500 dark:focus:border-green-400 resize-none"
-                                        />
-                                    </div>
-                                </div>
+
                             </CardContent>
                         </Card>
 
@@ -346,8 +336,8 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                             <CardContent className="space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <Label htmlFor="chucVu" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                            Chức vụ *
+                                        <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            Vị trí
                                         </Label>
                                         <div className="relative">
                                             <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 z-10" />
@@ -359,9 +349,9 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                                                     <SelectValue placeholder="Chọn chức vụ" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="manager">Quản lý</SelectItem>
-                                                    <SelectItem value="staff">Nhân viên</SelectItem>
-                                                    <SelectItem value="admin">Quản trị viên</SelectItem>
+                                                    <SelectItem value="Quan ly">Quản lý</SelectItem>
+                                                    <SelectItem value="Nhan vien">Nhân viên</SelectItem>
+                                                    <SelectItem value="Admin">Quản trị viên</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
@@ -381,10 +371,10 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                                                     <SelectValue placeholder="Chọn phòng ban" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="sales">Kinh doanh</SelectItem>
-                                                    <SelectItem value="support">Hỗ trợ khách hàng</SelectItem>
-                                                    <SelectItem value="tech">Kỹ thuật</SelectItem>
-                                                    <SelectItem value="admin">Quản trị</SelectItem>
+                                                    <SelectItem value="Sales">Kinh doanh</SelectItem>
+                                                    <SelectItem value="Support">Hỗ trợ khách hàng</SelectItem>
+                                                    <SelectItem value="Tech">Kỹ thuật</SelectItem>
+                                                    <SelectItem value="Admin">Quản trị</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
@@ -402,7 +392,7 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                                                 <SelectValue placeholder="Chọn trạng thái" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="active">Đang làm việc</SelectItem>
+                                                <SelectItem value="dang_hoat_dong">Đang làm việc</SelectItem>
                                                 <SelectItem value="onleave">Nghỉ phép</SelectItem>
                                                 <SelectItem value="inactive">Đã nghỉ việc</SelectItem>
                                             </SelectContent>
@@ -418,10 +408,9 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                                             <Input
                                                 id="ngayVaoLam"
                                                 type="date"
-                                                value={formData.ngayVaoLam}
+                                                value={formData.ngayVaoLam ?? ""}
                                                 onChange={(e) => handleInputChange("ngayVaoLam", e.target.value)}
-                                                className={`pl-10 h-11 border-gray-200 dark:border-gray-700 focus:border-green-500 dark:focus:border-green-400 ${errors.ngayVaoLam ? "border-red-500 focus:border-red-500" : ""
-                                                    }`}
+                                                className={`pl-10 h-11 border-gray-200 dark:border-gray-700 focus:border-green-500 dark:focus:border-green-400 ${errors.ngayVaoLam ? "border-red-500 focus:border-red-500" : ""}`}
                                             />
                                             {errors.ngayVaoLam && <p className="text-sm text-red-500 mt-1">{errors.ngayVaoLam}</p>}
                                         </div>

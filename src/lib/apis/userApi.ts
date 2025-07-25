@@ -2,7 +2,7 @@
 import baseApi from "./baseApi"
 
 import { IusersResponse } from "./responseApi"  
-import { User } from "./types"
+import { UserType } from "./types"
 
 export const getUsers = async () => {
     try {
@@ -16,14 +16,14 @@ export const getUsers = async () => {
 
 export const getUserById = async (id: string) => {
     try {
-        const {data} = await baseApi.get<{message: string, data: User}>(`/user/${id}`)
+        const {data} = await baseApi.get<{message: string, data: UserType}>(`/user/${id}`)
         const res = data.data
         return res
     } catch (error:any) {
         throw new Error(error.response.data.message)
     }
 }
-export const createUser  = async ( { ten, email, tenDangNhap, matKhau, soDienThoai, vaiTro, anhDaiDien, trangThai}: User) => {
+export const createUser  = async ( { ten, email, tenDangNhap, matKhau, soDienThoai, vaiTro, anhDaiDien, trangThai}: UserType) => {
     try {
 const newUser = { 
     ten,
@@ -35,13 +35,13 @@ const newUser = {
     anhDaiDien,
     trangThai
 }
-const res = await baseApi.post<{message: string, data: User}>(`/user`, newUser)
+const res = await baseApi.post<{message: string, data: UserType}>(`/user`, newUser)
 return res
     }catch(error : any )  { 
         throw new Error(error.response.data.message)
     }
  } 
-export const updateUser = async (id: string, { ten, email, tenDangNhap, matKhau, soDienThoai, vaiTro, anhDaiDien, trangThai}: User) => {
+export const updateUser = async (id: string, { ten, email, tenDangNhap, matKhau, soDienThoai, vaiTro, anhDaiDien, trangThai}: UserType) => {
     try {
         const updatedUser = { 
             ten,
@@ -53,7 +53,7 @@ export const updateUser = async (id: string, { ten, email, tenDangNhap, matKhau,
             anhDaiDien,
             trangThai
         }
-        const res = await baseApi.put<{message: string, data: User}>(`/user/${id}`, updatedUser)
+        const res = await baseApi.put<{message: string, data: UserType}>(`/user/${id}`, updatedUser)
         return res
     } catch (error: any) {
         throw new Error(error.response.data.message)

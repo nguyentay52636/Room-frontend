@@ -1037,7 +1037,7 @@ export default function ChatHome() {
                 `}>
                     {selectedChat ? (
                         <>
-                            <Header />
+
                             {/* Enhanced responsive chat header */}
                             <div className="flex items-center bg-white/80 backdrop-blur-sm border-b border-gray-200/50">
                                 {/* Mobile back button */}

@@ -1,5 +1,5 @@
 import baseApi from "./baseApi"
-import { IAPIResponseWrapperArray, IEmployeeResponse } from "./responseApi"
+import { IAPIResponseWrapper, IAPIResponseWrapperArray, IEmployeeResponse } from "./responseApi"
 import { Employee } from "./types"
 
 export const getEmployees = async ()=> { 
@@ -34,22 +34,39 @@ export const createEmployee = async ({phongBan, chucVu, luong, hieuSuat, ngayVao
         throw new Error(error.message)
     }
 }
-export const updateEmployee = async (id:string, {phongBan, chucVu, luong, hieuSuat, ngayVaoLam, trangThai}:Employee)=> { 
+export const updateEmployee = async (
+    id: string,
+    {
+      phongBan,
+      chucVu,
+      luong,
+      hieuSuat,
+      ngayVaoLam,
+      trangThai,
+      nguoiDungId,
+    }: Employee
+  ) => {
     const newEmployee = {
-        phongBan,
-        chucVu,
-        luong,
-        hieuSuat,
-        ngayVaoLam,
-        trangThai
-    }
+      phongBan,
+      chucVu,
+      luong,
+      hieuSuat,
+      ngayVaoLam,
+      trangThai,
+    
+      ...(nguoiDungId && { nguoiDungId: nguoiDungId }),
+    };
+  
     try {
-        const {data} = await baseApi.put<IAPIResponseWrapperArray<Employee>>(`/employee/${id}`, newEmployee)
-        return data 
-    } catch (error:any) {
-        throw new Error(error.message)
+      const { data } = await baseApi.patch<IAPIResponseWrapper<Employee>>(
+        `/employee/${id}`,
+        newEmployee
+      );
+      return data;
+    } catch (error: any) {
+      throw new Error(error.message);
     }
-}
+  };
 export const deleteEmployee = async (id:string)=> { 
     try {
         const {data} = await baseApi.delete<IAPIResponseWrapperArray<Employee>>(`/employee/${id}`)

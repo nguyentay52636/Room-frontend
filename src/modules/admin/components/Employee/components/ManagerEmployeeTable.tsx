@@ -11,16 +11,20 @@ import { Search } from 'lucide-react'
 import { Employee } from '@/lib/apis/types'
 import ActionTableEmployee from './ActionTableEmployee'
 import DialogViewDetailsEmployee from './Dialog/DialogViewDetailsEmployee'
+import DialogEditEmployee from './Dialog/DialogEditEmployee'
+import { toast } from 'sonner';
 
 export default function ManagerEmployeeTable({ filteredEmployees, searchQuery, setSearchQuery, getPositionIcon, getPositionLabel, getDepartmentLabel, getStatusBadge }: { filteredEmployees: any, searchQuery: any, setSearchQuery: any, getPositionIcon: any, getPositionLabel: any, getDepartmentLabel: any, getStatusBadge: any }) {
     const [selectedEmployee, setSelectEmployee] = useState<Employee | null>(null);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [employeeDelete, setEmployeeDelete] = useState<Employee | null>(null);
+    const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+
     const employees = filteredEmployees || []
     const handleViewDetails = (employee: Employee) => {
         setSelectEmployee(employee);
-        setIsUpdateDialogOpen(true);
+        setIsViewDialogOpen(true);
     }
     const handleDeleteClick = (employee: Employee) => {
         setEmployeeDelete(employee);
@@ -29,6 +33,10 @@ export default function ManagerEmployeeTable({ filteredEmployees, searchQuery, s
     const handleEdit = (employee: Employee) => {
         setSelectEmployee(employee)
         setIsUpdateDialogOpen(true);
+        toast.info("Bạn đang cập nhật thông tin nhân viên", {
+            description: `Nhân viên: ${employee.nguoiDungId?.ten || ""}`,
+            duration: 2500,
+        });
     };
 
     return (
@@ -162,10 +170,18 @@ export default function ManagerEmployeeTable({ filteredEmployees, searchQuery, s
                 </CardContent>
             </Card>
             <DialogViewDetailsEmployee
-                open={isUpdateDialogOpen}
-                onOpenChange={setIsUpdateDialogOpen}
+                open={isViewDialogOpen}
+                onOpenChange={setIsViewDialogOpen}
                 staff={selectedEmployee}
             />
+            {selectedEmployee && (
+                <DialogEditEmployee
+                    open={isUpdateDialogOpen}
+                    onOpenChange={setIsUpdateDialogOpen}
+                    staff={selectedEmployee}
+                    onUpdateSuccess={() => { }}
+                />
+            )}
 
         </>
     )

@@ -113,6 +113,7 @@ export interface Customer {
 }
 
 export interface Employee { 
+  _id?: string
   nguoiDungId?: UserType 
   phongBan : string 
   chucVu : string 
