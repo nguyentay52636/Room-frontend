@@ -5,7 +5,6 @@ import ChatHome from "./chat/ChatHome"
 export default function ChatPage() {
     return (
         <>
-            <Header />
             <ChatHome />
         </>
     )
