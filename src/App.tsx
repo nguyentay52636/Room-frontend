@@ -32,7 +32,7 @@ import Failure from './modules/auth/components/Facebook/Failure';
 import { Component, ReactNode } from 'react';
 import NotificationPopup from './Global/NotificationPopup';
 import { NotificationProvider } from './contexts/NotificationContext';
-import ChatPage from './modules/home/components/ChatPage';
+import ChatPage from './modules/home/components/chat/ChatPage';
 
 // Error Boundary Component
 interface ErrorBoundaryState {
