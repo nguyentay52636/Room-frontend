@@ -1,4 +1,4 @@
-// components/ActionTableEmployee.tsx
+// components/ActionTableCustomer.tsx
 import React from 'react'
 import {
     DropdownMenu,
@@ -9,21 +9,21 @@ import {
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import { MoreHorizontal, Edit, Trash2, Eye } from 'lucide-react'
+import { MoreHorizontal, Edit, MessageSquare, Trash2, Eye } from 'lucide-react'
 
-interface ActionTableEmployeeProps {
-    employee: any;
-    handleView: (employee: any) => void;
-    onEdit: (employee: any) => void;
-    handleDelete?: (employee: any) => void;
+interface ActionTableCustomerProps {
+    customer: any;
+    handleView: (customer: any) => void;
+    handleEdit: (customer: any) => void;
+    handleDelete?: (customer: any) => void;
 }
 
-export default function ActionTableEmployee({
-    employee,
+export default function ActionTableCustomer({
+    customer,
     handleView,
-    onEdit,
+    handleEdit,
     handleDelete
-}: ActionTableEmployeeProps) {
+}: ActionTableCustomerProps) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -34,21 +34,25 @@ export default function ActionTableEmployee({
             <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Hành động</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => handleView(employee)}>
+                <DropdownMenuItem onClick={() => handleView(customer)}>
                     <Eye className="h-4 w-4 mr-2" />
                     Xem chi tiết
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onEdit(employee)}>
+                <DropdownMenuItem onClick={() => handleEdit(customer)}>
                     <Edit className="h-4 w-4 mr-2" />
                     Chỉnh sửa
                 </DropdownMenuItem>
+                <DropdownMenuItem>
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Nhắn tin
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                    onClick={() => handleDelete?.(employee)}
+                    onClick={() => handleDelete?.(customer)}
                     className="text-red-600"
                 >
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Xóa nhân viên
+                    Xóa khách hàng
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

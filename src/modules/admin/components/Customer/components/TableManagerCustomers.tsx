@@ -2,9 +2,9 @@ import { Table } from '@/components/ui/table'
 import React from 'react'
 import { TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Mail, Phone, MapPin, Home, Heart, Star, Clock, MoreHorizontal, Edit, MessageSquare, Trash2, Eye } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Mail, Phone, MapPin, Home, Heart, Star, Clock } from 'lucide-react'
+
+import ActionTableCustomer from './ActionTableCustomer'
 
 export default function TableManagerCustomers({ filteredCustomers, getTypeBadge, getStatusBadge, formatCurrency, handleViewCustomer, handleEditCustomer }: { filteredCustomers: any[], getTypeBadge: (type: string) => React.ReactNode, getStatusBadge: (status: string) => React.ReactNode, formatCurrency: (amount: number) => string, handleViewCustomer: (customer: any) => void, handleEditCustomer: (customer: any) => void }) {
     return (
@@ -103,34 +103,12 @@ export default function TableManagerCustomers({ filteredCustomers, getTypeBadge,
                                         </div>
                                     </TableCell>
                                     <TableCell className="min-w-[100px] text-right">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" className="h-8 w-8 p-0">
-                                                    <MoreHorizontal className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-                                                <DropdownMenuSeparator />
-                                                <DropdownMenuItem onClick={() => handleViewCustomer(customer)}>
-                                                    <Eye className="h-4 w-4 mr-2" />
-                                                    Xem chi tiết
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem onClick={() => handleEditCustomer(customer)}>
-                                                    <Edit className="h-4 w-4 mr-2" />
-                                                    Chỉnh sửa
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem>
-                                                    <MessageSquare className="h-4 w-4 mr-2" />
-                                                    Nhắn tin
-                                                </DropdownMenuItem>
-                                                <DropdownMenuSeparator />
-                                                <DropdownMenuItem className="text-red-600">
-                                                    <Trash2 className="h-4 w-4 mr-2" />
-                                                    Xóa khách hàng
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
+                                        <ActionTableCustomer
+                                            customer={customer}
+                                            handleView={handleViewCustomer}
+                                            handleEdit={handleEditCustomer}
+                                        />
+
                                     </TableCell>
                                 </TableRow>
                             );

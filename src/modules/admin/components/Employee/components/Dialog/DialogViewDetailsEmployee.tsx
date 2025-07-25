@@ -78,9 +78,9 @@ export default function DialogViewDetailsEmployee({ open, onOpenChange, staff }:
 
     const getPositionLabel = (position: string) => {
         switch (position) {
-            case "manager":
+            case "admin":
                 return "Quản lý"
-            case "staff":
+            case "nhan_vien":
                 return "Nhân viên"
             case "admin":
                 return "Quản trị viên"
@@ -106,7 +106,7 @@ export default function DialogViewDetailsEmployee({ open, onOpenChange, staff }:
 
     const getStatusBadge = (status: string) => {
         switch (status) {
-            case "active":
+            case "dang_hoat_dong":
                 return (
                     <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white border-0 shadow-sm">
                         <UserCheck className="h-3 w-3 mr-1" />

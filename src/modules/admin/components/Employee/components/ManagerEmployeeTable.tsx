@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 import { Employee } from '@/lib/apis/types'
 import ActionTableEmployee from './ActionTableEmployee'
+import DialogViewDetailsEmployee from './Dialog/DialogViewDetailsEmployee'
 
 export default function ManagerEmployeeTable({ filteredEmployees, searchQuery, setSearchQuery, getPositionIcon, getPositionLabel, getDepartmentLabel, getStatusBadge }: { filteredEmployees: any, searchQuery: any, setSearchQuery: any, getPositionIcon: any, getPositionLabel: any, getDepartmentLabel: any, getStatusBadge: any }) {
     const [selectedEmployee, setSelectEmployee] = useState<Employee | null>(null);
@@ -76,7 +77,8 @@ export default function ManagerEmployeeTable({ filteredEmployees, searchQuery, s
                                         <TableHead className="font-semibold bg-gray-50 dark:bg-gray-800/50">Trạng thái</TableHead>
                                         <TableHead className="font-semibold bg-gray-50 dark:bg-gray-800/50">Hiệu suất</TableHead>
                                         <TableHead className="font-semibold bg-gray-50 dark:bg-gray-800/50">Lương (VNĐ)</TableHead>
-                                        <TableHead className="text-right font-semibold bg-gray-50 dark:bg-gray-800/50">Thao tác</TableHead>
+                                        <TableHead className="min-w-[100px] text-right">Hành động</TableHead>
+
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -144,11 +146,12 @@ export default function ManagerEmployeeTable({ filteredEmployees, searchQuery, s
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <ActionTableEmployee
-                                                    employee={employees}
+                                                    employee={person}
                                                     onEdit={handleEdit}
-                                                    onViewDetail={handleViewDetails}
-                                                    onDelete={handleDeleteClick}
+                                                    handleView={handleViewDetails}
+                                                    handleDelete={handleDeleteClick}
                                                 />
+
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -158,6 +161,12 @@ export default function ManagerEmployeeTable({ filteredEmployees, searchQuery, s
                     </div>
                 </CardContent>
             </Card>
+            <DialogViewDetailsEmployee
+                open={isUpdateDialogOpen}
+                onOpenChange={setIsUpdateDialogOpen}
+                staff={selectedEmployee}
+            />
+
         </>
     )
 }
