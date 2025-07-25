@@ -13,6 +13,8 @@ import ActionTableEmployee from './ActionTableEmployee'
 import DialogViewDetailsEmployee from './Dialog/DialogViewDetailsEmployee'
 import DialogEditEmployee from './Dialog/DialogEditEmployee'
 import { toast } from 'sonner';
+import { deleteEmployee } from '@/lib/apis/employeeApi'
+import DialogConfirmDeleteEmployee from './Dialog/DialogConfirmDeleteEmployee'
 
 export default function ManagerEmployeeTable({ filteredEmployees, searchQuery, setSearchQuery, getPositionIcon, getPositionLabel, getDepartmentLabel, getStatusBadge }: { filteredEmployees: any, searchQuery: any, setSearchQuery: any, getPositionIcon: any, getPositionLabel: any, getDepartmentLabel: any, getStatusBadge: any }) {
     const [selectedEmployee, setSelectEmployee] = useState<Employee | null>(null);
@@ -20,6 +22,7 @@ export default function ManagerEmployeeTable({ filteredEmployees, searchQuery, s
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [employeeDelete, setEmployeeDelete] = useState<Employee | null>(null);
     const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const employees = filteredEmployees || []
     const handleViewDetails = (employee: Employee) => {
@@ -33,12 +36,32 @@ export default function ManagerEmployeeTable({ filteredEmployees, searchQuery, s
     const handleEdit = (employee: Employee) => {
         setSelectEmployee(employee)
         setIsUpdateDialogOpen(true);
-        toast.info("Bạn đang cập nhật thông tin nhân viên", {
-            description: `Nhân viên: ${employee.nguoiDungId?.ten || ""}`,
-            duration: 2500,
-        });
-    };
 
+
+    };
+    const handleConfirmDelete = async () => {
+        if (!employeeDelete) return
+        try {
+            await deleteEmployee(employeeDelete._id as string)
+            toast.success("Xóa nhân viên thành công!", {
+                description: `Nhân viên: ${employeeDelete.nguoiDungId?.ten || ""}`,
+                duration: 3000,
+                position: 'top-center',
+                style: { background: '#4CAF50', color: 'white', border: 'none' },
+            });
+            setIsDeleteDialogOpen(false);
+            setEmployeeDelete(null);
+        } catch (error: any) {
+            toast.error('Lỗi khi xóa sản phẩm ❌', {
+                description: 'Đã xảy ra lỗi. Vui lòng thử lại.',
+                duration: 3000,
+                position: 'top-center',
+                style: { background: '#F44336', color: 'white', border: 'none' },
+            });
+        } finally {
+            setIsDeleting(false);
+        }
+    }
     return (
         <>
             <Card className="shadow-xl border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
@@ -182,7 +205,13 @@ export default function ManagerEmployeeTable({ filteredEmployees, searchQuery, s
                     onUpdateSuccess={() => { }}
                 />
             )}
-
+            <DialogConfirmDeleteEmployee
+                isOpen={isDeleteDialogOpen}
+                onOpenChange={setIsDeleteDialogOpen}
+                onConfirm={handleConfirmDelete}
+                isLoading={isDeleting}
+                productName={employeeDelete?.nguoiDungId?.ten}
+            />
         </>
     )
 }
