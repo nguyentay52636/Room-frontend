@@ -32,7 +32,7 @@ import Failure from './modules/auth/components/Facebook/Failure';
 import { Component, ReactNode } from 'react';
 import NotificationPopup from './Global/NotificationPopup';
 import { NotificationProvider } from './contexts/NotificationContext';
-
+import ChatPage from './modules/home/components/ChatPage';
 
 // Error Boundary Component
 interface ErrorBoundaryState {
@@ -95,7 +95,7 @@ function App() {
     },
     {
       path: 'chat',
-      element: <ChatHome />
+      element: <ChatPage />
     },
     {
       path: '/',
