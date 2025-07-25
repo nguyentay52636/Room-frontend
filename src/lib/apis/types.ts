@@ -28,7 +28,7 @@ export interface IUser {
   updatedAt?: string
 }
 
-export type User = IUser
+export type UserType = IUser
 
 export interface Overlay {
   category: string
@@ -64,7 +64,7 @@ export interface BatDongSan {
   phongTam: number
   choDauXe: number
   trangThai: string
-  nguoiDungId: User
+  nguoiDungId: UserType
   badge: string
   subtitle: string
   features: features[]
@@ -78,7 +78,7 @@ export interface BatDongSan {
 
 export interface Review {
   _id: string
-  nguoiDungId: User
+  nguoiDungId: UserType
   batDongSanId: BatDongSan | null
   soSao: number
   binhLuan: string
@@ -95,7 +95,7 @@ text: string
 }
 export interface Customer { 
   _id?: string
-  nguoiDungId: User
+  nguoiDungId: UserType
   diaChi: string
   loai: string
   tongChiTieu: number
@@ -113,7 +113,7 @@ export interface Customer {
 }
 
 export interface Employee { 
-  nguoiDungId?: User 
+  nguoiDungId?: UserType 
   phongBan : string 
   chucVu : string 
   luong : number 
@@ -145,8 +145,8 @@ export interface Room {
   _id?: string
   tenPhong: string
   loaiPhong: string
-  thanhVien: User[]
-  nguoiTao: User
+  thanhVien: UserType[]
+  nguoiTao: UserType
   tinNhan?: Message[]
   anhDaiDien: string
   createdAt?: string
