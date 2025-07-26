@@ -21,16 +21,31 @@ import { z } from "zod";
 import { Employee, UserType } from "@/lib/apis/types";
 import { updateEmployee } from "@/lib/apis/employeeApi";
 import { toast } from 'sonner';
+interface DialogEditEmployeeProps {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    staff: Employee;
+    onUpdateSuccess: () => void;
+}
 
 const formSchema = z.object({
+    // Thông tin user (IUser)
+    _id: z.string().optional(),
     ten: z.string().min(1, "Họ và tên là bắt buộc"),
     email: z.string().min(1, "Email là bắt buộc").email("Email không hợp lệ"),
+    tenDangNhap: z.string().min(1, "Tên đăng nhập là bắt buộc"),
+    matKhau: z.string().optional(),
     soDienThoai: z
         .string()
         .min(1, "Số điện thoại là bắt buộc")
         .regex(/^[0-9]{10,11}$/, "Số điện thoại phải có 10 hoặc 11 chữ số"),
-    anhDaiDien: z.string().optional(),
     vaiTro: z.string().optional(),
+    anhDaiDien: z.string().optional(),
+    trangThai: z.string().optional(),
+    createdAt: z.string().optional(),
+    updatedAt: z.string().optional(),
+
+    // Thông tin employee
     phongBan: z.string().min(1, "Phòng ban là bắt buộc"),
     chucVu: z.string().min(1, "Chức vụ là bắt buộc"),
     luong: z
@@ -44,45 +59,55 @@ const formSchema = z.object({
         .string()
         .min(1, "Ngày vào làm là bắt buộc")
         .refine((val) => !isNaN(Date.parse(val)), "Ngày vào làm phải là định dạng ngày hợp lệ"),
-    trangThai: z.string().min(1, "Trạng thái là bắt buộc"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface DialogEditEmployeeProps {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    staff: Employee;
-    onUpdateSuccess: () => void;
-}
+
 
 export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdateSuccess }: DialogEditEmployeeProps) {
     const [formData, setFormData] = useState<FormValues>({
+        // Thông tin user
+        _id: "",
         ten: "",
         email: "",
+        tenDangNhap: "",
+        matKhau: "",
         soDienThoai: "",
-        anhDaiDien: "",
         vaiTro: "",
+        anhDaiDien: "",
+        trangThai: "",
+        createdAt: "",
+        updatedAt: "",
+
+        // Thông tin employee
         phongBan: "",
         chucVu: "",
         luong: 0,
         hieuSuat: 0,
         ngayVaoLam: new Date().toISOString().split("T")[0],
-        trangThai: "",
-
     });
     const [errors, setErrors] = useState<Partial<Record<keyof FormValues, string>>>({});
 
     useEffect(() => {
         if (staff) {
             setFormData({
+                // Thông tin user từ nguoiDungId
+                _id: staff.nguoiDungId?._id || "",
                 ten: staff.nguoiDungId?.ten || "",
                 email: staff.nguoiDungId?.email || "",
+                tenDangNhap: staff.nguoiDungId?.tenDangNhap || "",
+                matKhau: staff.nguoiDungId?.matKhau || "",
                 soDienThoai: staff.nguoiDungId?.soDienThoai || "",
-                anhDaiDien: staff.nguoiDungId?.anhDaiDien || "",
                 vaiTro: typeof staff.nguoiDungId?.vaiTro === "object"
                     ? (staff.nguoiDungId?.vaiTro as any)?.ten || ""
                     : staff.nguoiDungId?.vaiTro || "",
+                anhDaiDien: staff.nguoiDungId?.anhDaiDien || "",
+                trangThai: staff.nguoiDungId?.trangThai || "",
+                createdAt: staff.nguoiDungId?.createdAt || "",
+                updatedAt: staff.nguoiDungId?.updatedAt || "",
+
+                // Thông tin employee
                 phongBan: staff.phongBan || "",
                 chucVu: staff.chucVu || "",
                 luong: staff.luong || 0,
@@ -90,8 +115,6 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                 ngayVaoLam: staff.ngayVaoLam
                     ? new Date(staff.ngayVaoLam).toISOString().split("T")[0]
                     : new Date().toISOString().split("T")[0],
-                trangThai: staff.trangThai || "",
-
             });
             setErrors({});
         }
@@ -263,6 +286,24 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                                     </div>
 
                                     <div className="space-y-2">
+                                        <Label htmlFor="tenDangNhap" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            Tên đăng nhập *
+                                        </Label>
+                                        <div className="relative">
+                                            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                            <Input
+                                                id="tenDangNhap"
+                                                value={formData.tenDangNhap ?? ""}
+                                                onChange={(e) => handleInputChange("tenDangNhap", e.target.value)}
+                                                placeholder="nguyenvana"
+                                                className={`pl-10 h-11 border-gray-200 dark:border-gray-700 focus:border-green-500 dark:focus:border-green-400 ${errors.tenDangNhap ? "border-red-500 focus:border-red-500" : ""}`}
+                                                disabled
+                                            />
+                                            {errors.tenDangNhap && <p className="text-sm text-red-500 mt-1">{errors.tenDangNhap}</p>}
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
                                         <Label htmlFor="vaiTro" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                             Vai trò
                                         </Label>
@@ -321,8 +362,6 @@ export default function DialogEditEmployee({ open, onOpenChange, staff, onUpdate
                                         </div>
                                     </div>
                                 </div>
-
-
                             </CardContent>
                         </Card>
 

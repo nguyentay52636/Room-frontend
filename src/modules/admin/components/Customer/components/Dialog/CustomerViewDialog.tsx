@@ -23,7 +23,6 @@ interface CustomerViewDialogProps {
 }
 const initialFormData: Customer = {
     nguoiDungId: {
-        _id: "",
         ten: "",
         email: "",
         tenDangNhap: "",
@@ -52,22 +51,32 @@ export function CustomerViewDialog({ customer, open, onOpenChange }: CustomerVie
     useEffect(() => {
         if (customer) {
             setFormData(customer)
-            setFormData({
-                ...formData,
-                nguoiDungId: customer.nguoiDungId,
-                diaChi: customer.diaChi,
-                loai: customer.loai,
-                tongChiTieu: customer.tongChiTieu,
-                soBdsDangThue: customer.soBdsDangThue,
-                soBdsYeuThich: customer.soBdsYeuThich,
-                soDanhGia: customer.soDanhGia,
-                diemTrungBinh: customer.diemTrungBinh,
-                bdsDangThueHienTai: customer.bdsDangThueHienTai,
-                ngayKetThucHopDong: customer.ngayKetThucHopDong,
-                lanHoatDongGanNhat: customer.lanHoatDongGanNhat,
-            })
         }
     }, [customer])
+
+
+    const {
+        nguoiDungId = {} as Partial<Customer['nguoiDungId']>,
+        diaChi = '',
+        loai = '',
+        tongChiTieu = 0,
+        soBdsDangThue = 0,
+        soBdsYeuThich = 0,
+        soDanhGia = 0,
+        diemTrungBinh = 0,
+        bdsDangThueHienTai = '',
+        ngayKetThucHopDong = '',
+        lanHoatDongGanNhat = '',
+        ghiChu = '',
+        updatedAt = '',
+    } = formData || {};
+    const {
+        ten = '',
+        email = '',
+        soDienThoai = '',
+        anhDaiDien = '',
+        trangThai = '',
+    } = nguoiDungId || {} as Partial<Customer['nguoiDungId']>;
 
     const getStatusBadge = (status: string) => {
         switch (status) {
@@ -138,13 +147,13 @@ export function CustomerViewDialog({ customer, open, onOpenChange }: CustomerVie
                             <CardContent className="space-y-4">
                                 <div className="flex items-center space-x-4 mb-6">
                                     <Avatar className="h-20 w-20">
-                                        <AvatarImage src={customer?.avatar || "/placeholder.svg?height=80&width=80"} />
-                                        <AvatarFallback className="text-lg">{customer.name?.charAt(0)}</AvatarFallback>
+                                        <AvatarImage src={anhDaiDien || "/placeholder.svg?height=80&width=80"} />
+                                        <AvatarFallback className="text-lg">{ten?.charAt(0)}</AvatarFallback>
                                     </Avatar>
                                     <div className="space-y-2">
                                         <div className="flex items-center space-x-2">
-                                            {getTypeBadge(customer.type)}
-                                            {getStatusBadge(customer.status)}
+                                            {getTypeBadge(loai)}
+                                            {getStatusBadge(trangThai)}
                                         </div>
                                     </div>
                                 </div>
@@ -152,36 +161,36 @@ export function CustomerViewDialog({ customer, open, onOpenChange }: CustomerVie
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium">Họ và tên</label>
-                                        <p className="text-sm text-muted-foreground">{customer.name}</p>
+                                        <p className="text-sm text-muted-foreground">{ten}</p>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium">Email</label>
-                                        <p className="text-sm text-muted-foreground">{customer.email}</p>
+                                        <p className="text-sm text-muted-foreground">{email}</p>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium">Số điện thoại</label>
-                                        <p className="text-sm text-muted-foreground">{customer.phone}</p>
+                                        <p className="text-sm text-muted-foreground">{soDienThoai}</p>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium">Loại khách hàng</label>
-                                        <div>{getTypeBadge(customer.type)}</div>
+                                        <div>{getTypeBadge(loai)}</div>
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium">Địa chỉ</label>
-                                    <p className="text-sm text-muted-foreground">{customer.address}</p>
+                                    <p className="text-sm text-muted-foreground">{diaChi}</p>
                                 </div>
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium">Trạng thái</label>
-                                    <div>{getStatusBadge(customer.status)}</div>
+                                    <div>{getStatusBadge(trangThai)}</div>
                                 </div>
 
-                                {customer.notes && (
+                                {ghiChu && (
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium">Ghi chú</label>
-                                        <p className="text-sm text-muted-foreground">{customer.notes}</p>
+                                        <p className="text-sm text-muted-foreground">{ghiChu}</p>
                                     </div>
                                 )}
                             </CardContent>
@@ -197,17 +206,17 @@ export function CustomerViewDialog({ customer, open, onOpenChange }: CustomerVie
                             <CardContent>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div className="text-center">
-                                        <p className="text-2xl font-bold text-green-600">{formatCurrency(customer.totalSpent)}</p>
+                                        <p className="text-2xl font-bold text-green-600">{formatCurrency(tongChiTieu)}</p>
                                         <p className="text-sm text-muted-foreground">Tổng chi tiêu</p>
                                     </div>
                                     <div className="text-center">
-                                        <p className="text-2xl font-bold">{customer.propertiesRented}</p>
+                                        <p className="text-2xl font-bold">{soBdsDangThue}</p>
                                         <p className="text-sm text-muted-foreground">Bất động sản đã thuê</p>
                                     </div>
                                     <div className="text-center">
                                         <div className="flex items-center justify-center space-x-1">
                                             <Star className="h-5 w-5 text-yellow-500" />
-                                            <p className="text-2xl font-bold">{customer.averageRating?.toFixed(1)}</p>
+                                            <p className="text-2xl font-bold">{diemTrungBinh?.toFixed(1)}</p>
                                         </div>
                                         <p className="text-sm text-muted-foreground">Đánh giá trung bình</p>
                                     </div>
@@ -226,11 +235,11 @@ export function CustomerViewDialog({ customer, open, onOpenChange }: CustomerVie
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-4">
-                                    {customer.currentProperty && (
+                                    {bdsDangThueHienTai && (
                                         <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
                                             <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Đang thuê hiện tại</h4>
-                                            <p className="text-blue-800 dark:text-blue-200">{customer.currentProperty}</p>
-                                            <p className="text-sm text-blue-600 dark:text-blue-300">Hợp đồng đến: {customer.contractEnd}</p>
+                                            <p className="text-blue-800 dark:text-blue-200">{bdsDangThueHienTai}</p>
+                                            <p className="text-sm text-blue-600 dark:text-blue-300">Hợp đồng đến: {ngayKetThucHopDong}</p>
                                         </div>
                                     )}
 
@@ -238,38 +247,20 @@ export function CustomerViewDialog({ customer, open, onOpenChange }: CustomerVie
                                         <div className="flex items-center space-x-3">
                                             <Home className="h-8 w-8 text-blue-500" />
                                             <div>
-                                                <p className="text-2xl font-bold">{customer.propertiesRented}</p>
+                                                <p className="text-2xl font-bold">{soBdsDangThue}</p>
                                                 <p className="text-sm text-muted-foreground">Bất động sản đã thuê</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center space-x-3">
                                             <Heart className="h-8 w-8 text-red-500" />
                                             <div>
-                                                <p className="text-2xl font-bold">{customer.favoriteProperties}</p>
+                                                <p className="text-2xl font-bold">{soBdsYeuThich}</p>
                                                 <p className="text-sm text-muted-foreground">Bất động sản yêu thích</p>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <h4 className="font-medium">Lịch sử thuê</h4>
-                                        <div className="space-y-2">
-                                            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                                <div>
-                                                    <p className="font-medium">Golden Ridge Luxury</p>
-                                                    <p className="text-sm text-muted-foreground">01/2024 - Hiện tại</p>
-                                                </div>
-                                                <Badge className="bg-green-100 text-green-800">Đang thuê</Badge>
-                                            </div>
-                                            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                                <div>
-                                                    <p className="font-medium">Riverstone Villa</p>
-                                                    <p className="text-sm text-muted-foreground">06/2023 - 12/2023</p>
-                                                </div>
-                                                <Badge variant="outline">Đã kết thúc</Badge>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {/* Lịch sử thuê: Có thể cần map từ một mảng nếu có */}
                                 </div>
                             </CardContent>
                         </Card>
@@ -290,59 +281,21 @@ export function CustomerViewDialog({ customer, open, onOpenChange }: CustomerVie
                                             <CardContent className="p-4">
                                                 <div className="flex items-center space-x-2">
                                                     <Star className="h-5 w-5 text-yellow-500" />
-                                                    <div className="text-2xl font-bold">{customer.averageRating?.toFixed(1)}</div>
+                                                    <div className="text-2xl font-bold">{diemTrungBinh?.toFixed(1)}</div>
                                                 </div>
                                                 <p className="text-sm text-muted-foreground">Đánh giá trung bình</p>
-                                                <Progress value={customer.averageRating * 20} className="mt-2" />
+                                                <Progress value={diemTrungBinh * 20} className="mt-2" />
                                             </CardContent>
                                         </Card>
                                         <Card>
                                             <CardContent className="p-4">
-                                                <div className="text-2xl font-bold">{customer.reviews}</div>
+                                                <div className="text-2xl font-bold">{soDanhGia}</div>
                                                 <p className="text-sm text-muted-foreground">Tổng số đánh giá</p>
                                             </CardContent>
                                         </Card>
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <h4 className="font-medium">Đánh giá gần đây</h4>
-                                        <div className="space-y-3">
-                                            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                                <div className="flex items-center space-x-2 mb-2">
-                                                    <div className="flex">
-                                                        {[1, 2, 3, 4, 5].map((star) => (
-                                                            <Star
-                                                                key={star}
-                                                                className={`h-4 w-4 ${star <= 5 ? "text-yellow-500 fill-current" : "text-gray-300"}`}
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                    <span className="text-sm text-muted-foreground">Golden Ridge Luxury</span>
-                                                </div>
-                                                <p className="text-sm">
-                                                    "Bất động sản rất đẹp, dịch vụ tuyệt vời. Tôi rất hài lòng với trải nghiệm thuê ở đây."
-                                                </p>
-                                                <p className="text-xs text-muted-foreground mt-2">15/01/2024</p>
-                                            </div>
-                                            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                                <div className="flex items-center space-x-2 mb-2">
-                                                    <div className="flex">
-                                                        {[1, 2, 3, 4, 5].map((star) => (
-                                                            <Star
-                                                                key={star}
-                                                                className={`h-4 w-4 ${star <= 4 ? "text-yellow-500 fill-current" : "text-gray-300"}`}
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                    <span className="text-sm text-muted-foreground">Riverstone Villa</span>
-                                                </div>
-                                                <p className="text-sm">
-                                                    "Vị trí thuận tiện, không gian thoáng mát. Chỉ có điều wifi hơi chậm."
-                                                </p>
-                                                <p className="text-xs text-muted-foreground mt-2">20/12/2023</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {/* Đánh giá gần đây: Có thể cần map từ một mảng nếu có */}
                                 </div>
                             </CardContent>
                         </Card>
@@ -365,7 +318,7 @@ export function CustomerViewDialog({ customer, open, onOpenChange }: CustomerVie
                                                     <Calendar className="h-4 w-4 text-muted-foreground" />
                                                     <div>
                                                         <p className="text-sm font-medium">Tham gia</p>
-                                                        <p className="text-sm text-muted-foreground">{customer.joinDate}</p>
+                                                        <p className="text-sm text-muted-foreground">{updatedAt}</p>
                                                     </div>
                                                 </div>
                                             </CardContent>
@@ -376,49 +329,15 @@ export function CustomerViewDialog({ customer, open, onOpenChange }: CustomerVie
                                                     <Clock className="h-4 w-4 text-muted-foreground" />
                                                     <div>
                                                         <p className="text-sm font-medium">Hoạt động cuối</p>
-                                                        <p className="text-sm text-muted-foreground">{customer.lastActivity}</p>
+                                                        <p className="text-sm text-muted-foreground">{lanHoatDongGanNhat}</p>
                                                     </div>
                                                 </div>
                                             </CardContent>
                                         </Card>
-                                        <Card>
-                                            <CardContent className="p-4">
-                                                <div className="flex items-center space-x-2">
-                                                    <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                                                    <div>
-                                                        <p className="text-sm font-medium">Tin nhắn</p>
-                                                        <p className="text-sm text-muted-foreground">24 tin nhắn</p>
-                                                    </div>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
+                                        {/* Tin nhắn: Nếu có dữ liệu */}
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <h4 className="font-medium">Lịch sử hoạt động</h4>
-                                        <div className="space-y-2">
-                                            <div className="flex items-center space-x-3 text-sm">
-                                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                                <span className="text-muted-foreground">2 giờ trước</span>
-                                                <span>Xem chi tiết bất động sản Ocean Breeze Condo</span>
-                                            </div>
-                                            <div className="flex items-center space-x-3 text-sm">
-                                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                                <span className="text-muted-foreground">1 ngày trước</span>
-                                                <span>Thêm bất động sản vào danh sách yêu thích</span>
-                                            </div>
-                                            <div className="flex items-center space-x-3 text-sm">
-                                                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                                                <span className="text-muted-foreground">3 ngày trước</span>
-                                                <span>Đánh giá Golden Ridge Luxury - 5 sao</span>
-                                            </div>
-                                            <div className="flex items-center space-x-3 text-sm">
-                                                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                                                <span className="text-muted-foreground">1 tuần trước</span>
-                                                <span>Gia hạn hợp đồng thuê</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {/* Lịch sử hoạt động: Có thể cần map từ một mảng nếu có */}
                                 </div>
                             </CardContent>
                         </Card>

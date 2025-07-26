@@ -15,7 +15,7 @@ export interface IRefreshTokenDataType {
   refreshToken: string;
 }
 export interface IUser {
-  _id: string
+  _id?: string
   ten: string
   email: string
   tenDangNhap: string

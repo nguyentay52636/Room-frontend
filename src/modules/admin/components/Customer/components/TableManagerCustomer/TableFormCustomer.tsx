@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Mail, Phone, MapPin, Home, Heart, Star, Clock } from 'lucide-react'
 import { getStatusBadge, getTypeBadge } from '../hooks/ActionCustomerHooks'
 import { formatCurrency } from '../Dialog/utils/customerUtils'
-import ActionTableCustomer from '../ActionTableCustomer'
+import ActionTableCustomer from './ActionTableCustomer'
 import { Customer } from '@/lib/apis/types';
 
 export default function TableFormCustomer({ filteredCustomers, handleViewCustomer, handleEditCustomer, handleDeleteCustomer }: { filteredCustomers: Customer[], handleViewCustomer: (customer: Customer) => void, handleEditCustomer: (customer: Customer) => void, handleDeleteCustomer: (customer: Customer) => void }) {
@@ -110,6 +110,7 @@ export default function TableFormCustomer({ filteredCustomers, handleViewCustome
                                             handleView={handleViewCustomer}
                                             handleEdit={handleEditCustomer}
                                             handleDelete={handleDeleteCustomer}
+
                                         />
 
                                     </TableCell>

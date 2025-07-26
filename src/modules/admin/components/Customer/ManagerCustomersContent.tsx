@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react"
 import HeaderManagerCustomers from "./components/HeaderManagerCustomers"
-import TableManagerCustomers from "./components/TableManagerCustomers"
+import TableManagerCustomers from "./components/TableManagerCustomer/TableManagerCustomers"
 
 
 export default function ManagerCustomersContent() {

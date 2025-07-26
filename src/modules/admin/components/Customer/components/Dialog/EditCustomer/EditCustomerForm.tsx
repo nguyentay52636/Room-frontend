@@ -16,6 +16,51 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { User } from "lucide-react"
+import { z } from "zod"
+
+
+export const formSchema = z.object({
+    nguoiDungId: z.object({
+        ten: z.string().min(1, "Họ và tên là bắt buộc"),
+        email: z.string().email("Email không hợp lệ").min(1, "Email là bắt buộc"),
+        tenDangNhap: z.string().min(1, "Tên đăng nhập là bắt buộc"),
+        matKhau: z.string().min(6, "Mật khẩu phải ít nhất 6 ký tự"),
+        soDienThoai: z
+            .string()
+            .min(1, "Số điện thoại là bắt buộc")
+            .regex(/^[0-9]{10,11}$/, "Số điện thoại phải có 10 hoặc 11 chữ số"),
+        vaiTro: z.string().min(1, "Vai trò là bắt buộc"),
+        anhDaiDien: z.string().optional(),
+        trangThai: z.string().optional(),
+    }),
+
+    diaChi: z.string().min(1, "Địa chỉ là bắt buộc"),
+    loai: z.string().min(1, "Loại khách hàng là bắt buộc"),
+    tongChiTieu: z
+        .number({ invalid_type_error: "Tổng chi tiêu phải là một số" })
+        .nonnegative("Tổng chi tiêu không được âm"),
+    soBdsDangThue: z
+        .number({ invalid_type_error: "Số BĐS đang thuê phải là một số" })
+        .nonnegative("Không được âm"),
+    soBdsYeuThich: z
+        .number({ invalid_type_error: "Số BĐS yêu thích phải là một số" })
+        .nonnegative("Không được âm"),
+    soDanhGia: z
+        .number({ invalid_type_error: "Số đánh giá phải là một số" })
+        .nonnegative("Không được âm"),
+    diemTrungBinh: z
+        .number({ invalid_type_error: "Điểm trung bình phải là một số" })
+        .min(0)
+        .max(5, "Điểm trung bình không vượt quá 5"),
+    bdsDangThueHienTai: z.string().min(1, "BĐS đang thuê hiện tại là bắt buộc"),
+    ngayKetThucHopDong: z
+        .string()
+        .refine((val) => !isNaN(Date.parse(val)), "Ngày kết thúc hợp đồng không hợp lệ"),
+    lanHoatDongGanNhat: z
+        .string()
+        .refine((val) => !isNaN(Date.parse(val)), "Lần hoạt động gần nhất không hợp lệ"),
+    ghiChu: z.string().optional(),
+})
 
 interface CustomerEditDialogProps {
     customer: any
@@ -26,25 +71,55 @@ interface CustomerEditDialogProps {
 
 export function EditCustomerForm({ customer, open, onOpenChange, onSave }: CustomerEditDialogProps) {
     const [formData, setFormData] = useState({
-        name: "",
+        // Thông tin user
+        ten: "",
         email: "",
-        phone: "",
-        address: "",
-        type: "regular",
-        status: "active",
-        notes: "",
+        tenDangNhap: "",
+        matKhau: "",
+        soDienThoai: "",
+        vaiTro: "",
+        anhDaiDien: "",
+        trangThai: "",
+
+        // Thông tin customer
+        diaChi: "",
+        loai: "regular",
+        tongChiTieu: 0,
+        soBdsDangThue: 0,
+        soBdsYeuThich: 0,
+        soDanhGia: 0,
+        diemTrungBinh: 0,
+        bdsDangThueHienTai: "",
+        ngayKetThucHopDong: "",
+        lanHoatDongGanNhat: "",
+        ghiChu: "",
     })
 
     useEffect(() => {
         if (customer) {
             setFormData({
-                name: customer.name || "",
-                email: customer.email || "",
-                phone: customer.phone || "",
-                address: customer.address || "",
-                type: customer.type || "regular",
-                status: customer.status || "active",
-                notes: customer.notes || "",
+                // Thông tin user từ nguoiDungId
+                ten: customer.nguoiDungId?.ten || "",
+                email: customer.nguoiDungId?.email || "",
+                tenDangNhap: customer.nguoiDungId?.tenDangNhap || "",
+                matKhau: customer.nguoiDungId?.matKhau || "",
+                soDienThoai: customer.nguoiDungId?.soDienThoai || "",
+                vaiTro: customer.nguoiDungId?.vaiTro || "",
+                anhDaiDien: customer.nguoiDungId?.anhDaiDien || "",
+                trangThai: customer.nguoiDungId?.trangThai || "",
+
+                // Thông tin customer
+                diaChi: customer.diaChi || "",
+                loai: customer.loai || "regular",
+                tongChiTieu: customer.tongChiTieu || 0,
+                soBdsDangThue: customer.soBdsDangThue || 0,
+                soBdsYeuThich: customer.soBdsYeuThich || 0,
+                soDanhGia: customer.soDanhGia || 0,
+                diemTrungBinh: customer.diemTrungBinh || 0,
+                bdsDangThueHienTai: customer.bdsDangThueHienTai || "",
+                ngayKetThucHopDong: customer.ngayKetThucHopDong || "",
+                lanHoatDongGanNhat: customer.lanHoatDongGanNhat || "",
+                ghiChu: customer.ghiChu || "",
             })
         }
     }, [customer])
@@ -82,7 +157,7 @@ export function EditCustomerForm({ customer, open, onOpenChange, onSave }: Custo
         onOpenChange(false)
     }
 
-    const handleInputChange = (field: string, value: string) => {
+    const handleInputChange = (field: string, value: string | number) => {
         setFormData((prev) => ({ ...prev, [field]: value }))
     }
 
@@ -90,13 +165,25 @@ export function EditCustomerForm({ customer, open, onOpenChange, onSave }: Custo
         // Reset form data to original customer data
         if (customer) {
             setFormData({
-                name: customer.name || "",
-                email: customer.email || "",
-                phone: customer.phone || "",
-                address: customer.address || "",
-                type: customer.type || "regular",
-                status: customer.status || "active",
-                notes: customer.notes || "",
+                ten: customer.nguoiDungId?.ten || "",
+                email: customer.nguoiDungId?.email || "",
+                tenDangNhap: customer.nguoiDungId?.tenDangNhap || "",
+                matKhau: customer.nguoiDungId?.matKhau || "",
+                soDienThoai: customer.nguoiDungId?.soDienThoai || "",
+                vaiTro: customer.nguoiDungId?.vaiTro || "",
+                anhDaiDien: customer.nguoiDungId?.anhDaiDien || "",
+                trangThai: customer.nguoiDungId?.trangThai || "",
+                diaChi: customer.diaChi || "",
+                loai: customer.loai || "regular",
+                tongChiTieu: customer.tongChiTieu || 0,
+                soBdsDangThue: customer.soBdsDangThue || 0,
+                soBdsYeuThich: customer.soBdsYeuThich || 0,
+                soDanhGia: customer.soDanhGia || 0,
+                diemTrungBinh: customer.diemTrungBinh || 0,
+                bdsDangThueHienTai: customer.bdsDangThueHienTai || "",
+                ngayKetThucHopDong: customer.ngayKetThucHopDong || "",
+                lanHoatDongGanNhat: customer.lanHoatDongGanNhat || "",
+                ghiChu: customer.ghiChu || "",
             })
         }
         onOpenChange(false)
@@ -106,7 +193,7 @@ export function EditCustomerForm({ customer, open, onOpenChange, onSave }: Custo
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="flex items-center space-x-2">
                         <User className="h-5 w-5" />
@@ -117,7 +204,8 @@ export function EditCustomerForm({ customer, open, onOpenChange, onSave }: Custo
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-4">
+                <div className="space-y-6">
+                    {/* Thông tin cá nhân */}
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center space-x-2">
@@ -128,27 +216,27 @@ export function EditCustomerForm({ customer, open, onOpenChange, onSave }: Custo
                         <CardContent className="space-y-4">
                             <div className="flex items-center space-x-4 mb-6">
                                 <Avatar className="h-20 w-20">
-                                    <AvatarImage src={customer?.avatar || "/placeholder.svg?height=80&width=80"} />
-                                    <AvatarFallback className="text-lg">{formData.name.charAt(0)}</AvatarFallback>
+                                    <AvatarImage src={formData.anhDaiDien || "/placeholder.svg?height=80&width=80"} />
+                                    <AvatarFallback className="text-lg">{formData.ten.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div className="space-y-2">
                                     <Button variant="outline" size="sm">
                                         Thay đổi ảnh
                                     </Button>
                                     <div className="flex items-center space-x-2">
-                                        {getTypeBadge(formData.type)}
-                                        {getStatusBadge(formData.status)}
+                                        {getTypeBadge(formData.loai)}
+                                        {getStatusBadge(formData.trangThai)}
                                     </div>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="name">Họ và tên *</Label>
+                                    <Label htmlFor="ten">Họ và tên *</Label>
                                     <Input
-                                        id="name"
-                                        value={formData.name}
-                                        onChange={(e) => handleInputChange("name", e.target.value)}
+                                        id="ten"
+                                        value={formData.ten}
+                                        onChange={(e) => handleInputChange("ten", e.target.value)}
                                         placeholder="Nhập họ và tên"
                                     />
                                 </div>
@@ -163,19 +251,94 @@ export function EditCustomerForm({ customer, open, onOpenChange, onSave }: Custo
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="phone">Số điện thoại</Label>
+                                    <Label htmlFor="tenDangNhap">Tên đăng nhập *</Label>
                                     <Input
-                                        id="phone"
-                                        value={formData.phone}
-                                        onChange={(e) => handleInputChange("phone", e.target.value)}
+                                        id="tenDangNhap"
+                                        value={formData.tenDangNhap}
+                                        onChange={(e) => handleInputChange("tenDangNhap", e.target.value)}
+                                        placeholder="Nhập tên đăng nhập"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="matKhau">Mật khẩu *</Label>
+                                    <Input
+                                        id="matKhau"
+                                        type="password"
+                                        value={formData.matKhau}
+                                        onChange={(e) => handleInputChange("matKhau", e.target.value)}
+                                        placeholder="Nhập mật khẩu"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="soDienThoai">Số điện thoại *</Label>
+                                    <Input
+                                        id="soDienThoai"
+                                        value={formData.soDienThoai}
+                                        onChange={(e) => handleInputChange("soDienThoai", e.target.value)}
                                         placeholder="Nhập số điện thoại"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="type">Loại khách hàng</Label>
+                                    <Label htmlFor="vaiTro">Vai trò *</Label>
                                     <Select
-                                        value={formData.type}
-                                        onValueChange={(value) => handleInputChange("type", value)}
+                                        value={formData.vaiTro}
+                                        onValueChange={(value) => handleInputChange("vaiTro", value)}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Chọn vai trò" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="customer">Khách hàng</SelectItem>
+                                            <SelectItem value="admin">Quản trị viên</SelectItem>
+                                            <SelectItem value="staff">Nhân viên</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="trangThai">Trạng thái</Label>
+                                    <Select
+                                        value={formData.trangThai}
+                                        onValueChange={(value) => handleInputChange("trangThai", value)}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Chọn trạng thái" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="active">Hoạt động</SelectItem>
+                                            <SelectItem value="inactive">Không hoạt động</SelectItem>
+                                            <SelectItem value="pending">Chờ duyệt</SelectItem>
+                                            <SelectItem value="blocked">Bị khóa</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Thông tin khách hàng */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center space-x-2">
+                                <User className="h-4 w-4" />
+                                <span>Thông tin khách hàng</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="diaChi">Địa chỉ *</Label>
+                                    <Input
+                                        id="diaChi"
+                                        value={formData.diaChi}
+                                        onChange={(e) => handleInputChange("diaChi", e.target.value)}
+                                        placeholder="Nhập địa chỉ"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="loai">Loại khách hàng *</Label>
+                                    <Select
+                                        value={formData.loai}
+                                        onValueChange={(value) => handleInputChange("loai", value)}
                                     >
                                         <SelectTrigger>
                                             <SelectValue />
@@ -187,42 +350,95 @@ export function EditCustomerForm({ customer, open, onOpenChange, onSave }: Custo
                                         </SelectContent>
                                     </Select>
                                 </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="tongChiTieu">Tổng chi tiêu</Label>
+                                    <Input
+                                        id="tongChiTieu"
+                                        type="number"
+                                        value={formData.tongChiTieu}
+                                        onChange={(e) => handleInputChange("tongChiTieu", Number(e.target.value))}
+                                        placeholder="0"
+                                        disabled
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="soBdsDangThue">Số BĐS đang thuê</Label>
+                                    <Input
+                                        id="soBdsDangThue"
+                                        type="number"
+                                        value={formData.soBdsDangThue}
+                                        onChange={(e) => handleInputChange("soBdsDangThue", Number(e.target.value))}
+                                        placeholder="0"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="soBdsYeuThich">Số BĐS yêu thích</Label>
+                                    <Input
+                                        id="soBdsYeuThich"
+                                        type="number"
+                                        value={formData.soBdsYeuThich}
+                                        onChange={(e) => handleInputChange("soBdsYeuThich", Number(e.target.value))}
+                                        placeholder="0"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="soDanhGia">Số đánh giá</Label>
+                                    <Input
+                                        id="soDanhGia"
+                                        type="number"
+                                        value={formData.soDanhGia}
+                                        onChange={(e) => handleInputChange("soDanhGia", Number(e.target.value))}
+                                        placeholder="0"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="diemTrungBinh">Điểm trung bình</Label>
+                                    <Input
+                                        id="diemTrungBinh"
+                                        type="number"
+                                        step="0.1"
+                                        min="0"
+                                        max="5"
+                                        value={formData.diemTrungBinh}
+                                        onChange={(e) => handleInputChange("diemTrungBinh", Number(e.target.value))}
+                                        placeholder="0"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="bdsDangThueHienTai">BĐS đang thuê hiện tại *</Label>
+                                    <Input
+                                        id="bdsDangThueHienTai"
+                                        value={formData.bdsDangThueHienTai}
+                                        onChange={(e) => handleInputChange("bdsDangThueHienTai", e.target.value)}
+                                        placeholder="Nhập BĐS đang thuê"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="ngayKetThucHopDong">Ngày kết thúc hợp đồng</Label>
+                                    <Input
+                                        id="ngayKetThucHopDong"
+                                        type="date"
+                                        value={formData.ngayKetThucHopDong}
+                                        onChange={(e) => handleInputChange("ngayKetThucHopDong", e.target.value)}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="lanHoatDongGanNhat">Lần hoạt động gần nhất</Label>
+                                    <Input
+                                        id="lanHoatDongGanNhat"
+                                        type="date"
+                                        value={formData.lanHoatDongGanNhat}
+                                        onChange={(e) => handleInputChange("lanHoatDongGanNhat", e.target.value)}
+                                    />
+                                </div>
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="address">Địa chỉ</Label>
-                                <Input
-                                    id="address"
-                                    value={formData.address}
-                                    onChange={(e) => handleInputChange("address", e.target.value)}
-                                    placeholder="Nhập địa chỉ"
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="status">Trạng thái</Label>
-                                <Select
-                                    value={formData.status}
-                                    onValueChange={(value) => handleInputChange("status", value)}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="active">Hoạt động</SelectItem>
-                                        <SelectItem value="inactive">Không hoạt động</SelectItem>
-                                        <SelectItem value="pending">Chờ duyệt</SelectItem>
-                                        <SelectItem value="blocked">Bị khóa</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="notes">Ghi chú</Label>
+                                <Label htmlFor="ghiChu">Ghi chú</Label>
                                 <Textarea
-                                    id="notes"
-                                    value={formData.notes}
-                                    onChange={(e) => handleInputChange("notes", e.target.value)}
+                                    id="ghiChu"
+                                    value={formData.ghiChu}
+                                    onChange={(e) => handleInputChange("ghiChu", e.target.value)}
                                     rows={3}
                                     placeholder="Thêm ghi chú về khách hàng này..."
                                 />
@@ -235,7 +451,7 @@ export function EditCustomerForm({ customer, open, onOpenChange, onSave }: Custo
                     <Button variant="outline" onClick={handleCancel}>
                         Hủy
                     </Button>
-                    <Button onClick={handleSave} disabled={!formData.name || !formData.email}>
+                    <Button onClick={handleSave} disabled={!formData.ten || !formData.email}>
                         Lưu thay đổi
                     </Button>
                 </DialogFooter>
