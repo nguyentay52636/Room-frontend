@@ -18,14 +18,13 @@ import {
 } from "lucide-react"
 import HeaderManagerAccount from "./components/HeaderManagerAccount";
 import StatsCardManagerAccount from "./components/StatsCardManagerAccount"
-import FilterSearchManagerAccount from "./components/FilterSearchManagerAccount"
-import TableManagerAccount from "./components/TableManagerAccount"
-import { accounts } from "./Data/AccountsData"
+import FilterSearchManagerAccount from "./components/Dialog/components/TableManagerAccounts/FilterSearchManagerAccount"
+import TableManagerAccount from "./components/Dialog/components/TableManagerAccounts/TableManagerAccount"
 import PaginationManagerAccounts from "./components/PaginationManagerAccounts"
 import { usePagination } from "../../context/PaginationContext"
 import { getUsers } from "@/lib/apis/userApi"
-import { User } from "@/lib/apis/types"
-import { IusersResponse } from "@/lib/apis/responseApi"
+import { IUser } from "@/lib/apis/types"
+
 
 
 export default function ManagerAccountContent() {
@@ -36,7 +35,7 @@ export default function ManagerAccountContent() {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [dialogMode, setDialogMode] = useState<"view" | "edit" | "create">("view")
     const { paginationState } = usePagination();
-    const [users, setUsers] = useState<User[]>([])
+    const [users, setUsers] = useState<IUser[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
