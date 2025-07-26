@@ -10,12 +10,12 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { MoreHorizontal, Edit, MessageSquare, Trash2, Eye } from 'lucide-react'
-
+import { Customer } from '@/lib/apis/types';
 interface ActionTableCustomerProps {
-    customer: any;
-    handleView: (customer: any) => void;
-    handleEdit: (customer: any) => void;
-    handleDelete?: (customer: any) => void;
+    customer: Customer;
+    handleView: (customer: Customer) => void;
+    handleEdit: (customer: Customer) => void;
+    handleDelete?: (customer: Customer) => void;
 }
 
 export default function ActionTableCustomer({

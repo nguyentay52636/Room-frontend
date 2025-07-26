@@ -13,23 +13,71 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 import { User, Calendar, Activity, Star, Home, Heart, MessageSquare, DollarSign, Clock } from "lucide-react"
+import { Customer } from "@/lib/apis/types"
+import { useEffect, useState } from "react"
 
 interface CustomerViewDialogProps {
     customer: any
     open: boolean
     onOpenChange: (open: boolean) => void
 }
+const initialFormData: Customer = {
+    nguoiDungId: {
+        _id: "",
+        ten: "",
+        email: "",
+        tenDangNhap: "",
+        matKhau: "",
+        soDienThoai: "",
+        vaiTro: "",
+        anhDaiDien: "",
+        trangThai: "",
+    },
+    diaChi: "",
+    loai: "",
+    tongChiTieu: 0,
+    soBdsDangThue: 0,
+    soBdsYeuThich: 0,
+    soDanhGia: 0,
+    diemTrungBinh: 0,
+    bdsDangThueHienTai: "",
+    ngayKetThucHopDong: "",
+    lanHoatDongGanNhat: "",
+    ghiChu: "",
+    updatedAt: "",
+}
 
 export function CustomerViewDialog({ customer, open, onOpenChange }: CustomerViewDialogProps) {
+    const [formData, setFormData] = useState<Customer>(initialFormData)
+    useEffect(() => {
+        if (customer) {
+            setFormData(customer)
+            setFormData({
+                ...formData,
+                nguoiDungId: customer.nguoiDungId,
+                diaChi: customer.diaChi,
+                loai: customer.loai,
+                tongChiTieu: customer.tongChiTieu,
+                soBdsDangThue: customer.soBdsDangThue,
+                soBdsYeuThich: customer.soBdsYeuThich,
+                soDanhGia: customer.soDanhGia,
+                diemTrungBinh: customer.diemTrungBinh,
+                bdsDangThueHienTai: customer.bdsDangThueHienTai,
+                ngayKetThucHopDong: customer.ngayKetThucHopDong,
+                lanHoatDongGanNhat: customer.lanHoatDongGanNhat,
+            })
+        }
+    }, [customer])
+
     const getStatusBadge = (status: string) => {
         switch (status) {
-            case "active":
+            case "hoat_dong":
                 return <Badge className="bg-green-100 text-green-800">Hoạt động</Badge>
-            case "inactive":
+            case "khong_hoat_dong":
                 return <Badge variant="secondary">Không hoạt động</Badge>
-            case "pending":
+            case "cho_duyet":
                 return <Badge className="bg-yellow-100 text-yellow-800">Chờ duyệt</Badge>
-            case "blocked":
+            case "bi_khoa":
                 return <Badge className="bg-red-100 text-red-800">Bị khóa</Badge>
             default:
                 return <Badge>{status}</Badge>
