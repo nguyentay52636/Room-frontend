@@ -4,24 +4,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { getRoles } from "@/lib/apis/roleApi"
 import { role } from "@/lib/apis/types"
 import { useEffect, useState } from "react"
-interface FormData {
-    ten: string
-    email: string
-    tenDangNhap: string
-    matKhau: string
-    soDienThoai: string
-    vaiTro: string
-    anhDaiDien: string
-    trangThai: string
-}
+import { UseFormReturn } from "react-hook-form"
 
 interface SettingsTabProps {
-    formData: FormData
+    form: UseFormReturn<any>
     isReadOnly: boolean
-    onInputChange: (field: string, value: string) => void
 }
 
-export function SettingsTab({ isReadOnly }: SettingsTabProps) {
+export function SettingsTab({ form, isReadOnly }: SettingsTabProps) {
     const [roles, setRoles] = useState<role[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -41,6 +31,7 @@ export function SettingsTab({ isReadOnly }: SettingsTabProps) {
         }
         fetchRoles()
     }, [])
+
     return (
         <div className="space-y-6">
             <div className="space-y-4">

@@ -11,34 +11,35 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { User } from "lucide-react"
 import { BasicInfoTab } from "./tabs/BasicInfoTab"
-import { useAccountForm } from "./hooks/useAccountForm"
+import { useAccountForm } from "../ActionAccountForm"
 import { SecurityTab } from "./tabs/SecurityTab"
 import { SettingsTab } from "./tabs/SettingsTab"
 import { ActivityTab } from "./tabs/ActivityTab"
+import { IUser } from "@/lib/apis/types"
 
 interface AccountDialogProps {
-    account: Record<string, unknown> | null
+    account: IUser | null
     open: boolean
     onOpenChange: (open: boolean) => void
     mode: "view" | "edit" | "create"
+    onSuccess?: () => void
 }
 
-export function AddAccountDialog({ account, open, onOpenChange, mode }: AccountDialogProps) {
+export function AddAccountDialog({ account, open, onOpenChange, mode, onSuccess }: AccountDialogProps) {
     const {
-        formData,
+        form,
         showPassword,
         showConfirmPassword,
         changePassword,
-        handleInputChange,
+        isSubmitting,
+        isReadOnly,
+        isFormValid,
         setShowPassword,
         setShowConfirmPassword,
         setChangePassword,
         generateRandomPassword,
-        handleSave,
-        isFormValid
-    } = useAccountForm(account, mode, onOpenChange)
-
-    const isReadOnly = mode === "view"
+        handleSave
+    } = useAccountForm({ account, mode, onOpenChange, onSuccess })
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -59,63 +60,74 @@ export function AddAccountDialog({ account, open, onOpenChange, mode }: AccountD
                     </DialogDescription>
                 </DialogHeader>
 
-                <Tabs defaultValue="basic" className="w-full">
-                    <TabsList className="grid w-full grid-cols-4">
-                        <TabsTrigger value="basic">Thông tin cơ bản</TabsTrigger>
-                        <TabsTrigger value="security">Bảo mật</TabsTrigger>
-                        <TabsTrigger value="settings">Cài đặt</TabsTrigger>
-                        <TabsTrigger value="activity">Hoạt động</TabsTrigger>
-                    </TabsList>
+                <form onSubmit={handleSave}>
+                    <Tabs defaultValue="basic" className="w-full">
+                        <TabsList className="grid w-full grid-cols-4">
+                            <TabsTrigger value="basic">Thông tin cơ bản</TabsTrigger>
+                            <TabsTrigger value="security">Bảo mật</TabsTrigger>
+                            <TabsTrigger value="settings">Cài đặt</TabsTrigger>
+                            <TabsTrigger value="activity">Hoạt động</TabsTrigger>
+                        </TabsList>
 
-                    <TabsContent value="basic" className="space-y-4">
-                        <BasicInfoTab
-                            formData={formData}
-                            account={account}
-                            isReadOnly={isReadOnly}
-                            onInputChange={handleInputChange}
-                        />
-                    </TabsContent>
+                        <TabsContent value="basic" className="space-y-4">
+                            <BasicInfoTab
+                                form={form}
+                                account={account}
+                                isReadOnly={isReadOnly}
+                            />
+                        </TabsContent>
 
-                    <TabsContent value="security" className="space-y-4">
-                        <SecurityTab
-                            formData={formData}
-                            account={account}
-                            isReadOnly={isReadOnly}
-                            mode={mode}
-                            showPassword={showPassword}
-                            showConfirmPassword={showConfirmPassword}
-                            changePassword={changePassword}
-                            onInputChange={handleInputChange}
-                            onTogglePassword={setShowPassword}
-                            onToggleConfirmPassword={setShowConfirmPassword}
-                            onChangePassword={setChangePassword}
-                            onGeneratePassword={generateRandomPassword}
-                        />
-                    </TabsContent>
+                        <TabsContent value="security" className="space-y-4">
+                            <SecurityTab
+                                form={form}
+                                account={account}
+                                isReadOnly={isReadOnly}
+                                mode={mode}
+                                showPassword={showPassword}
+                                showConfirmPassword={showConfirmPassword}
+                                changePassword={changePassword}
+                                onTogglePassword={setShowPassword}
+                                onToggleConfirmPassword={setShowConfirmPassword}
+                                onChangePassword={setChangePassword}
+                                onGeneratePassword={generateRandomPassword}
+                            />
+                        </TabsContent>
 
-                    <TabsContent value="settings" className="space-y-4">
-                        <SettingsTab
-                            formData={formData}
-                            isReadOnly={isReadOnly}
-                            onInputChange={handleInputChange}
-                        />
-                    </TabsContent>
+                        <TabsContent value="settings" className="space-y-4">
+                            <SettingsTab
+                                form={form}
+                                isReadOnly={isReadOnly}
+                            />
+                        </TabsContent>
 
-                    <TabsContent value="activity" className="space-y-4">
-                        <ActivityTab account={account} />
-                    </TabsContent>
-                </Tabs>
+                        <TabsContent value="activity" className="space-y-4">
+                            <ActivityTab account={account} />
+                        </TabsContent>
+                    </Tabs>
 
-                <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
-                        {isReadOnly ? "Đóng" : "Hủy"}
-                    </Button>
-                    {!isReadOnly && (
-                        <Button onClick={handleSave} disabled={!isFormValid}>
-                            {mode === "create" ? "Tạo tài khoản" : "Lưu thay đổi"}
+                    <DialogFooter>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => onOpenChange(false)}
+                        >
+                            {isReadOnly ? "Đóng" : "Hủy"}
                         </Button>
-                    )}
-                </DialogFooter>
+                        {!isReadOnly && (
+                            <Button
+                                type="submit"
+                                disabled={!isFormValid || isSubmitting}
+                            >
+                                {isSubmitting
+                                    ? "Đang xử lý..."
+                                    : mode === "create"
+                                        ? "Tạo tài khoản"
+                                        : "Lưu thay đổi"
+                                }
+                            </Button>
+                        )}
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
     )

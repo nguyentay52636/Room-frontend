@@ -1,20 +1,11 @@
 
-import { useState } from 'react'
 import TableFormAccounts from './TableFormAccounts'
 import { Card } from '@/components/ui/card'
 import { CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Users } from 'lucide-react'
+import PaginationManagerAccounts from '../../../PaginationManagerAccounts'
 
 export default function TableManagerAccount({ filteredAccounts, getRoleIcon, getRoleName, getStatusBadge, handleViewAccount, handleEditAccount }: { filteredAccounts: any, getRoleIcon: any, getRoleName: any, getStatusBadge: any, handleViewAccount: any, handleEditAccount: any }) {
-    const [visiblePasswords, setVisiblePasswords] = useState<{ [key: string]: boolean }>({})
-
-    const togglePasswordVisibility = (accountId: string) => {
-        setVisiblePasswords(prev => ({
-            ...prev,
-            [accountId]: !prev[accountId]
-        }))
-    }
-
     return (
         <div className="rounded-md border overflow-hidden">
             <Card>
@@ -31,6 +22,7 @@ export default function TableManagerAccount({ filteredAccounts, getRoleIcon, get
                     )}
                 </CardContent>
             </Card>
+            <PaginationManagerAccounts totalItems={filteredAccounts.length} />
 
         </div>
     )

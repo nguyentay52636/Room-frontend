@@ -14,7 +14,7 @@ import { BasicInfoTab } from "./tabs/BasicInfoTab"
 import { SecurityTab } from "./tabs/SecurityTab"
 import { SettingsTab } from "./tabs/SettingsTab"
 import { ActivityTab } from "./tabs/ActivityTab"
-import { useAccountForm } from "./components/AddAccount/hooks/useAccountForm"
+import { useAccountForm } from "./components/useAccountForm"
 
 
 interface AccountDialogProps {

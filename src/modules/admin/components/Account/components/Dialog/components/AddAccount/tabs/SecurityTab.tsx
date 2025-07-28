@@ -2,27 +2,17 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff, RefreshCw } from "lucide-react"
-
-interface FormData {
-    ten: string
-    email: string
-    tenDangNhap: string
-    matKhau: string
-    soDienThoai: string
-    vaiTro: string
-    anhDaiDien: string
-    trangThai: string
-}
+import { UseFormReturn } from "react-hook-form"
+import { IUser } from "@/lib/apis/types"
 
 interface SecurityTabProps {
-    formData: FormData
-    account: Record<string, unknown> | null
+    form: UseFormReturn<any>
+    account: IUser | null
     isReadOnly: boolean
     mode: "view" | "edit" | "create"
     showPassword: boolean
     showConfirmPassword: boolean
     changePassword: boolean
-    onInputChange: (field: string, value: string) => void
     onTogglePassword: (show: boolean) => void
     onToggleConfirmPassword: (show: boolean) => void
     onChangePassword: (change: boolean) => void
@@ -30,19 +20,20 @@ interface SecurityTabProps {
 }
 
 export function SecurityTab({
-    formData,
+    form,
     account,
     isReadOnly,
     mode,
     showPassword,
     showConfirmPassword,
     changePassword,
-    onInputChange,
     onTogglePassword,
     onToggleConfirmPassword,
     onChangePassword,
     onGeneratePassword
 }: SecurityTabProps) {
+    const { register, formState: { errors } } = form
+
     return (
         <div className="space-y-4">
             {mode === "edit" && (
@@ -66,8 +57,7 @@ export function SecurityTab({
                             <Input
                                 id="matKhau"
                                 type={showPassword ? "text" : "password"}
-                                value={formData.matKhau}
-                                onChange={(e) => onInputChange("matKhau", e.target.value)}
+                                {...register("matKhau")}
                                 disabled={isReadOnly}
                                 placeholder="Nhập mật khẩu"
                             />
@@ -82,6 +72,9 @@ export function SecurityTab({
                                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                             </Button>
                         </div>
+                        {errors.matKhau && (
+                            <p className="text-sm text-red-500">{errors.matKhau.message as string}</p>
+                        )}
                     </div>
 
                     <div className="space-y-2">
@@ -126,8 +119,8 @@ export function SecurityTab({
                 <Label>Lịch sử đăng nhập</Label>
                 <div className="rounded-md border p-4">
                     <p className="text-sm text-muted-foreground">
-                        {account?.lastLogin
-                            ? `Lần đăng nhập cuối: ${new Date(account.lastLogin as string).toLocaleString('vi-VN')}`
+                        {(account as any)?.lastLogin
+                            ? `Lần đăng nhập cuối: ${new Date((account as any).lastLogin as string).toLocaleString('vi-VN')}`
                             : "Chưa có lịch sử đăng nhập"
                         }
                     </p>

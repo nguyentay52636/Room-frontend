@@ -1,9 +1,10 @@
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Clock, LogIn, LogOut, Shield, User } from "lucide-react"
+import { IUser } from "@/lib/apis/types"
 
 interface ActivityTabProps {
-    account: Record<string, unknown> | null
+    account: IUser | null
 }
 
 export function ActivityTab({ account }: ActivityTabProps) {
@@ -79,14 +80,14 @@ export function ActivityTab({ account }: ActivityTabProps) {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            {account?.lastLogin
-                                ? new Date(account.lastLogin as string).toLocaleDateString('vi-VN')
+                            {(account as any)?.lastLogin
+                                ? new Date((account as any).lastLogin as string).toLocaleDateString('vi-VN')
                                 : "Chưa có"
                             }
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            {account?.lastLogin
-                                ? new Date(account.lastLogin as string).toLocaleTimeString('vi-VN')
+                            {(account as any)?.lastLogin
+                                ? new Date((account as any).lastLogin as string).toLocaleTimeString('vi-VN')
                                 : ""
                             }
                         </p>
