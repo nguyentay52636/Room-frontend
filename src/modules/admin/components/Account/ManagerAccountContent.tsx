@@ -99,19 +99,43 @@ export default function ManagerAccountContent() {
     }
 
     return (
-        <>
-            <HeaderManagerAccount handleAddAccount={handleAddAccount} />
-
-            <div className="flex flex-1 flex-col gap-6 p-6 bg-gray-50/50 dark:bg-gray-900/50">
-                <div className="grid grid-cols-1 cursor-pointer md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {stats(users).map((stat: any, index: number) => (
-                        <StatsCardManagerAccount key={index} stat={stat} index={index} />
-                    ))}
+        <div className="min-h-screen bg-gray-50/50 dark:bg-gray-900/50">
+            {/* Header */}
+            <div className="sticky top-0 z-10 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+                <div className="px-4 sm:px-6 lg:px-8 py-4">
+                    <HeaderManagerAccount handleAddAccount={handleAddAccount} />
                 </div>
-                <TableManagerAccount filteredAccounts={filteredAccounts} getRoleIcon={getRoleIcon} getRoleName={getRoleName} getStatusBadge={getStatusBadge} handleViewAccount={handleViewAccount} handleEditAccount={handleEditAccount} />
-
             </div>
 
+            {/* Main Content */}
+            <div className="flex-1 p-4 sm:p-6 lg:p-8">
+                {/* Stats Cards - Responsive Grid */}
+                <div className="mb-6 sm:mb-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                        {stats(users).map((stat: any, index: number) => (
+                            <StatsCardManagerAccount key={index} stat={stat} index={index} />
+                        ))}
+                    </div>
+                </div>
+
+                {/* Table Section */}
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <div className="min-w-full">
+                            <TableManagerAccount
+                                filteredAccounts={filteredAccounts}
+                                getRoleIcon={getRoleIcon}
+                                getRoleName={getRoleName}
+                                getStatusBadge={getStatusBadge}
+                                handleViewAccount={handleViewAccount}
+                                handleEditAccount={handleEditAccount}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Dialog */}
             <AddAccountDialog
                 account={selectedAccount}
                 open={isDialogOpen}
@@ -119,7 +143,7 @@ export default function ManagerAccountContent() {
                 mode={dialogMode}
                 onSuccess={handleSuccess}
             />
-        </>
+        </div>
     )
 }
 

@@ -43,15 +43,15 @@ export function AddAccountDialog({ account, open, onOpenChange, mode, onSuccess 
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                    <DialogTitle className="flex items-center space-x-2">
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-[90vw] md:w-[85vw] lg:w-[80vw] xl:w-[75vw]">
+                <DialogHeader className="px-4 sm:px-6">
+                    <DialogTitle className="flex items-center space-x-2 text-lg sm:text-xl">
                         <User className="h-5 w-5" />
                         <span>
                             {mode === "create" ? "Tạo tài khoản mới" : mode === "edit" ? "Chỉnh sửa tài khoản" : "Chi tiết tài khoản"}
                         </span>
                     </DialogTitle>
-                    <DialogDescription>
+                    <DialogDescription className="text-sm sm:text-base">
                         {mode === "create"
                             ? "Tạo tài khoản mới cho hệ thống"
                             : mode === "edit"
@@ -60,16 +60,16 @@ export function AddAccountDialog({ account, open, onOpenChange, mode, onSuccess 
                     </DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={handleSave}>
+                <form onSubmit={handleSave} className="px-4 sm:px-6">
                     <Tabs defaultValue="basic" className="w-full">
-                        <TabsList className="grid w-full grid-cols-4">
-                            <TabsTrigger value="basic">Thông tin cơ bản</TabsTrigger>
-                            <TabsTrigger value="security">Bảo mật</TabsTrigger>
-                            <TabsTrigger value="settings">Cài đặt</TabsTrigger>
-                            <TabsTrigger value="activity">Hoạt động</TabsTrigger>
+                        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto sm:h-10">
+                            <TabsTrigger value="basic" className="text-xs sm:text-sm py-2 sm:py-0">Thông tin cơ bản</TabsTrigger>
+                            <TabsTrigger value="security" className="text-xs sm:text-sm py-2 sm:py-0">Bảo mật</TabsTrigger>
+                            <TabsTrigger value="settings" className="text-xs sm:text-sm py-2 sm:py-0">Cài đặt</TabsTrigger>
+                            <TabsTrigger value="activity" className="text-xs sm:text-sm py-2 sm:py-0">Hoạt động</TabsTrigger>
                         </TabsList>
 
-                        <TabsContent value="basic" className="space-y-4">
+                        <TabsContent value="basic" className="space-y-4 mt-4">
                             <BasicInfoTab
                                 form={form}
                                 account={account}
@@ -77,7 +77,7 @@ export function AddAccountDialog({ account, open, onOpenChange, mode, onSuccess 
                             />
                         </TabsContent>
 
-                        <TabsContent value="security" className="space-y-4">
+                        <TabsContent value="security" className="space-y-4 mt-4">
                             <SecurityTab
                                 form={form}
                                 account={account}
@@ -93,23 +93,24 @@ export function AddAccountDialog({ account, open, onOpenChange, mode, onSuccess 
                             />
                         </TabsContent>
 
-                        <TabsContent value="settings" className="space-y-4">
+                        <TabsContent value="settings" className="space-y-4 mt-4">
                             <SettingsTab
                                 form={form}
                                 isReadOnly={isReadOnly}
                             />
                         </TabsContent>
 
-                        <TabsContent value="activity" className="space-y-4">
+                        <TabsContent value="activity" className="space-y-4 mt-4">
                             <ActivityTab account={account} />
                         </TabsContent>
                     </Tabs>
 
-                    <DialogFooter>
+                    <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-0 mt-6">
                         <Button
                             type="button"
                             variant="outline"
                             onClick={() => onOpenChange(false)}
+                            className="w-full sm:w-auto order-2 sm:order-1"
                         >
                             {isReadOnly ? "Đóng" : "Hủy"}
                         </Button>
@@ -117,6 +118,7 @@ export function AddAccountDialog({ account, open, onOpenChange, mode, onSuccess 
                             <Button
                                 type="submit"
                                 disabled={!isFormValid || isSubmitting}
+                                className="w-full sm:w-auto order-1 sm:order-2"
                             >
                                 {isSubmitting
                                     ? "Đang xử lý..."
